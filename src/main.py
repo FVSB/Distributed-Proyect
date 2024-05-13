@@ -4,6 +4,7 @@ from Pre_Processing.Corpus import load_all_dates
 from Search.Search import search
 import streamlit as st
 
+
 corpus = prepare_corpus()
 query = st.text_input("Introduce your query")
 

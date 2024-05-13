@@ -1,6 +1,6 @@
 import ir_datasets
 import random
-from Pre_Processing.Document import Document, DATA_UBICATION
+from Pre_Processing.Document import Document, DOCUMENTS_UBICATION
 
 def get_documents(dataset_name : str):
     dataset = ir_datasets.load(dataset_name)
@@ -11,7 +11,7 @@ def get_random_documents(num_docs = 1,dataset_name = "cranfield"):
     return random.sample(document,num_docs)
 
 def add_document(doc : Document):
-    with open(DATA_UBICATION+doc.title,'w') as file:
+    with open(DOCUMENTS_UBICATION+doc.title,'w') as file:
         file.write(doc.text)
 
 def add_random_documents(num_docs):

@@ -7,7 +7,8 @@ def search(query : str, corpus : Corpus) -> List[Document]:
     query = Document('query', query)
     clean_document(query)
     query_bow = corpus.dictionary.doc2bow(query.representation)
-    sims = corpus.sim_matrix[corpus.model[query_bow]]
+    #sims = corpus.sim_matrix[corpus.model[query_bow]]
+    sims = corpus.sim_matrix[query_bow]
     searched = []
     for index in sorted(enumerate(sims), key=lambda item: -item[1])[:3]:
         searched.append(corpus.docs[index[0]])
