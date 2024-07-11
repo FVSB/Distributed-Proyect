@@ -7,6 +7,7 @@ import hashlib
 # Operation codes
 FIND_SUCCESSOR = 1
 FIND_PREDECESSOR = 2
+FIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo "0 " por lo cual el nodo de mayor rango de la red debe buscarlo
 GET_SUCCESSOR = 3
 GET_PREDECESSOR = 4
 NOTIFY = 5
@@ -14,6 +15,7 @@ CHECK_PREDECESSOR = 6
 CLOSEST_PRECEDING_FINGER = 7
 STORE_KEY = 8
 RETRIEVE_KEY = 9
+
 
 # Function to hash a string using SHA-1 and return its integer representation
 def getShaRepr(data: str):
@@ -37,9 +39,14 @@ class ChordNodeReference:
         except Exception as e:
             print(f"Error sending data: {e}")
             return b''
-
+    
+    def find_successor_node_0(self,id:int)->'ChordNodeReference':
+        """El metodo es para que el ultimo no llame al nodo 0 y le diga que ahora este es su predecesor"""
+        response=self._send_data(FIND_SUCCESSOR_WITHOUT_PREDECESSOR,str(id)).decode().split(',')
+        return  ChordNodeReference(response[1], self.port)
     # Method to find the successor of a given id
     def find_successor(self, id: int) -> 'ChordNodeReference':
+        """ Method to find the successor of a given id"""
         response = self._send_data(FIND_SUCCESSOR, str(id)).decode().split(',')
         return ChordNodeReference(response[1], self.port)
 
@@ -83,7 +90,7 @@ class ChordNodeReference:
         return response
 
     def __str__(self) -> str:
-        return f'{self.id},{self.ip},{self.port}'
+        return f'ChordNodeReference:{self.id},{self.ip},{self.port}'
 
     def __repr__(self) -> str:
         return str(self)
@@ -143,9 +150,12 @@ class ChordNode:
         #return node.succ  # Return successor of that node
         #Cambie para ahora hacer que si el sucesor soy yo y tengo predecesor distinto mio pues el es mi sucesor
         # Si tengo predecesor
-        if self.pred and self.pred.id!=self.id and node.ip==self.ip:
-            # Entonces buscar el nodo que tiene guardado el cero
-            return 
+        #if self.pred and self.pred.id!=self.id and node.ip==self.ip:
+        #    # Entonces buscar el nodo que tiene sucesor y no tiene antecesor
+        #    return mi
+        
+        return node.succ
+        
             
             
 
@@ -176,10 +186,13 @@ class ChordNode:
 
     # Stabilize method to periodically verify and update the successor and predecessor
     def stabilize(self):
+        Is=False
+        no=None
         while True:
             try:
+                Is=False
                 if self.succ.id != self.id:
-                    print('stabilize,w')
+                    print('stabilize')
                     x = self.succ.pred
                     if x.id != self.id:
                         print(x)
@@ -187,14 +200,28 @@ class ChordNode:
                             self.succ = x
                         print('A Notificar')
                         self.succ.notify(self.ref)
+                elif self.pred: # Si no controlo que tenga predecesor se vuelve loco con un nodo
+                    Is=True
+                    #Osea si soy el ultimo nodo mi sucesor es el nodo '0'
+                    node=self.pred.find_successor_node_0(self.id)
+                    print('#'*50)
+                    print(f' El nodo recibido es de {type(node) }: {node}')
+                    print('A'*50)
+                    no=node
+                    print(f'El ultimo nodo con id:{self.id} recibio supuestamente el nodo 0 {node}')
+                    self.succ=node if node is not None else self.ref
+                    Is=False
+                    print(f'Ahora el sucesor es con ID: {self.succ}')
+                    
             except Exception as e:
-                print(f"Error in stabilize: {e}")
+                print(f"  Is_True:{Is}_  node:{no}_  _::: Error in stabilize: {e}")
 
             print(f"successor : {self.succ} predecessor {self.pred}")
-            time.sleep(1) #Poner en produccion en 1 segundo
+            time.sleep(3) #Poner en produccion en 1 segundo
 
     # Notify method to inform the node about another node
     def notify(self, node: 'ChordNodeReference'):
+        """ Notify method to inform the node about another node"""
         if node.id == self.id:
             pass
         if not self.pred or self._inbetween(node.id, self.pred.id, self.id):
@@ -208,6 +235,9 @@ class ChordNode:
                 if self.next >= self.m:
                     self.next = 0
                 self.finger[self.next] = self.find_succ((self.id + 2 ** self.next) % 2 ** self.m)
+               # print('/'*40)
+               # print(f'Mis finger table es {self.finger} ')
+               # print('+'*40)
             except Exception as e:
                 print(f"Error in fix_fingers: {e}")
             time.sleep(10)
@@ -237,7 +267,18 @@ class ChordNode:
         key_hash = getShaRepr(key)
         node = self.find_succ(key_hash)
         return node.retrieve_key(key)
-
+    
+    
+    def process_last_node_request(self,id:int)->'ChordNodeReference':
+        """
+        Si soy el '0' me devuelvo sino llamo a mi predecesor y le digo que lo resuelva
+        """
+        if self.pred:
+           return self.pred.find_successor_node_0(id)
+        
+        if self.succ.id!=self.id and self.pred is None and id>self.id: #Le envio un mensaje que si que me tome a mi
+            return self.ref
+        raise Exception(f'Deberia existir el Nodo 0')
     # Start server method to handle incoming requests
     def start_server(self):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -280,6 +321,11 @@ class ChordNode:
                 elif option == RETRIEVE_KEY:
                     key = data[1]
                     data_resp = self.data.get(key, '')
+                elif option==FIND_SUCCESSOR_WITHOUT_PREDECESSOR: # Mansaje que envia el nodo ultimo de la red para encontrar el nodo '0' y enlazarse a el
+                    
+                    id=int(data[1])
+                    data_resp=self.process_last_node_request(id)
+                    
 
                 if data_resp:
                     response = f'{data_resp.id},{data_resp.ip}'.encode()
