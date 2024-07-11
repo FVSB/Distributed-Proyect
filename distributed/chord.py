@@ -204,17 +204,14 @@ class ChordNode:
                     Is=True
                     #Osea si soy el ultimo nodo mi sucesor es el nodo '0'
                     node=self.pred.find_successor_node_0(self.id)
-                    print('#'*50)
-                    print(f' El nodo recibido es de {type(node) }: {node}')
-                    print('A'*50)
-                    no=node
-                    print(f'El ultimo nodo con id:{self.id} recibio supuestamente el nodo 0 {node}')
+                    
                     self.succ=node if node is not None else self.ref
-                    Is=False
-                    print(f'Ahora el sucesor es con ID: {self.succ}')
+                    
+                    if node.id!=self.id : self.succ.notify(self.ref)
+                    
                     
             except Exception as e:
-                print(f"  Is_True:{Is}_  node:{no}_  _::: Error in stabilize: {e}")
+                print(f"  Is_True:{Is}_  node:{node}_  _::: Error in stabilize: {e}")
 
             print(f"successor : {self.succ} predecessor {self.pred}")
             time.sleep(3) #Poner en produccion en 1 segundo
