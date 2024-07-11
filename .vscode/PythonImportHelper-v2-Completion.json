@@ -499,7 +499,7 @@
         "kind": 6,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "class ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n    # Internal method to send data to the referenced node\n    def _send_data(self, op: int, data: str = None) -> bytes:\n        print(f'mandando la data con op{op} - y data {data}')\n        try:\n            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:",
+        "peekOfCode": "class ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n    # Internal method to send data to the referenced node\n    def _send_data(self, op: int, data: str = None) -> bytes:\n        #print(f'mandando la data con op{op} - y data {data}')\n        try:\n            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:",
         "detail": "distributed.chord",
         "documentation": {}
     },

@@ -5,6 +5,7 @@ import time
 import hashlib
 import traceback
 # Operation codes
+EMPTYBIT=b''
 FIND_SUCCESSOR = 1
 FIND_PREDECESSOR = 2
 FIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo "0 " por lo cual el nodo de mayor rango de la red debe buscarlo
@@ -30,14 +31,14 @@ class ChordNodeReference:
 
     # Internal method to send data to the referenced node
     def _send_data(self, op: int, data: str = None) -> bytes:
-        print(f'mandando la data con op{op} - y data {data}')
+        #print(f'mandando la data con op{op} - y data {data}')
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.connect((self.ip, self.port))
                 s.sendall(f'{op},{data}'.encode('utf-8'))
                 return s.recv(1024)
         except Exception as e:
-            print(f"Error sending data: {e}")
+            print(f"Error sending data: {e} al nodo con id {self.id} e ip {self.ip}")
             return b''
     
     def find_successor_node_0(self,id:int)->'ChordNodeReference':
@@ -73,8 +74,14 @@ class ChordNodeReference:
         self._send_data(NOTIFY, f'{node.id},{node.ip}')
 
     # Method to check if the predecessor is alive
-    def check_predecessor(self):
-        self._send_data(CHECK_PREDECESSOR)
+    def check_predecessor(self)->bool:
+        
+        response=self._send_data(CHECK_PREDECESSOR)
+        print(f'La respuesta de si esta vivo el lider o no es {response}')
+        if response in ['',' ', None,EMPTYBIT]:
+            return   False
+        return True
+
 
     # Method to find the closest preceding finger of a given id
     def closest_preceding_finger(self, id: int) -> 'ChordNodeReference':
@@ -235,24 +242,29 @@ class ChordNode:
         """
         Is=False
         node=None
+        count_failed=0 # Cant de veces que se a tratado de establecer conexion  sin exito con el predecesor del sucesor
+        x=None
         while True:
             try:
                 Is=False
-                if self.succ.id != self.id:
+                if self.succ.id != self.id: # Es pq tengo sucesor
                     print('stabilize')
                     if self.succ is None: self.succ=self.ref
                     try: 
                         x = self.succ.pred
                     except: 
-                        # Trata de contactar con el succ y preguntarle por el predecesor si pasa algun problema en la peticion
-                        # Mi sucesor soy yo
-                        #Si mi sucesor era mi antecesor entonces hago el antecesor null
-                        if self.succ.id==self.pred.id: self.pred=None
-                        self.succ=self.ref
-                        continue
+                        count_failed+=1
+                        
+                        if count_failed>3:
+                            # Trata de contactar con el succ y preguntarle por el predecesor si pasa algun problema en la peticion
+                            # Mi sucesor soy yo
+                            #Si mi sucesor era mi antecesor entonces hago el antecesor null
+                            if self.succ.id==self.pred.id: self.pred=None
+                            self.succ=self.ref
+                            continue
                        
                     print(f' este es X {x}')
-                    if x.id != self.id:
+                    if x and x.id != self.id:
                         print(f'Otra vez x {x}')
                         if x and self._inbetween(x.id, self.id, self.succ.id):
                             self.succ = x
@@ -311,13 +323,21 @@ class ChordNode:
     def check_predecessor(self):
         """Check predecessor method to periodically verify if the predecessor is alive
         """
+        counter=0
         while True:
             try:
                 if self.pred:
-                    self.pred.check_predecessor()
+                    if not  self.pred.check_predecessor():
+                        counter+=1
+                        if counter>3:
+                            raise Exception(f'No se restablecio conexion con el predecesor {self.pred} ')
+                    else:
+                        counter=0
+                                          
+                    print(f'Chequeando predecesor ...')
             except Exception as e:
-                print(f'Se desconecto el predecesor con id {self.pred.id} e ip {self.pred.ip}')
-                
+                print(f'Se desconecto el predecesor con id {self.pred.id} e ip {self.pred.ip},error:{e}')
+                traceback.print_exc()
                 # En caso de ser un un anillo con dos nodos tb ponerme a mi mismo como sucesor.
                 if  self.succ and self.pred.id==self.succ.id:
                     print('Entro en el de ponerse a si mimsmo como predecesor')
@@ -325,8 +345,7 @@ class ChordNode:
             
                 self.pred = None
                 
-                
-            time.sleep(1)
+            time.sleep(5)
 
     # Store key method to store a key-value pair and replicate to the successor
     def store_key(self, key: str, value: str):
@@ -348,8 +367,12 @@ class ChordNode:
         Si soy el '0' me devuelvo sino llamo a mi predecesor y le digo que lo resuelva
         """
         if self.pred:
-           return self.pred.find_successor_node_0(id)
-        
+            for _ in range(3):
+                try:
+                    return self.pred.find_successor_node_0(id)
+                except:
+                    time.sleep(5)
+            
         if self.succ.id!=self.id and self.pred is None and id>self.id: #Le envio un mensaje que si que me tome a mi
             return self.ref
         raise Exception(f'Deberia existir el Nodo 0')
@@ -387,7 +410,7 @@ class ChordNode:
                     print(f'Llego una notificacion del ip:{ip}')
                     self.notify(ChordNodeReference(ip, self.port))
                 elif option == CHECK_PREDECESSOR:
-                    pass
+                    data_resp=self.ref
                 elif option == CLOSEST_PRECEDING_FINGER:
                     id = int(data[1])
                     data_resp = self.closest_preceding_finger(id)
@@ -401,6 +424,7 @@ class ChordNode:
                     
                     id=int(data[1])
                     data_resp=self.process_last_node_request(id)
+                    traceback.print_exc() 
                     
 
                 if data_resp:
