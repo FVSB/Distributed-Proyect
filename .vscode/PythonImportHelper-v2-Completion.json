@@ -1,0 +1,974 @@
+[
+    {
+        "label": "socket",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "socket",
+        "description": "socket",
+        "detail": "socket",
+        "documentation": {}
+    },
+    {
+        "label": "threading",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "threading",
+        "description": "threading",
+        "detail": "threading",
+        "documentation": {}
+    },
+    {
+        "label": "sys",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "sys",
+        "description": "sys",
+        "detail": "sys",
+        "documentation": {}
+    },
+    {
+        "label": "time",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "time",
+        "description": "time",
+        "detail": "time",
+        "documentation": {}
+    },
+    {
+        "label": "hashlib",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "hashlib",
+        "description": "hashlib",
+        "detail": "hashlib",
+        "documentation": {}
+    },
+    {
+        "label": "traceback",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "traceback",
+        "description": "traceback",
+        "detail": "traceback",
+        "documentation": {}
+    },
+    {
+        "label": "multiprocessing",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "multiprocessing",
+        "description": "multiprocessing",
+        "detail": "multiprocessing",
+        "documentation": {}
+    },
+    {
+        "label": "json",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "json",
+        "description": "json",
+        "detail": "json",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Tuple",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Tuple",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Tuple",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Tuple",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "gensim",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "gensim",
+        "description": "gensim",
+        "detail": "gensim",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "DATA_UBICATION",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "DOCUMENTS_UBICATION",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "DOCUMENTS_UBICATION",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "DATA_UBICATION",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "DATA_UBICATION",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "DATA_UBICATION",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "DATA_UBICATION",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "DOCUMENTS_UBICATION",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "read_documents",
+        "importPath": "Pre_Processing.Document_Folder_Access",
+        "description": "Pre_Processing.Document_Folder_Access",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document_Folder_Access",
+        "documentation": {}
+    },
+    {
+        "label": "read_documents",
+        "importPath": "Pre_Processing.Document_Folder_Access",
+        "description": "Pre_Processing.Document_Folder_Access",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document_Folder_Access",
+        "documentation": {}
+    },
+    {
+        "label": "clean_document",
+        "importPath": "Pre_Processing.Document_Cleaner",
+        "description": "Pre_Processing.Document_Cleaner",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document_Cleaner",
+        "documentation": {}
+    },
+    {
+        "label": "clean_document",
+        "importPath": "Pre_Processing.Document_Cleaner",
+        "description": "Pre_Processing.Document_Cleaner",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document_Cleaner",
+        "documentation": {}
+    },
+    {
+        "label": "build_words_id_dictionary",
+        "importPath": "Pre_Processing.Word_Id_Dictionary",
+        "description": "Pre_Processing.Word_Id_Dictionary",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Word_Id_Dictionary",
+        "documentation": {}
+    },
+    {
+        "label": "spacy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "spacy",
+        "description": "spacy",
+        "detail": "spacy",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "build_tf_idf_model",
+        "importPath": "Pre_Processing.TF_IDF",
+        "description": "Pre_Processing.TF_IDF",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.TF_IDF",
+        "documentation": {}
+    },
+    {
+        "label": "build_similarity_matrix",
+        "importPath": "Pre_Processing.Similarity_Matrix",
+        "description": "Pre_Processing.Similarity_Matrix",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Similarity_Matrix",
+        "documentation": {}
+    },
+    {
+        "label": "build_doc_term_matrix",
+        "importPath": "Pre_Processing.Doc_Term_Matrix",
+        "description": "Pre_Processing.Doc_Term_Matrix",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Doc_Term_Matrix",
+        "documentation": {}
+    },
+    {
+        "label": "Corpus",
+        "importPath": "Pre_Processing.Corpus",
+        "description": "Pre_Processing.Corpus",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Corpus",
+        "documentation": {}
+    },
+    {
+        "label": "load_all_dates",
+        "importPath": "Pre_Processing.Corpus",
+        "description": "Pre_Processing.Corpus",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Corpus",
+        "documentation": {}
+    },
+    {
+        "label": "save_all_dates",
+        "importPath": "Pre_Processing.Corpus",
+        "description": "Pre_Processing.Corpus",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Corpus",
+        "documentation": {}
+    },
+    {
+        "label": "Corpus",
+        "importPath": "Pre_Processing.Corpus",
+        "description": "Pre_Processing.Corpus",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Corpus",
+        "documentation": {}
+    },
+    {
+        "label": "load_all_dates",
+        "importPath": "Pre_Processing.Corpus",
+        "description": "Pre_Processing.Corpus",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Corpus",
+        "documentation": {}
+    },
+    {
+        "label": "utils",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "utils",
+        "description": "utils",
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
+        "label": "ir_datasets",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "ir_datasets",
+        "description": "ir_datasets",
+        "detail": "ir_datasets",
+        "documentation": {}
+    },
+    {
+        "label": "random",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "random",
+        "description": "random",
+        "detail": "random",
+        "documentation": {}
+    },
+    {
+        "label": "add_random_documents",
+        "importPath": "To_Test.documents",
+        "description": "To_Test.documents",
+        "isExtraImport": true,
+        "detail": "To_Test.documents",
+        "documentation": {}
+    },
+    {
+        "label": "process_documents",
+        "importPath": "Pre_Processing.Processor",
+        "description": "Pre_Processing.Processor",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Processor",
+        "documentation": {}
+    },
+    {
+        "label": "prepare_corpus",
+        "importPath": "Pre_Processing.Processor",
+        "description": "Pre_Processing.Processor",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Processor",
+        "documentation": {}
+    },
+    {
+        "label": "search",
+        "importPath": "Search.Search",
+        "description": "Search.Search",
+        "isExtraImport": true,
+        "detail": "Search.Search",
+        "documentation": {}
+    },
+    {
+        "label": "streamlit",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "streamlit",
+        "description": "streamlit",
+        "detail": "streamlit",
+        "documentation": {}
+    },
+    {
+        "label": "ChordNodeReference",
+        "kind": 6,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "class ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n    # Internal method to send data to the referenced node\n    def _send_data(self, op: int, data: str = None) -> bytes:\n        print(f'mandando la data con op{op} - y data {data}')\n        try:\n            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "ChordNode",
+        "kind": 6,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "class ChordNode:\n    def __init__(self, ip: str, port: int = 8001, m: int = 160): #m=160\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n        self.ref:ChordNodeReference = ChordNodeReference(self.ip, self.port)\n        self.succ:ChordNodeReference = self.ref  # Initial successor is itself\n        self.pred:ChordNodeReference = None  # Initially no predecessor\n        self.m = m  # Number of bits in the hash/key space\n        self.finger = [self.ref] * self.m  # Finger table",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "getShaRepr",
+        "kind": 2,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "def getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n    # Internal method to send data to the referenced node\n    def _send_data(self, op: int, data: str = None) -> bytes:",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "FIND_SUCCESSOR",
+        "kind": 5,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "FIND_SUCCESSOR = 1\nFIND_PREDECESSOR = 2\nFIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo \"0 \" por lo cual el nodo de mayor rango de la red debe buscarlo\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "FIND_PREDECESSOR",
+        "kind": 5,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "FIND_PREDECESSOR = 2\nFIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo \"0 \" por lo cual el nodo de mayor rango de la red debe buscarlo\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "GET_SUCCESSOR",
+        "kind": 5,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "GET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "GET_PREDECESSOR",
+        "kind": 5,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "GET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "NOTIFY",
+        "kind": 5,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "NOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "CHECK_PREDECESSOR",
+        "kind": 5,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "CHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "CLOSEST_PRECEDING_FINGER",
+        "kind": 5,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "CLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "STORE_KEY",
+        "kind": 5,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "STORE_KEY = 8\nRETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "RETRIEVE_KEY",
+        "kind": 5,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "RETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "BlockchainNode",
+        "kind": 6,
+        "importPath": "distributed.selection_lider_by_proof_of_work",
+        "description": "distributed.selection_lider_by_proof_of_work",
+        "peekOfCode": "class BlockchainNode:\n    def __init__(self, id, port):\n        self.id = id\n        self.port = int(port)\n        self.chain = []\n        self.create_genesis_block()\n        self.p = None\n    def create_genesis_block(self):\n        genesis_block = {\n            'index': 0,",
+        "detail": "distributed.selection_lider_by_proof_of_work",
+        "documentation": {}
+    },
+    {
+        "label": "make_pow",
+        "kind": 2,
+        "importPath": "distributed.selection_lider_by_proof_of_work",
+        "description": "distributed.selection_lider_by_proof_of_work",
+        "peekOfCode": "def make_pow(node):\n    while True:\n        new_block = node.create_new_block('Some transaction data')\n        node.broadcast_block(new_block)\nif __name__ == '__main__':\n    node = BlockchainNode(ID, PUB_PORT)\n    node.start()",
+        "detail": "distributed.selection_lider_by_proof_of_work",
+        "documentation": {}
+    },
+    {
+        "label": "HOST",
+        "kind": 5,
+        "importPath": "distributed.selection_lider_by_proof_of_work",
+        "description": "distributed.selection_lider_by_proof_of_work",
+        "peekOfCode": "HOST = '0.0.0.0'\nPUB_PORT = '8002'\nID = str(socket.gethostbyname(socket.gethostname()))\nDIFFICULTY = 6\nprint(f\"Running on {ID}\")\nclass BlockchainNode:\n    def __init__(self, id, port):\n        self.id = id\n        self.port = int(port)\n        self.chain = []",
+        "detail": "distributed.selection_lider_by_proof_of_work",
+        "documentation": {}
+    },
+    {
+        "label": "PUB_PORT",
+        "kind": 5,
+        "importPath": "distributed.selection_lider_by_proof_of_work",
+        "description": "distributed.selection_lider_by_proof_of_work",
+        "peekOfCode": "PUB_PORT = '8002'\nID = str(socket.gethostbyname(socket.gethostname()))\nDIFFICULTY = 6\nprint(f\"Running on {ID}\")\nclass BlockchainNode:\n    def __init__(self, id, port):\n        self.id = id\n        self.port = int(port)\n        self.chain = []\n        self.create_genesis_block()",
+        "detail": "distributed.selection_lider_by_proof_of_work",
+        "documentation": {}
+    },
+    {
+        "label": "ID",
+        "kind": 5,
+        "importPath": "distributed.selection_lider_by_proof_of_work",
+        "description": "distributed.selection_lider_by_proof_of_work",
+        "peekOfCode": "ID = str(socket.gethostbyname(socket.gethostname()))\nDIFFICULTY = 6\nprint(f\"Running on {ID}\")\nclass BlockchainNode:\n    def __init__(self, id, port):\n        self.id = id\n        self.port = int(port)\n        self.chain = []\n        self.create_genesis_block()\n        self.p = None",
+        "detail": "distributed.selection_lider_by_proof_of_work",
+        "documentation": {}
+    },
+    {
+        "label": "DIFFICULTY",
+        "kind": 5,
+        "importPath": "distributed.selection_lider_by_proof_of_work",
+        "description": "distributed.selection_lider_by_proof_of_work",
+        "peekOfCode": "DIFFICULTY = 6\nprint(f\"Running on {ID}\")\nclass BlockchainNode:\n    def __init__(self, id, port):\n        self.id = id\n        self.port = int(port)\n        self.chain = []\n        self.create_genesis_block()\n        self.p = None\n    def create_genesis_block(self):",
+        "detail": "distributed.selection_lider_by_proof_of_work",
+        "documentation": {}
+    },
+    {
+        "label": "tarea_en_fondo",
+        "kind": 2,
+        "importPath": "examples.Ejemplo hilo demonio",
+        "description": "examples.Ejemplo hilo demonio",
+        "peekOfCode": "def tarea_en_fondo():\n    print(\"Hilo demonio iniciado\")\n    time.sleep(6)  # Este hilo dormiría durante 10 segundos\n    print(\"Hilo demonio despertando\")\n# Crear un hilo demonio\nhilo_demonio = threading.Thread(target=tarea_en_fondo)\nhilo_demonio.daemon = True  # Marcar el hilo como demonio\nhilo_demonio.start()\n# Ejecutar algo en el hilo principal\nprint(\"Ejecutando algo en el hilo principal\")",
+        "detail": "examples.Ejemplo hilo demonio",
+        "documentation": {}
+    },
+    {
+        "label": "hilo_demonio",
+        "kind": 5,
+        "importPath": "examples.Ejemplo hilo demonio",
+        "description": "examples.Ejemplo hilo demonio",
+        "peekOfCode": "hilo_demonio = threading.Thread(target=tarea_en_fondo)\nhilo_demonio.daemon = True  # Marcar el hilo como demonio\nhilo_demonio.start()\n# Ejecutar algo en el hilo principal\nprint(\"Ejecutando algo en el hilo principal\")\ntime.sleep(5)  # Hacer que el hilo principal duerma durante 5 segundos\nprint(\"Programa principal terminando\")",
+        "detail": "examples.Ejemplo hilo demonio",
+        "documentation": {}
+    },
+    {
+        "label": "hilo_demonio.daemon",
+        "kind": 5,
+        "importPath": "examples.Ejemplo hilo demonio",
+        "description": "examples.Ejemplo hilo demonio",
+        "peekOfCode": "hilo_demonio.daemon = True  # Marcar el hilo como demonio\nhilo_demonio.start()\n# Ejecutar algo en el hilo principal\nprint(\"Ejecutando algo en el hilo principal\")\ntime.sleep(5)  # Hacer que el hilo principal duerma durante 5 segundos\nprint(\"Programa principal terminando\")",
+        "detail": "examples.Ejemplo hilo demonio",
+        "documentation": {}
+    },
+    {
+        "label": "Corpus",
+        "kind": 6,
+        "importPath": "src.Pre_Processing.Corpus",
+        "description": "src.Pre_Processing.Corpus",
+        "peekOfCode": "class Corpus:\n    def __init__(self,docs : List[Document], model : gensim.models.TfidfModel, dictionary : gensim.corpora.Dictionary, sim_matrix : gensim.similarities.MatrixSimilarity):\n        self.docs = docs\n        self.model = model\n        self.dictionary = dictionary\n        self.sim_matrix = sim_matrix\n    def add_documents(self, docs : List[Document]):\n        self.dictionary.add_documents([d.representation for d in docs])\ndef load_all_dates() -> Corpus :\n    sim_matrix = gensim.similarities.MatrixSimilarity.load(DATA_UBICATION + \"sim_matrix\")",
+        "detail": "src.Pre_Processing.Corpus",
+        "documentation": {}
+    },
+    {
+        "label": "load_all_dates",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Corpus",
+        "description": "src.Pre_Processing.Corpus",
+        "peekOfCode": "def load_all_dates() -> Corpus :\n    sim_matrix = gensim.similarities.MatrixSimilarity.load(DATA_UBICATION + \"sim_matrix\")\n    dictionary = gensim.corpora.Dictionary.load(DATA_UBICATION + \"word_id_dic\")\n    model = gensim.models.TfidfModel.load(DATA_UBICATION + \"tfidf_model\")\n    docs = read_documents()\n    return Corpus(docs, model, dictionary, sim_matrix)\ndef save_all_dates(corpus : Corpus):\n    corpus.sim_matrix.save(DATA_UBICATION + \"sim_matrix\")\n    corpus.dictionary.save(DATA_UBICATION + \"word_id_dic\")\n    corpus.model.save(DATA_UBICATION + \"tfidf_model\")",
+        "detail": "src.Pre_Processing.Corpus",
+        "documentation": {}
+    },
+    {
+        "label": "save_all_dates",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Corpus",
+        "description": "src.Pre_Processing.Corpus",
+        "peekOfCode": "def save_all_dates(corpus : Corpus):\n    corpus.sim_matrix.save(DATA_UBICATION + \"sim_matrix\")\n    corpus.dictionary.save(DATA_UBICATION + \"word_id_dic\")\n    corpus.model.save(DATA_UBICATION + \"tfidf_model\")",
+        "detail": "src.Pre_Processing.Corpus",
+        "documentation": {}
+    },
+    {
+        "label": "to_BoW",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Doc_Term_Matrix",
+        "description": "src.Pre_Processing.Doc_Term_Matrix",
+        "peekOfCode": "def to_BoW(doc : Document, word_id_dictionary : gensim.corpora.Dictionary):\n    doc.representation = word_id_dictionary.doc2bow(doc.representation)\ndef build_doc_term_matrix(docs : List[Document]):\n    for doc in docs:\n        clean_document(doc)\n    word_id_dictionary = build_words_id_dictionary(docs)\n    for doc in docs:\n        to_BoW(doc,word_id_dictionary)\n    doc_term_matrix = [doc.representation for doc in docs]\n    return word_id_dictionary, doc_term_matrix",
+        "detail": "src.Pre_Processing.Doc_Term_Matrix",
+        "documentation": {}
+    },
+    {
+        "label": "build_doc_term_matrix",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Doc_Term_Matrix",
+        "description": "src.Pre_Processing.Doc_Term_Matrix",
+        "peekOfCode": "def build_doc_term_matrix(docs : List[Document]):\n    for doc in docs:\n        clean_document(doc)\n    word_id_dictionary = build_words_id_dictionary(docs)\n    for doc in docs:\n        to_BoW(doc,word_id_dictionary)\n    doc_term_matrix = [doc.representation for doc in docs]\n    return word_id_dictionary, doc_term_matrix",
+        "detail": "src.Pre_Processing.Doc_Term_Matrix",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "kind": 6,
+        "importPath": "src.Pre_Processing.Document",
+        "description": "src.Pre_Processing.Document",
+        "peekOfCode": "class Document:\n    def __init__(self, title : str, text : str):\n        self.title = title\n        self.text = text\n        self.representation = None",
+        "detail": "src.Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "DOCUMENTS_UBICATION",
+        "kind": 5,
+        "importPath": "src.Pre_Processing.Document",
+        "description": "src.Pre_Processing.Document",
+        "peekOfCode": "DOCUMENTS_UBICATION = \"data/documents/\"\nDATA_UBICATION = \"data/data/\"\nclass Document:\n    def __init__(self, title : str, text : str):\n        self.title = title\n        self.text = text\n        self.representation = None",
+        "detail": "src.Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "DATA_UBICATION",
+        "kind": 5,
+        "importPath": "src.Pre_Processing.Document",
+        "description": "src.Pre_Processing.Document",
+        "peekOfCode": "DATA_UBICATION = \"data/data/\"\nclass Document:\n    def __init__(self, title : str, text : str):\n        self.title = title\n        self.text = text\n        self.representation = None",
+        "detail": "src.Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "clean_document",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Document_Cleaner",
+        "description": "src.Pre_Processing.Document_Cleaner",
+        "peekOfCode": "def clean_document(doc : Document):\n    tokenize_doc(doc)\n    remove_noise(doc)\n    remove_stop_words(doc)\n    morphological_reduce(doc)    \ndef tokenize_doc(doc : Document):\n    doc.representation = [token for token in nlp(doc.text)]\ndef remove_noise(doc : Document):\n    doc.representation = [token for token in doc.representation if token.is_alpha]\ndef remove_stop_words(doc : Document):",
+        "detail": "src.Pre_Processing.Document_Cleaner",
+        "documentation": {}
+    },
+    {
+        "label": "tokenize_doc",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Document_Cleaner",
+        "description": "src.Pre_Processing.Document_Cleaner",
+        "peekOfCode": "def tokenize_doc(doc : Document):\n    doc.representation = [token for token in nlp(doc.text)]\ndef remove_noise(doc : Document):\n    doc.representation = [token for token in doc.representation if token.is_alpha]\ndef remove_stop_words(doc : Document):\n    stop_words = spacy.lang.en.stop_words.STOP_WORDS\n    doc.representation = [token for token in doc.representation if token.text not in stop_words]\ndef morphological_reduce(doc : Document):\n        doc.representation = [token.lemma_ for token in doc.representation]",
+        "detail": "src.Pre_Processing.Document_Cleaner",
+        "documentation": {}
+    },
+    {
+        "label": "remove_noise",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Document_Cleaner",
+        "description": "src.Pre_Processing.Document_Cleaner",
+        "peekOfCode": "def remove_noise(doc : Document):\n    doc.representation = [token for token in doc.representation if token.is_alpha]\ndef remove_stop_words(doc : Document):\n    stop_words = spacy.lang.en.stop_words.STOP_WORDS\n    doc.representation = [token for token in doc.representation if token.text not in stop_words]\ndef morphological_reduce(doc : Document):\n        doc.representation = [token.lemma_ for token in doc.representation]",
+        "detail": "src.Pre_Processing.Document_Cleaner",
+        "documentation": {}
+    },
+    {
+        "label": "remove_stop_words",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Document_Cleaner",
+        "description": "src.Pre_Processing.Document_Cleaner",
+        "peekOfCode": "def remove_stop_words(doc : Document):\n    stop_words = spacy.lang.en.stop_words.STOP_WORDS\n    doc.representation = [token for token in doc.representation if token.text not in stop_words]\ndef morphological_reduce(doc : Document):\n        doc.representation = [token.lemma_ for token in doc.representation]",
+        "detail": "src.Pre_Processing.Document_Cleaner",
+        "documentation": {}
+    },
+    {
+        "label": "morphological_reduce",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Document_Cleaner",
+        "description": "src.Pre_Processing.Document_Cleaner",
+        "peekOfCode": "def morphological_reduce(doc : Document):\n        doc.representation = [token.lemma_ for token in doc.representation]",
+        "detail": "src.Pre_Processing.Document_Cleaner",
+        "documentation": {}
+    },
+    {
+        "label": "nlp",
+        "kind": 5,
+        "importPath": "src.Pre_Processing.Document_Cleaner",
+        "description": "src.Pre_Processing.Document_Cleaner",
+        "peekOfCode": "nlp = spacy.load(\"en_core_web_sm\")\ndef clean_document(doc : Document):\n    tokenize_doc(doc)\n    remove_noise(doc)\n    remove_stop_words(doc)\n    morphological_reduce(doc)    \ndef tokenize_doc(doc : Document):\n    doc.representation = [token for token in nlp(doc.text)]\ndef remove_noise(doc : Document):\n    doc.representation = [token for token in doc.representation if token.is_alpha]",
+        "detail": "src.Pre_Processing.Document_Cleaner",
+        "documentation": {}
+    },
+    {
+        "label": "read_documents",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Document_Folder_Access",
+        "description": "src.Pre_Processing.Document_Folder_Access",
+        "peekOfCode": "def read_documents():\n    docs = []\n    with os.scandir(DOCUMENTS_UBICATION) as files:\n        for file in files:\n            docs.append(read_document(file.name))\n    return docs\ndef read_document(title):\n    with open(DOCUMENTS_UBICATION+title,'r') as file:\n        text = file.read()\n    return Document(title, text)",
+        "detail": "src.Pre_Processing.Document_Folder_Access",
+        "documentation": {}
+    },
+    {
+        "label": "read_document",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Document_Folder_Access",
+        "description": "src.Pre_Processing.Document_Folder_Access",
+        "peekOfCode": "def read_document(title):\n    with open(DOCUMENTS_UBICATION+title,'r') as file:\n        text = file.read()\n    return Document(title, text)",
+        "detail": "src.Pre_Processing.Document_Folder_Access",
+        "documentation": {}
+    },
+    {
+        "label": "prepare_corpus",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Processor",
+        "description": "src.Pre_Processing.Processor",
+        "peekOfCode": "def prepare_corpus():\n    docs = read_documents()\n    save_docs_names(docs)\n    current_titles = [d.title for d in docs]\n    procesed_titles = load_docs_names()\n    is_eq = utils.is_eq(current_titles,procesed_titles)\n    if not is_eq:\n        process_documents(docs)\n        save_docs_names(docs)\n    return load_all_dates()",
+        "detail": "src.Pre_Processing.Processor",
+        "documentation": {}
+    },
+    {
+        "label": "process_documents",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Processor",
+        "description": "src.Pre_Processing.Processor",
+        "peekOfCode": "def process_documents(docs : List[Document]):\n    word_id_dictionary, doc_term_matrix = build_doc_term_matrix(docs)\n    model = build_tf_idf_model(docs)\n    sim_matrix = build_similarity_matrix(model, doc_term_matrix)\n    corpus = Corpus(docs,model,word_id_dictionary,sim_matrix)\n    save_all_dates(corpus)\ndef save_docs_names(docs : List[Document]):\n    with open(DATA_UBICATION + \"docs_names\",'w') as file:\n        json.dump([d.title for d in docs],file)\ndef load_docs_names():",
+        "detail": "src.Pre_Processing.Processor",
+        "documentation": {}
+    },
+    {
+        "label": "save_docs_names",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Processor",
+        "description": "src.Pre_Processing.Processor",
+        "peekOfCode": "def save_docs_names(docs : List[Document]):\n    with open(DATA_UBICATION + \"docs_names\",'w') as file:\n        json.dump([d.title for d in docs],file)\ndef load_docs_names():\n    with open(DATA_UBICATION + \"docs_names\",'r') as file:\n        return json.load(file)",
+        "detail": "src.Pre_Processing.Processor",
+        "documentation": {}
+    },
+    {
+        "label": "load_docs_names",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Processor",
+        "description": "src.Pre_Processing.Processor",
+        "peekOfCode": "def load_docs_names():\n    with open(DATA_UBICATION + \"docs_names\",'r') as file:\n        return json.load(file)",
+        "detail": "src.Pre_Processing.Processor",
+        "documentation": {}
+    },
+    {
+        "label": "build_similarity_matrix",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Similarity_Matrix",
+        "description": "src.Pre_Processing.Similarity_Matrix",
+        "peekOfCode": "def build_similarity_matrix(model : gensim.models.TfidfModel, doc_term_matrix : List[Tuple[int,int]]) -> gensim.similarities.MatrixSimilarity:\n    #sim_matrix = gensim.similarities.MatrixSimilarity(model[doc_term_matrix])\n    sim_matrix = gensim.similarities.MatrixSimilarity(doc_term_matrix)\n    return sim_matrix",
+        "detail": "src.Pre_Processing.Similarity_Matrix",
+        "documentation": {}
+    },
+    {
+        "label": "build_tf_idf_model",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.TF_IDF",
+        "description": "src.Pre_Processing.TF_IDF",
+        "peekOfCode": "def build_tf_idf_model(documents : List[Document]):\n    corpus = [doc.representation for doc in documents]\n    tfidf_model = gensim.models.TfidfModel(corpus, normalize = True)\n    return tfidf_model",
+        "detail": "src.Pre_Processing.TF_IDF",
+        "documentation": {}
+    },
+    {
+        "label": "build_words_id_dictionary",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Word_Id_Dictionary",
+        "description": "src.Pre_Processing.Word_Id_Dictionary",
+        "peekOfCode": "def build_words_id_dictionary(docs : List[Document]) -> gensim.corpora.Dictionary:\n    words_id_dictionary = gensim.corpora.Dictionary([doc.representation for doc in docs])\n    words_id_dictionary.save(DATA_UBICATION+\"word_id_dic\")\n    return words_id_dictionary",
+        "detail": "src.Pre_Processing.Word_Id_Dictionary",
+        "documentation": {}
+    },
+    {
+        "label": "search",
+        "kind": 2,
+        "importPath": "src.Search.Search",
+        "description": "src.Search.Search",
+        "peekOfCode": "def search(query : str, corpus : Corpus) -> List[Document]:\n    query = Document('query', query)\n    clean_document(query)\n    query_bow = corpus.dictionary.doc2bow(query.representation)\n    #sims = corpus.sim_matrix[corpus.model[query_bow]]\n    sims = corpus.sim_matrix[query_bow]\n    searched = []\n    for index in sorted(enumerate(sims), key=lambda item: -item[1])[:3]:\n        searched.append(corpus.docs[index[0]])\n    return searched",
+        "detail": "src.Search.Search",
+        "documentation": {}
+    },
+    {
+        "label": "get_documents",
+        "kind": 2,
+        "importPath": "src.To_Test.documents",
+        "description": "src.To_Test.documents",
+        "peekOfCode": "def get_documents(dataset_name : str):\n    dataset = ir_datasets.load(dataset_name)\n    return [Document(doc.title, doc.text) for doc in dataset.docs_iter()]\ndef get_random_documents(num_docs = 1,dataset_name = \"cranfield\"):\n    document = get_documents(dataset_name)\n    return random.sample(document,num_docs)\ndef add_document(doc : Document):\n    with open(DOCUMENTS_UBICATION+doc.title,'w') as file:\n        file.write(doc.text)\ndef add_random_documents(num_docs):",
+        "detail": "src.To_Test.documents",
+        "documentation": {}
+    },
+    {
+        "label": "get_random_documents",
+        "kind": 2,
+        "importPath": "src.To_Test.documents",
+        "description": "src.To_Test.documents",
+        "peekOfCode": "def get_random_documents(num_docs = 1,dataset_name = \"cranfield\"):\n    document = get_documents(dataset_name)\n    return random.sample(document,num_docs)\ndef add_document(doc : Document):\n    with open(DOCUMENTS_UBICATION+doc.title,'w') as file:\n        file.write(doc.text)\ndef add_random_documents(num_docs):\n    docs = get_random_documents(num_docs)\n    for d in docs: add_document(d)",
+        "detail": "src.To_Test.documents",
+        "documentation": {}
+    },
+    {
+        "label": "add_document",
+        "kind": 2,
+        "importPath": "src.To_Test.documents",
+        "description": "src.To_Test.documents",
+        "peekOfCode": "def add_document(doc : Document):\n    with open(DOCUMENTS_UBICATION+doc.title,'w') as file:\n        file.write(doc.text)\ndef add_random_documents(num_docs):\n    docs = get_random_documents(num_docs)\n    for d in docs: add_document(d)",
+        "detail": "src.To_Test.documents",
+        "documentation": {}
+    },
+    {
+        "label": "add_random_documents",
+        "kind": 2,
+        "importPath": "src.To_Test.documents",
+        "description": "src.To_Test.documents",
+        "peekOfCode": "def add_random_documents(num_docs):\n    docs = get_random_documents(num_docs)\n    for d in docs: add_document(d)",
+        "detail": "src.To_Test.documents",
+        "documentation": {}
+    },
+    {
+        "label": "corpus",
+        "kind": 5,
+        "importPath": "src.main",
+        "description": "src.main",
+        "peekOfCode": "corpus = prepare_corpus()\nquery = st.text_input(\"Introduce your query\")\nif query:\n    for d in search(query,corpus):\n        st.write(d.title)",
+        "detail": "src.main",
+        "documentation": {}
+    },
+    {
+        "label": "query",
+        "kind": 5,
+        "importPath": "src.main",
+        "description": "src.main",
+        "peekOfCode": "query = st.text_input(\"Introduce your query\")\nif query:\n    for d in search(query,corpus):\n        st.write(d.title)",
+        "detail": "src.main",
+        "documentation": {}
+    },
+    {
+        "label": "compare_arrays",
+        "kind": 2,
+        "importPath": "src.utils",
+        "description": "src.utils",
+        "peekOfCode": "def compare_arrays(array1, array2):\n    a1 = set(array1)\n    a2 = set(array2)\n    a1_only = a1.difference(a2)\n    a2_only = a2.difference(a1)\n    return list(a1_only), list(a2_only)\ndef is_eq(array1, array2):\n    a1_only, a2_only = compare_arrays(array1, array2)\n    return (len(a1_only) == 0) and (len(a2_only) == 0)",
+        "detail": "src.utils",
+        "documentation": {}
+    },
+    {
+        "label": "is_eq",
+        "kind": 2,
+        "importPath": "src.utils",
+        "description": "src.utils",
+        "peekOfCode": "def is_eq(array1, array2):\n    a1_only, a2_only = compare_arrays(array1, array2)\n    return (len(a1_only) == 0) and (len(a2_only) == 0)",
+        "detail": "src.utils",
+        "documentation": {}
+    }
+]

@@ -27,3 +27,16 @@ En caso de Entrada,Salida (Tb Cubre que se parta la red y resincronize):
 
 - Todo el tiempo debe estar descubriendose nuevos nodos, asi como actualizando con el lider la cache de ips la cual se intercambia con el cliente en cada conexion, el cliente tb pasa la suya como cookie, para poder tener mas facilidad de descubrimiento.
 
+
+
+
+### Notas:
+- Siempre se esta verificando la existencia del predecesor en caso que no exista en unos 10 segundos, lo elimino como predecesor y busco el que me toda
+   
+    - Si es el caso que mi predecesor es mi sucesor osea que solo hay dos nodos pues eliminar mi sucesor tb
+     ```mermaid
+        graph TD;
+         A-->B;
+         B-->A;
+
+    ```
