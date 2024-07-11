@@ -55,6 +55,7 @@ class ChordNodeReference:
         response = self._send_data(FIND_PREDECESSOR, str(id)).decode().split(',')
         return ChordNodeReference(response[1], self.port)
 
+    
     # Property to get the successor of the current node
     @property
     def succ(self) -> 'ChordNodeReference':
@@ -109,16 +110,24 @@ class ChordNode:
         self.finger = [self.ref] * self.m  # Finger table
         self.next = 0  # Finger table index to fix next
         self.data = {}  # Dictionary to store key-value pairs
+        self._key_range=(-1,self.ip) # the key_range [a,b) if a =-1 because no have predecesor
 
         # Start background threads for stabilization, fixing fingers, and checking predecessor
         threading.Thread(target=self.stabilize, daemon=True).start()  # Start stabilize thread
         threading.Thread(target=self.fix_fingers, daemon=True).start()  # Start fix fingers thread
         threading.Thread(target=self.check_predecessor, daemon=True).start()  # Start check predecessor thread
         threading.Thread(target=self.start_server, daemon=True).start()  # Start server thread
-        threading.Thread(target=self.print_i_am,daemon=True).start() # Start funcion que se esta printeando todo el tipo cada n segundos
+        threading.Thread(target=self.show,daemon=True).start() # Start funcion que se esta printeando todo el tipo cada n segundos
 
+    @property
+    def key_range(self):
+        """ 
+        The key range of the chrod node [a,b) b is the id of this node
+        
+        """
+        return self._key_range
     
-    def print_i_am(self):
+    def show(self):
         print(f'ENtro en print')
         """Printea quien soy yo"""
         while True:
@@ -147,13 +156,6 @@ class ChordNode:
     # Method to find the successor of a given id
     def find_succ(self, id: int) -> 'ChordNodeReference':
         node = self.find_pred(id)  # Find predecessor of id
-        #return node.succ  # Return successor of that node
-        #Cambie para ahora hacer que si el sucesor soy yo y tengo predecesor distinto mio pues el es mi sucesor
-        # Si tengo predecesor
-        #if self.pred and self.pred.id!=self.id and node.ip==self.ip:
-        #    # Entonces buscar el nodo que tiene sucesor y no tiene antecesor
-        #    return mi
-        
         return node.succ
         
             
