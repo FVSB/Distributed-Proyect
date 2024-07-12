@@ -4,23 +4,25 @@ import sys
 import time
 import hashlib
 import traceback
+import logging
 # Operation codes
 EMPTYBIT=b''
 FIND_SUCCESSOR = 1
 FIND_PREDECESSOR = 2
-FIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo "0 " por lo cual el nodo de mayor rango de la red debe buscarlo
+#FIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo "0 " por lo cual el nodo de mayor rango de la red debe buscarlo
 GET_SUCCESSOR = 3
 GET_PREDECESSOR = 4
 NOTIFY = 5
 CHECK_PREDECESSOR = 6
 CLOSEST_PRECEDING_FINGER = 7
 STORE_KEY = 8
-
-
+RETRIEVE_KEY = 9
+logger = logging.getLogger(__name__)
 
 # Function to hash a string using SHA-1 and return its integer representation
 def getShaRepr(data: str):
     return int(hashlib.sha1(data.encode()).hexdigest(), 16)
+    
 
 # Class to reference a Chord node
 class ChordNodeReference:
@@ -31,14 +33,17 @@ class ChordNodeReference:
 
     # Internal method to send data to the referenced node
     def _send_data(self, op: int, data: str = None) -> bytes:
-        #print(f'mandando la data con op{op} - y data {data}')
+        print(f'mandando la data con op{op} - y data {data}')
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.connect((self.ip, self.port))
                 s.sendall(f'{op},{data}'.encode('utf-8'))
-                return s.recv(1024)
+                new_data=s.recv(1024)
+                print(f'Se recibioo de data envada con opcion {op} {str(new_data)}')
+                return new_data
         except Exception as e:
             print(f"Error sending data: {e} al nodo con id {self.id} e ip {self.ip}")
+            #logger.info()
             return b''
     
     def find_successor(self, id: int) -> 'ChordNodeReference':
@@ -183,7 +188,7 @@ class ChordNode:
         return node.succ
         
             
-            
+           
 
     # Method to find the predecessor of a given id
     def find_pred(self, id: int) -> 'ChordNodeReference':
@@ -195,9 +200,13 @@ class ChordNode:
         Returns:
             ChordNodeReference: _description_
         """
-        node = self
+        node:ChordNodeReference = self
+        # Comprobar que el sucesor esta vivo, sino se comprueba por 
+
         while not self._inbetween(id, node.id, node.succ.id):
             node = node.closest_preceding_finger(id)
+            
+        #print(f'El nodo a retornar tiene id {node.id } a buscar la llave {id}')
         return node
 
     # Method to find the closest preceding finger of a given id
@@ -226,6 +235,7 @@ class ChordNode:
         if node:
             self.pred = None
             self.succ = node.find_successor(self.id)
+            print(f'Este es el sucesor {self.succ}')
             self.succ.notify(self.ref)
         else:
             self.succ = self.ref
@@ -246,15 +256,19 @@ class ChordNode:
                     print('stabilize')
                     if self.succ is None: self.succ=self.ref
                     try: 
-                        x = self.succ.pred
-                    except: 
+                        x = self.succ.pred 
+                    except: # Esto es que no responde el sucesor 
                         count_failed+=1
                         
                         if count_failed>3:
                             # Trata de contactar con el succ y preguntarle por el predecesor si pasa algun problema en la peticion
                             # Mi sucesor soy yo
                             #Si mi sucesor era mi antecesor entonces hago el antecesor null
-                            if self.succ.id==self.pred.id: self.pred=None
+                            #if self.succ.id==self.pred.id: self.pred=None
+                            time.sleep(3)
+                            print('Seleccionando_Nuevo_Sucesor')
+                            nearest_node=self.find_succ(self.id+1)
+                            print(f'EL nodo que tiene {nearest_node.id} el mas cercano  ')
                             self.succ=self.ref
                             continue
                        
@@ -312,7 +326,19 @@ class ChordNode:
                 a=self.find_succ((self.id + 2 ** self.next) % 2 ** self.m)
                 if a.id<self.id:
                     raise Exception(f'Si logro encontrar un nodo menor {a.id},en el indice {self.next}, {self.finger[1]} ')
+                ok=False
+                for _ in range(3):
+                    if a.check_predecessor():
+                        ok=True
+                        break
+                    time.sleep(3)
+               # a=a.succ if not ok else a
+                if not ok:
+                    print(f'El nodo {a.id} se desconecto de la red')
+                    a=a.succ
+                    print(f'El nodo a ahora es {a}')
                 
+
                 self.finger[self.next] = a
                # print('/'*40)
                # print(f'Mis finger table es {self.finger} ')

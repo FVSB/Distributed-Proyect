@@ -1,0 +1,4 @@
+{"timestamp": "2024-07-11 23:22:23,193", "level": "INFO", "message": "Inicio de la aplicaci\u00f3n", "name": "app_logger", "filename": "example_logger.py", "funcName": "<module>", "lineno": 13}
+{"timestamp": "2024-07-11 23:22:23,194", "level": "INFO", "message": "Esta es una informaci\u00f3n de log", "name": "app_logger", "filename": "example_logger.py", "funcName": "some_function", "lineno": 5}
+{"timestamp": "2024-07-11 23:22:23,195", "level": "ERROR", "message": "Se produjo una excepci\u00f3n", "name": "app_logger", "filename": "example_logger.py", "funcName": "some_function", "lineno": 10}
+{"timestamp": "2024-07-11 23:22:23,195", "level": "INFO", "message": "Fin de la aplicaci\u00f3n", "name": "app_logger", "filename": "example_logger.py", "funcName": "<module>", "lineno": 15}

@@ -1,0 +1,23 @@
+{
+    "1720821296.4519644": {
+        "timestamp": "2024-07-12T17:54:56.450818",
+        "level": "INFO",
+        "message": "Este es un mensaje de informaci\u00f3n.",
+        "extra_data": {}
+    },
+    "1720821296.4536283": {
+        "timestamp": "2024-07-12T17:54:56.453619",
+        "level": "WARNING",
+        "message": "Este es un mensaje de advertencia.",
+        "extra_data": {}
+    },
+    "1720821296.4538271": {
+        "timestamp": "2024-07-12T17:54:56.453817",
+        "level": "ERROR",
+        "message": "Este es un mensaje de error.",
+        "extra_data": {
+            "error_code": 123,
+            "details": "Detalles del error"
+        }
+    }
+}

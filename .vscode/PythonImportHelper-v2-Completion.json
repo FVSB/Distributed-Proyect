@@ -54,12 +54,12 @@
         "documentation": {}
     },
     {
-        "label": "multiprocessing",
+        "label": "logging",
         "kind": 6,
         "isExtraImport": true,
-        "importPath": "multiprocessing",
-        "description": "multiprocessing",
-        "detail": "multiprocessing",
+        "importPath": "logging",
+        "description": "logging",
+        "detail": "logging",
         "documentation": {}
     },
     {
@@ -69,6 +69,23 @@
         "importPath": "json",
         "description": "json",
         "detail": "json",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "multiprocessing",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "multiprocessing",
+        "description": "multiprocessing",
+        "detail": "multiprocessing",
         "documentation": {}
     },
     {
@@ -495,11 +512,28 @@
         "documentation": {}
     },
     {
+        "label": "*",
+        "importPath": "logger",
+        "description": "logger",
+        "isExtraImport": true,
+        "detail": "logger",
+        "documentation": {}
+    },
+    {
+        "label": "zmq",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "zmq",
+        "description": "zmq",
+        "detail": "zmq",
+        "documentation": {}
+    },
+    {
         "label": "ChordNodeReference",
         "kind": 6,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "class ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n    # Internal method to send data to the referenced node\n    def _send_data(self, op: int, data: str = None) -> bytes:\n        #print(f'mandando la data con op{op} - y data {data}')\n        try:\n            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:",
+        "peekOfCode": "class ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n    # Internal method to send data to the referenced node\n    def _send_data(self, op: int, data: str = None) -> bytes:\n        print(f'mandando la data con op{op} - y data {data}')\n        try:\n            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -526,7 +560,7 @@
         "kind": 5,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "FIND_SUCCESSOR = 1\nFIND_PREDECESSOR = 2\nFIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo \"0 \" por lo cual el nodo de mayor rango de la red debe buscarlo\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\n# Function to hash a string using SHA-1 and return its integer representation",
+        "peekOfCode": "FIND_SUCCESSOR = 1\nFIND_PREDECESSOR = 2\n#FIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo \"0 \" por lo cual el nodo de mayor rango de la red debe buscarlo\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -535,7 +569,7 @@
         "kind": 5,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "FIND_PREDECESSOR = 2\nFIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo \"0 \" por lo cual el nodo de mayor rango de la red debe buscarlo\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):",
+        "peekOfCode": "FIND_PREDECESSOR = 2\n#FIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo \"0 \" por lo cual el nodo de mayor rango de la red debe buscarlo\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nlogger = logging.getLogger(__name__)",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -544,7 +578,7 @@
         "kind": 5,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "GET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node",
+        "peekOfCode": "GET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nlogger = logging.getLogger(__name__)\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -553,7 +587,7 @@
         "kind": 5,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "GET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:",
+        "peekOfCode": "GET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nlogger = logging.getLogger(__name__)\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -562,7 +596,7 @@
         "kind": 5,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "NOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):",
+        "peekOfCode": "NOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nlogger = logging.getLogger(__name__)\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -571,7 +605,7 @@
         "kind": 5,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "CHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)",
+        "peekOfCode": "CHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nlogger = logging.getLogger(__name__)\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -580,7 +614,7 @@
         "kind": 5,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "CLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip",
+        "peekOfCode": "CLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nlogger = logging.getLogger(__name__)\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -589,8 +623,80 @@
         "kind": 5,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "STORE_KEY = 8\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port",
+        "peekOfCode": "STORE_KEY = 8\nRETRIEVE_KEY = 9\nlogger = logging.getLogger(__name__)\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)",
         "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "RETRIEVE_KEY",
+        "kind": 5,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "RETRIEVE_KEY = 9\nlogger = logging.getLogger(__name__)\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "kind": 5,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "logger = logging.getLogger(__name__)\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "serialize_logs",
+        "kind": 2,
+        "importPath": "distributed.logguer",
+        "description": "distributed.logguer",
+        "peekOfCode": "def serialize_logs(logs_json, filename=\"logs.json\"):\n    with open(filename, 'w') as f:\n        json.dump(logs_json, f, indent=4)\n# Crea una función para registrar mensajes con información adicional\ndef log_message(message, level=\"INFO\", extra_data={}):\n    \"\"\"\n    Registra un mensaje de log con información adicional.\n    \"\"\"\n    log_entry = {\n        \"timestamp\": datetime.now().isoformat(),",
+        "detail": "distributed.logguer",
+        "documentation": {}
+    },
+    {
+        "label": "log_message",
+        "kind": 2,
+        "importPath": "distributed.logguer",
+        "description": "distributed.logguer",
+        "peekOfCode": "def log_message(message, level=\"INFO\", extra_data={}):\n    \"\"\"\n    Registra un mensaje de log con información adicional.\n    \"\"\"\n    log_entry = {\n        \"timestamp\": datetime.now().isoformat(),\n        \"level\": level,\n        \"message\": message,\n        \"extra_data\": extra_data\n    }",
+        "detail": "distributed.logguer",
+        "documentation": {}
+    },
+    {
+        "label": "file_handler",
+        "kind": 5,
+        "importPath": "distributed.logguer",
+        "description": "distributed.logguer",
+        "peekOfCode": "file_handler = logging.FileHandler(\"my_logs.txt\")\nformatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(lineno)d - %(message)s')\nfile_handler.setFormatter(formatter)\n# Configura el manejador de consola\nconsole_handler = logging.StreamHandler()\nconsole_handler.setFormatter(formatter)\n# Configura el logger raíz\nlogging.basicConfig(handlers=[file_handler, console_handler], level=logging.DEBUG)\n# Define un diccionario para almacenar los logs en JSON\nlogs_json = {}",
+        "detail": "distributed.logguer",
+        "documentation": {}
+    },
+    {
+        "label": "formatter",
+        "kind": 5,
+        "importPath": "distributed.logguer",
+        "description": "distributed.logguer",
+        "peekOfCode": "formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(lineno)d - %(message)s')\nfile_handler.setFormatter(formatter)\n# Configura el manejador de consola\nconsole_handler = logging.StreamHandler()\nconsole_handler.setFormatter(formatter)\n# Configura el logger raíz\nlogging.basicConfig(handlers=[file_handler, console_handler], level=logging.DEBUG)\n# Define un diccionario para almacenar los logs en JSON\nlogs_json = {}\n# Función para serializar los logs en JSON",
+        "detail": "distributed.logguer",
+        "documentation": {}
+    },
+    {
+        "label": "console_handler",
+        "kind": 5,
+        "importPath": "distributed.logguer",
+        "description": "distributed.logguer",
+        "peekOfCode": "console_handler = logging.StreamHandler()\nconsole_handler.setFormatter(formatter)\n# Configura el logger raíz\nlogging.basicConfig(handlers=[file_handler, console_handler], level=logging.DEBUG)\n# Define un diccionario para almacenar los logs en JSON\nlogs_json = {}\n# Función para serializar los logs en JSON\ndef serialize_logs(logs_json, filename=\"logs.json\"):\n    with open(filename, 'w') as f:\n        json.dump(logs_json, f, indent=4)",
+        "detail": "distributed.logguer",
+        "documentation": {}
+    },
+    {
+        "label": "logs_json",
+        "kind": 5,
+        "importPath": "distributed.logguer",
+        "description": "distributed.logguer",
+        "peekOfCode": "logs_json = {}\n# Función para serializar los logs en JSON\ndef serialize_logs(logs_json, filename=\"logs.json\"):\n    with open(filename, 'w') as f:\n        json.dump(logs_json, f, indent=4)\n# Crea una función para registrar mensajes con información adicional\ndef log_message(message, level=\"INFO\", extra_data={}):\n    \"\"\"\n    Registra un mensaje de log con información adicional.\n    \"\"\"",
+        "detail": "distributed.logguer",
         "documentation": {}
     },
     {
@@ -645,6 +751,123 @@
         "description": "distributed.selection_lider_by_proof_of_work",
         "peekOfCode": "DIFFICULTY = 6\nprint(f\"Running on {ID}\")\nclass BlockchainNode:\n    def __init__(self, id, port):\n        self.id = id\n        self.port = int(port)\n        self.chain = []\n        self.create_genesis_block()\n        self.p = None\n    def create_genesis_block(self):",
         "detail": "distributed.selection_lider_by_proof_of_work",
+        "documentation": {}
+    },
+    {
+        "label": "vector_compare",
+        "kind": 2,
+        "importPath": "distributed.vectorial_lamport",
+        "description": "distributed.vectorial_lamport",
+        "peekOfCode": "def vector_compare(vector1,vector2):\n    vector = [max(value) for value in zip(vector1,vector2)]\n    return vector\nP = {1:{}, 2:{}, 3:{}} # Inititalized an empty dictionary having 3 process\ninc = 0\nn1 = int(input(\"Enter the no. of events in Process 1 : \"))\ne1 = [i for i in range(1, n1 + 1)]\nP[1] = {key: [inc + key, 0, 0] for key in e1}\nprint(P[1])\nprint(\"\\n\")",
+        "detail": "distributed.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "P",
+        "kind": 5,
+        "importPath": "distributed.vectorial_lamport",
+        "description": "distributed.vectorial_lamport",
+        "peekOfCode": "P = {1:{}, 2:{}, 3:{}} # Inititalized an empty dictionary having 3 process\ninc = 0\nn1 = int(input(\"Enter the no. of events in Process 1 : \"))\ne1 = [i for i in range(1, n1 + 1)]\nP[1] = {key: [inc + key, 0, 0] for key in e1}\nprint(P[1])\nprint(\"\\n\")\nn2 = int(input(\"Enter the no. of events in Process 2 : \"))\ne2 = [i for i in range(1, n2 + 1)]\nP[2] = {key: [0, inc + key, 0] for key in e2}",
+        "detail": "distributed.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "inc",
+        "kind": 5,
+        "importPath": "distributed.vectorial_lamport",
+        "description": "distributed.vectorial_lamport",
+        "peekOfCode": "inc = 0\nn1 = int(input(\"Enter the no. of events in Process 1 : \"))\ne1 = [i for i in range(1, n1 + 1)]\nP[1] = {key: [inc + key, 0, 0] for key in e1}\nprint(P[1])\nprint(\"\\n\")\nn2 = int(input(\"Enter the no. of events in Process 2 : \"))\ne2 = [i for i in range(1, n2 + 1)]\nP[2] = {key: [0, inc + key, 0] for key in e2}\nprint(P[2])",
+        "detail": "distributed.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "n1",
+        "kind": 5,
+        "importPath": "distributed.vectorial_lamport",
+        "description": "distributed.vectorial_lamport",
+        "peekOfCode": "n1 = int(input(\"Enter the no. of events in Process 1 : \"))\ne1 = [i for i in range(1, n1 + 1)]\nP[1] = {key: [inc + key, 0, 0] for key in e1}\nprint(P[1])\nprint(\"\\n\")\nn2 = int(input(\"Enter the no. of events in Process 2 : \"))\ne2 = [i for i in range(1, n2 + 1)]\nP[2] = {key: [0, inc + key, 0] for key in e2}\nprint(P[2])\nprint(\"\\n\")",
+        "detail": "distributed.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "e1",
+        "kind": 5,
+        "importPath": "distributed.vectorial_lamport",
+        "description": "distributed.vectorial_lamport",
+        "peekOfCode": "e1 = [i for i in range(1, n1 + 1)]\nP[1] = {key: [inc + key, 0, 0] for key in e1}\nprint(P[1])\nprint(\"\\n\")\nn2 = int(input(\"Enter the no. of events in Process 2 : \"))\ne2 = [i for i in range(1, n2 + 1)]\nP[2] = {key: [0, inc + key, 0] for key in e2}\nprint(P[2])\nprint(\"\\n\")\nn3 = int(input(\"Enter the no. of events in Process 3 : \"))",
+        "detail": "distributed.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "P[1]",
+        "kind": 5,
+        "importPath": "distributed.vectorial_lamport",
+        "description": "distributed.vectorial_lamport",
+        "peekOfCode": "P[1] = {key: [inc + key, 0, 0] for key in e1}\nprint(P[1])\nprint(\"\\n\")\nn2 = int(input(\"Enter the no. of events in Process 2 : \"))\ne2 = [i for i in range(1, n2 + 1)]\nP[2] = {key: [0, inc + key, 0] for key in e2}\nprint(P[2])\nprint(\"\\n\")\nn3 = int(input(\"Enter the no. of events in Process 3 : \"))\ne3 = [i for i in range(1, n3 + 1)]",
+        "detail": "distributed.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "n2",
+        "kind": 5,
+        "importPath": "distributed.vectorial_lamport",
+        "description": "distributed.vectorial_lamport",
+        "peekOfCode": "n2 = int(input(\"Enter the no. of events in Process 2 : \"))\ne2 = [i for i in range(1, n2 + 1)]\nP[2] = {key: [0, inc + key, 0] for key in e2}\nprint(P[2])\nprint(\"\\n\")\nn3 = int(input(\"Enter the no. of events in Process 3 : \"))\ne3 = [i for i in range(1, n3 + 1)]\nP[3] = {key: [0, 0, inc + key] for key in e3}\nprint(P[3])\nprint(\"\\n\")",
+        "detail": "distributed.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "e2",
+        "kind": 5,
+        "importPath": "distributed.vectorial_lamport",
+        "description": "distributed.vectorial_lamport",
+        "peekOfCode": "e2 = [i for i in range(1, n2 + 1)]\nP[2] = {key: [0, inc + key, 0] for key in e2}\nprint(P[2])\nprint(\"\\n\")\nn3 = int(input(\"Enter the no. of events in Process 3 : \"))\ne3 = [i for i in range(1, n3 + 1)]\nP[3] = {key: [0, 0, inc + key] for key in e3}\nprint(P[3])\nprint(\"\\n\")\ncomm = int(input(\"Enter the no of communication lines : \"))",
+        "detail": "distributed.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "P[2]",
+        "kind": 5,
+        "importPath": "distributed.vectorial_lamport",
+        "description": "distributed.vectorial_lamport",
+        "peekOfCode": "P[2] = {key: [0, inc + key, 0] for key in e2}\nprint(P[2])\nprint(\"\\n\")\nn3 = int(input(\"Enter the no. of events in Process 3 : \"))\ne3 = [i for i in range(1, n3 + 1)]\nP[3] = {key: [0, 0, inc + key] for key in e3}\nprint(P[3])\nprint(\"\\n\")\ncomm = int(input(\"Enter the no of communication lines : \"))\nprint(\"\\n\")",
+        "detail": "distributed.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "n3",
+        "kind": 5,
+        "importPath": "distributed.vectorial_lamport",
+        "description": "distributed.vectorial_lamport",
+        "peekOfCode": "n3 = int(input(\"Enter the no. of events in Process 3 : \"))\ne3 = [i for i in range(1, n3 + 1)]\nP[3] = {key: [0, 0, inc + key] for key in e3}\nprint(P[3])\nprint(\"\\n\")\ncomm = int(input(\"Enter the no of communication lines : \"))\nprint(\"\\n\")\nwhile inc < comm:\n    sent = int(input(\"Enter the sending process number : \"))\n    recv = int(input(\"Enter the receiving process number : \"))",
+        "detail": "distributed.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "e3",
+        "kind": 5,
+        "importPath": "distributed.vectorial_lamport",
+        "description": "distributed.vectorial_lamport",
+        "peekOfCode": "e3 = [i for i in range(1, n3 + 1)]\nP[3] = {key: [0, 0, inc + key] for key in e3}\nprint(P[3])\nprint(\"\\n\")\ncomm = int(input(\"Enter the no of communication lines : \"))\nprint(\"\\n\")\nwhile inc < comm:\n    sent = int(input(\"Enter the sending process number : \"))\n    recv = int(input(\"Enter the receiving process number : \"))\n    sent_event_no = int(input(\"Enter the sending event number : \"))",
+        "detail": "distributed.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "P[3]",
+        "kind": 5,
+        "importPath": "distributed.vectorial_lamport",
+        "description": "distributed.vectorial_lamport",
+        "peekOfCode": "P[3] = {key: [0, 0, inc + key] for key in e3}\nprint(P[3])\nprint(\"\\n\")\ncomm = int(input(\"Enter the no of communication lines : \"))\nprint(\"\\n\")\nwhile inc < comm:\n    sent = int(input(\"Enter the sending process number : \"))\n    recv = int(input(\"Enter the receiving process number : \"))\n    sent_event_no = int(input(\"Enter the sending event number : \"))\n    recv_event_no = int(input(\"Enter the receiving event number : \"))",
+        "detail": "distributed.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "comm",
+        "kind": 5,
+        "importPath": "distributed.vectorial_lamport",
+        "description": "distributed.vectorial_lamport",
+        "peekOfCode": "comm = int(input(\"Enter the no of communication lines : \"))\nprint(\"\\n\")\nwhile inc < comm:\n    sent = int(input(\"Enter the sending process number : \"))\n    recv = int(input(\"Enter the receiving process number : \"))\n    sent_event_no = int(input(\"Enter the sending event number : \"))\n    recv_event_no = int(input(\"Enter the receiving event number : \"))\n    if sent <= 3 and recv <= 3:\n        print (\"P{} --> P{}\".format(sent,recv))\n        new_vector = vector_compare(P[sent][sent_event_no],P[recv][recv_event_no])",
+        "detail": "distributed.vectorial_lamport",
         "documentation": {}
     },
     {
@@ -1068,6 +1291,168 @@
         "description": "test.chord_replication",
         "peekOfCode": "RETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port",
         "detail": "test.chord_replication",
+        "documentation": {}
+    },
+    {
+        "label": "some_function",
+        "kind": 2,
+        "importPath": "test.example_logger",
+        "description": "test.example_logger",
+        "peekOfCode": "def some_function():\n    app_logger.info('Esta es una información de log')\n    try:\n        # Código que podría lanzar una excepción\n        result = 10 / 0\n    except Exception as e:\n        app_logger.error('Se produjo una excepción', exc_info=True)\nif __name__ == \"__main__\":\n    app_logger.info('Inicio de la aplicación')\n    some_function()",
+        "detail": "test.example_logger",
+        "documentation": {}
+    },
+    {
+        "label": "JSONFormatter",
+        "kind": 6,
+        "importPath": "test.logger",
+        "description": "test.logger",
+        "peekOfCode": "class JSONFormatter(logging.Formatter):\n    def format(self, record):\n        log_record = {\n            'timestamp': self.formatTime(record, self.datefmt),\n            'level': record.levelname,\n            'message': record.getMessage(),\n            'name': record.name,\n            'filename': record.filename,\n            'funcName': record.funcName,\n            'lineno': record.lineno,",
+        "detail": "test.logger",
+        "documentation": {}
+    },
+    {
+        "label": "setup_logger",
+        "kind": 2,
+        "importPath": "test.logger",
+        "description": "test.logger",
+        "peekOfCode": "def setup_logger(name, log_file=None, level=logging.INFO, to_console=False):\n    handlers = []\n    if log_file:\n        file_handler = logging.FileHandler(log_file)\n        file_handler.setFormatter(JSONFormatter())\n        handlers.append(file_handler)\n    if to_console:\n        console_handler = logging.StreamHandler()\n        console_handler.setFormatter(JSONFormatter())\n        handlers.append(console_handler)",
+        "detail": "test.logger",
+        "documentation": {}
+    },
+    {
+        "label": "app_logger",
+        "kind": 5,
+        "importPath": "test.logger",
+        "description": "test.logger",
+        "peekOfCode": "app_logger = setup_logger('app_logger', 'app_log.json', to_console=True)",
+        "detail": "test.logger",
+        "documentation": {}
+    },
+    {
+        "label": "ChordNodeReference",
+        "kind": 6,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "class ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n    # Internal method to send data to the referenced node\n    def _send_data(self, op: int, data: str = None) -> bytes:\n        #print(f'mandando la data con op{op} - y data {data}')\n        try:\n            context = zmq.Context()",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "ChordNode",
+        "kind": 6,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "class ChordNode:\n    def __init__(self, ip: str, port: int = 8001, m: int = 160): #m=160\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n        self.ref:ChordNodeReference = ChordNodeReference(self.ip, self.port)\n        self.succ:ChordNodeReference = self.ref  # Initial successor is itself\n        self.pred:ChordNodeReference = None  # Initially no predecessor\n        self.m = m  # Number of bits in the hash/key space\n        self.finger = [self.ref] * self.m  # Finger table",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "getShaRepr",
+        "kind": 2,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "def getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n    # Internal method to send data to the referenced node\n    def _send_data(self, op: int, data: str = None) -> bytes:",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "FIND_SUCCESSOR",
+        "kind": 5,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "FIND_SUCCESSOR = 1\nFIND_PREDECESSOR = 2\nFIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo \"0 \" por lo cual el nodo de mayor rango de la red debe buscarlo\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "FIND_PREDECESSOR",
+        "kind": 5,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "FIND_PREDECESSOR = 2\nFIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo \"0 \" por lo cual el nodo de mayor rango de la red debe buscarlo\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nUPDATE_KEY = 11",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "GET_SUCCESSOR",
+        "kind": 5,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "GET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nUPDATE_KEY = 11\nDELETE_KEY = 12\n# Function to hash a string using SHA-1 and return its integer representation",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "GET_PREDECESSOR",
+        "kind": 5,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "GET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nUPDATE_KEY = 11\nDELETE_KEY = 12\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "NOTIFY",
+        "kind": 5,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "NOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nUPDATE_KEY = 11\nDELETE_KEY = 12\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "CHECK_PREDECESSOR",
+        "kind": 5,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "CHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nUPDATE_KEY = 11\nDELETE_KEY = 12\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "CLOSEST_PRECEDING_FINGER",
+        "kind": 5,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "CLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nUPDATE_KEY = 11\nDELETE_KEY = 12\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "STORE_KEY",
+        "kind": 5,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "STORE_KEY = 8\nRETRIEVE_KEY = 9\nUPDATE_KEY = 11\nDELETE_KEY = 12\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "RETRIEVE_KEY",
+        "kind": 5,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "RETRIEVE_KEY = 9\nUPDATE_KEY = 11\nDELETE_KEY = 12\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "UPDATE_KEY",
+        "kind": 5,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "UPDATE_KEY = 11\nDELETE_KEY = 12\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "DELETE_KEY",
+        "kind": 5,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "DELETE_KEY = 12\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port",
+        "detail": "test.new_chrod",
         "documentation": {}
     }
 ]
