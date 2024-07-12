@@ -15,7 +15,7 @@ NOTIFY = 5
 CHECK_PREDECESSOR = 6
 CLOSEST_PRECEDING_FINGER = 7
 STORE_KEY = 8
-RETRIEVE_KEY = 9
+
 
 
 # Function to hash a string using SHA-1 and return its integer representation
@@ -41,17 +41,6 @@ class ChordNodeReference:
             print(f"Error sending data: {e} al nodo con id {self.id} e ip {self.ip}")
             return b''
     
-    #def find_successor_node_0(self,id:int)->'ChordNodeReference':
-    #    """El metodo es para que el ultimo llame al nodo 0 y le diga que ahora este es su predecesor
-    #        Retorna None en caso de No encontrarlo
-    #    """
-    #    response=self._send_data(FIND_SUCCESSOR_WITHOUT_PREDECESSOR,str(id)).decode().split(',')
-    #    try:
-    #        return  ChordNodeReference(response[1], self.port)
-    #    except: 
-    #        print(f'No fue posible saber quien es el nodo 0 ')
-    #        return None
-    # Method to find the successor of a given id
     def find_successor(self, id: int) -> 'ChordNodeReference':
         """ Method to find the successor of a given id"""
         response = self._send_data(FIND_SUCCESSOR, str(id)).decode().split(',')
@@ -269,7 +258,7 @@ class ChordNode:
                             self.succ=self.ref
                             continue
                        
-                    print(f' este es X {x}')
+                    print(f' Este es X {x}')
                     if x and x.id != self.id:
                         print(f'Otra vez x {x}')
                         if x and self._inbetween(x.id, self.id, self.succ.id):
@@ -282,12 +271,6 @@ class ChordNode:
                             print(f' Fallo comunicarse con el nuevo sucesor {e}')
                             self.succ=self.ref
                 elif self.pred: # Caso que no tengo sucesor pero si tengo predecesor 
-                    #node=self.find_pred(0) #Buscar el predecesor del 0
-                    #print(f'El sucesor de 0  es {self.find_succ(350).id}, otro: {self.find_pred(350).id}')
-                    #try:
-                    #    self.succ=node.pred
-                    #except:
-                    #    print(f'El nodo con id {node.id} no tiene predecesor ')
                     
                     #Caso de que el predecesor no tenga predecesor => son dos nodos solos en la red:
                     node=self.pred.pred
@@ -381,20 +364,6 @@ class ChordNode:
         return node.retrieve_key(key)
     
     
-    #def process_last_node_request(self,id:int)->'ChordNodeReference':
-    #    """
-    #    Si soy el '0' me devuelvo sino llamo a mi predecesor y le digo que lo resuelva
-    #    """
-    #    if self.pred:
-    #        for _ in range(3):
-    #            try:
-    #                return self.pred.find_successor_node_0(id)
-    #            except:
-    #                time.sleep(5)
-    #        
-    #    if self.succ.id!=self.id and self.pred is None and id>self.id: #Le envio un mensaje que si que me tome a mi
-    #        return self.ref
-    #    raise Exception(f'Deberia existir el Nodo 0')
     # Start server method to handle incoming requests
     def start_server(self):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -439,11 +408,7 @@ class ChordNode:
                 elif option == RETRIEVE_KEY:
                     key = data[1]
                     data_resp = self.data.get(key, '')
-                #elif option==FIND_SUCCESSOR_WITHOUT_PREDECESSOR: # Mansaje que envia el nodo ultimo de la red para encontrar el nodo '0' y enlazarse a el
-                #    
-                #    id=int(data[1])
-                #    data_resp=self.process_last_node_request(id)
-                #    traceback.print_exc() 
+              
                     
 
                 if data_resp:
@@ -452,7 +417,7 @@ class ChordNode:
                 conn.close()
 
 if __name__ == "__main__":
-    print("Hello dhd")
+    print("Hello dht")
     #time.sleep(10)
     ip = socket.gethostbyname(socket.gethostname())
     node = ChordNode(ip)

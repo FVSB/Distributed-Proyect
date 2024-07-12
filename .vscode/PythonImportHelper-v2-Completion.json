@@ -526,7 +526,7 @@
         "kind": 5,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "FIND_SUCCESSOR = 1\nFIND_PREDECESSOR = 2\nFIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo \"0 \" por lo cual el nodo de mayor rango de la red debe buscarlo\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9",
+        "peekOfCode": "FIND_SUCCESSOR = 1\nFIND_PREDECESSOR = 2\nFIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo \"0 \" por lo cual el nodo de mayor rango de la red debe buscarlo\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\n# Function to hash a string using SHA-1 and return its integer representation",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -535,7 +535,7 @@
         "kind": 5,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "FIND_PREDECESSOR = 2\nFIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo \"0 \" por lo cual el nodo de mayor rango de la red debe buscarlo\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation",
+        "peekOfCode": "FIND_PREDECESSOR = 2\nFIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo \"0 \" por lo cual el nodo de mayor rango de la red debe buscarlo\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -544,7 +544,7 @@
         "kind": 5,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "GET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)",
+        "peekOfCode": "GET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -553,7 +553,7 @@
         "kind": 5,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "GET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node",
+        "peekOfCode": "GET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -562,7 +562,7 @@
         "kind": 5,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "NOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:",
+        "peekOfCode": "NOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -571,7 +571,7 @@
         "kind": 5,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "CHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):",
+        "peekOfCode": "CHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -580,7 +580,7 @@
         "kind": 5,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "CLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)",
+        "peekOfCode": "CLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -589,16 +589,7 @@
         "kind": 5,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "STORE_KEY = 8\nRETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip",
-        "detail": "distributed.chord",
-        "documentation": {}
-    },
-    {
-        "label": "RETRIEVE_KEY",
-        "kind": 5,
-        "importPath": "distributed.chord",
-        "description": "distributed.chord",
-        "peekOfCode": "RETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port",
+        "peekOfCode": "STORE_KEY = 8\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port",
         "detail": "distributed.chord",
         "documentation": {}
     },
