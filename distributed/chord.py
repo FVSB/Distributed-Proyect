@@ -41,10 +41,16 @@ class ChordNodeReference:
             print(f"Error sending data: {e} al nodo con id {self.id} e ip {self.ip}")
             return b''
     
-    def find_successor_node_0(self,id:int)->'ChordNodeReference':
-        """El metodo es para que el ultimo no llame al nodo 0 y le diga que ahora este es su predecesor"""
-        response=self._send_data(FIND_SUCCESSOR_WITHOUT_PREDECESSOR,str(id)).decode().split(',')
-        return  ChordNodeReference(response[1], self.port)
+    #def find_successor_node_0(self,id:int)->'ChordNodeReference':
+    #    """El metodo es para que el ultimo llame al nodo 0 y le diga que ahora este es su predecesor
+    #        Retorna None en caso de No encontrarlo
+    #    """
+    #    response=self._send_data(FIND_SUCCESSOR_WITHOUT_PREDECESSOR,str(id)).decode().split(',')
+    #    try:
+    #        return  ChordNodeReference(response[1], self.port)
+    #    except: 
+    #        print(f'No fue posible saber quien es el nodo 0 ')
+    #        return None
     # Method to find the successor of a given id
     def find_successor(self, id: int) -> 'ChordNodeReference':
         """ Method to find the successor of a given id"""
@@ -275,15 +281,24 @@ class ChordNode:
                             # y se desconecto pues poner al sucesor como yo mismo
                             print(f' Fallo comunicarse con el nuevo sucesor {e}')
                             self.succ=self.ref
-                elif self.pred: # Si no controlo que tenga predecesor se vuelve loco con un nodo
-                    Is=True
-                    #Osea si soy el ultimo nodo mi sucesor es el nodo '0'
-                    node=self.pred.find_successor_node_0(self.id)
+                elif self.pred: # Caso que no tengo sucesor pero si tengo predecesor 
+                    #node=self.find_pred(0) #Buscar el predecesor del 0
+                    #print(f'El sucesor de 0  es {self.find_succ(350).id}, otro: {self.find_pred(350).id}')
+                    #try:
+                    #    self.succ=node.pred
+                    #except:
+                    #    print(f'El nodo con id {node.id} no tiene predecesor ')
                     
-                    self.succ=node if node is not None else self.ref
+                    #Caso de que el predecesor no tenga predecesor => son dos nodos solos en la red:
+                    node=self.pred.pred
+                    if node.id==self.pred.id:  # En este caso hacemos que el sucesor sea  nuestro predecesor
+                       
+                        self.succ=self.pred
+                    else: # Entonces es que hay mas 2 nodos en la red => implica buscar el sucesor de 0
+                         
+                        self.succ=self.pred.find_successor(0)
                     
-                    if node.id!=self.id : self.succ.notify(self.ref)
-                    
+                    self.pred.notify(self.ref)
                     
             except Exception as e:
                 
@@ -311,7 +326,11 @@ class ChordNode:
                 self.next += 1
                 if self.next >= self.m:
                     self.next = 0
-                self.finger[self.next] = self.find_succ((self.id + 2 ** self.next) % 2 ** self.m)
+                a=self.find_succ((self.id + 2 ** self.next) % 2 ** self.m)
+                if a.id<self.id:
+                    raise Exception(f'Si logro encontrar un nodo menor {a.id},en el indice {self.next}, {self.finger[1]} ')
+                
+                self.finger[self.next] = a
                # print('/'*40)
                # print(f'Mis finger table es {self.finger} ')
                # print('+'*40)
@@ -362,20 +381,20 @@ class ChordNode:
         return node.retrieve_key(key)
     
     
-    def process_last_node_request(self,id:int)->'ChordNodeReference':
-        """
-        Si soy el '0' me devuelvo sino llamo a mi predecesor y le digo que lo resuelva
-        """
-        if self.pred:
-            for _ in range(3):
-                try:
-                    return self.pred.find_successor_node_0(id)
-                except:
-                    time.sleep(5)
-            
-        if self.succ.id!=self.id and self.pred is None and id>self.id: #Le envio un mensaje que si que me tome a mi
-            return self.ref
-        raise Exception(f'Deberia existir el Nodo 0')
+    #def process_last_node_request(self,id:int)->'ChordNodeReference':
+    #    """
+    #    Si soy el '0' me devuelvo sino llamo a mi predecesor y le digo que lo resuelva
+    #    """
+    #    if self.pred:
+    #        for _ in range(3):
+    #            try:
+    #                return self.pred.find_successor_node_0(id)
+    #            except:
+    #                time.sleep(5)
+    #        
+    #    if self.succ.id!=self.id and self.pred is None and id>self.id: #Le envio un mensaje que si que me tome a mi
+    #        return self.ref
+    #    raise Exception(f'Deberia existir el Nodo 0')
     # Start server method to handle incoming requests
     def start_server(self):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -420,11 +439,11 @@ class ChordNode:
                 elif option == RETRIEVE_KEY:
                     key = data[1]
                     data_resp = self.data.get(key, '')
-                elif option==FIND_SUCCESSOR_WITHOUT_PREDECESSOR: # Mansaje que envia el nodo ultimo de la red para encontrar el nodo '0' y enlazarse a el
-                    
-                    id=int(data[1])
-                    data_resp=self.process_last_node_request(id)
-                    traceback.print_exc() 
+                #elif option==FIND_SUCCESSOR_WITHOUT_PREDECESSOR: # Mansaje que envia el nodo ultimo de la red para encontrar el nodo '0' y enlazarse a el
+                #    
+                #    id=int(data[1])
+                #    data_resp=self.process_last_node_request(id)
+                #    traceback.print_exc() 
                     
 
                 if data_resp:
