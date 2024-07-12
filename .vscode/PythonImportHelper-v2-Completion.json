@@ -63,6 +63,14 @@
         "documentation": {}
     },
     {
+        "label": "*",
+        "importPath": "protocol_codes",
+        "description": "protocol_codes",
+        "isExtraImport": true,
+        "detail": "protocol_codes",
+        "documentation": {}
+    },
+    {
         "label": "json",
         "kind": 6,
         "isExtraImport": true,
@@ -556,87 +564,6 @@
         "documentation": {}
     },
     {
-        "label": "FIND_SUCCESSOR",
-        "kind": 5,
-        "importPath": "distributed.chord",
-        "description": "distributed.chord",
-        "peekOfCode": "FIND_SUCCESSOR = 1\nFIND_PREDECESSOR = 2\n#FIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo \"0 \" por lo cual el nodo de mayor rango de la red debe buscarlo\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9",
-        "detail": "distributed.chord",
-        "documentation": {}
-    },
-    {
-        "label": "FIND_PREDECESSOR",
-        "kind": 5,
-        "importPath": "distributed.chord",
-        "description": "distributed.chord",
-        "peekOfCode": "FIND_PREDECESSOR = 2\n#FIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo \"0 \" por lo cual el nodo de mayor rango de la red debe buscarlo\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nlogger = logging.getLogger(__name__)",
-        "detail": "distributed.chord",
-        "documentation": {}
-    },
-    {
-        "label": "GET_SUCCESSOR",
-        "kind": 5,
-        "importPath": "distributed.chord",
-        "description": "distributed.chord",
-        "peekOfCode": "GET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nlogger = logging.getLogger(__name__)\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):",
-        "detail": "distributed.chord",
-        "documentation": {}
-    },
-    {
-        "label": "GET_PREDECESSOR",
-        "kind": 5,
-        "importPath": "distributed.chord",
-        "description": "distributed.chord",
-        "peekOfCode": "GET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nlogger = logging.getLogger(__name__)\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)",
-        "detail": "distributed.chord",
-        "documentation": {}
-    },
-    {
-        "label": "NOTIFY",
-        "kind": 5,
-        "importPath": "distributed.chord",
-        "description": "distributed.chord",
-        "peekOfCode": "NOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nlogger = logging.getLogger(__name__)\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node",
-        "detail": "distributed.chord",
-        "documentation": {}
-    },
-    {
-        "label": "CHECK_PREDECESSOR",
-        "kind": 5,
-        "importPath": "distributed.chord",
-        "description": "distributed.chord",
-        "peekOfCode": "CHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nlogger = logging.getLogger(__name__)\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:",
-        "detail": "distributed.chord",
-        "documentation": {}
-    },
-    {
-        "label": "CLOSEST_PRECEDING_FINGER",
-        "kind": 5,
-        "importPath": "distributed.chord",
-        "description": "distributed.chord",
-        "peekOfCode": "CLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nlogger = logging.getLogger(__name__)\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):",
-        "detail": "distributed.chord",
-        "documentation": {}
-    },
-    {
-        "label": "STORE_KEY",
-        "kind": 5,
-        "importPath": "distributed.chord",
-        "description": "distributed.chord",
-        "peekOfCode": "STORE_KEY = 8\nRETRIEVE_KEY = 9\nlogger = logging.getLogger(__name__)\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)",
-        "detail": "distributed.chord",
-        "documentation": {}
-    },
-    {
-        "label": "RETRIEVE_KEY",
-        "kind": 5,
-        "importPath": "distributed.chord",
-        "description": "distributed.chord",
-        "peekOfCode": "RETRIEVE_KEY = 9\nlogger = logging.getLogger(__name__)\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip",
-        "detail": "distributed.chord",
-        "documentation": {}
-    },
-    {
         "label": "logger",
         "kind": 5,
         "importPath": "distributed.chord",
@@ -697,6 +624,87 @@
         "description": "distributed.logguer",
         "peekOfCode": "logs_json = {}\n# Función para serializar los logs en JSON\ndef serialize_logs(logs_json, filename=\"logs.json\"):\n    with open(filename, 'w') as f:\n        json.dump(logs_json, f, indent=4)\n# Crea una función para registrar mensajes con información adicional\ndef log_message(message, level=\"INFO\", extra_data={}):\n    \"\"\"\n    Registra un mensaje de log con información adicional.\n    \"\"\"",
         "detail": "distributed.logguer",
+        "documentation": {}
+    },
+    {
+        "label": "FIND_SUCCESSOR",
+        "kind": 5,
+        "importPath": "distributed.protocol_codes",
+        "description": "distributed.protocol_codes",
+        "peekOfCode": "FIND_SUCCESSOR = 1\nFIND_PREDECESSOR = 2\n#FIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo \"0 \" por lo cual el nodo de mayor rango de la red debe buscarlo\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9",
+        "detail": "distributed.protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "FIND_PREDECESSOR",
+        "kind": 5,
+        "importPath": "distributed.protocol_codes",
+        "description": "distributed.protocol_codes",
+        "peekOfCode": "FIND_PREDECESSOR = 2\n#FIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo \"0 \" por lo cual el nodo de mayor rango de la red debe buscarlo\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9",
+        "detail": "distributed.protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "GET_SUCCESSOR",
+        "kind": 5,
+        "importPath": "distributed.protocol_codes",
+        "description": "distributed.protocol_codes",
+        "peekOfCode": "GET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9",
+        "detail": "distributed.protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "GET_PREDECESSOR",
+        "kind": 5,
+        "importPath": "distributed.protocol_codes",
+        "description": "distributed.protocol_codes",
+        "peekOfCode": "GET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9",
+        "detail": "distributed.protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "NOTIFY",
+        "kind": 5,
+        "importPath": "distributed.protocol_codes",
+        "description": "distributed.protocol_codes",
+        "peekOfCode": "NOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9",
+        "detail": "distributed.protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "CHECK_PREDECESSOR",
+        "kind": 5,
+        "importPath": "distributed.protocol_codes",
+        "description": "distributed.protocol_codes",
+        "peekOfCode": "CHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9",
+        "detail": "distributed.protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "CLOSEST_PRECEDING_FINGER",
+        "kind": 5,
+        "importPath": "distributed.protocol_codes",
+        "description": "distributed.protocol_codes",
+        "peekOfCode": "CLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9",
+        "detail": "distributed.protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "STORE_KEY",
+        "kind": 5,
+        "importPath": "distributed.protocol_codes",
+        "description": "distributed.protocol_codes",
+        "peekOfCode": "STORE_KEY = 8\nRETRIEVE_KEY = 9",
+        "detail": "distributed.protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "RETRIEVE_KEY",
+        "kind": 5,
+        "importPath": "distributed.protocol_codes",
+        "description": "distributed.protocol_codes",
+        "peekOfCode": "RETRIEVE_KEY = 9",
+        "detail": "distributed.protocol_codes",
         "documentation": {}
     },
     {
