@@ -166,6 +166,15 @@
         "documentation": {}
     },
     {
+        "label": "shutil",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "shutil",
+        "description": "shutil",
+        "detail": "shutil",
+        "documentation": {}
+    },
+    {
         "label": "List",
         "importPath": "typing",
         "description": "typing",
@@ -1033,6 +1042,15 @@
         "description": "examples.corrutines",
         "peekOfCode": "ctx = Context.instance()\nasync def ping() -> None:\n    \"\"\"print dots to indicate idleness\"\"\"\n    while True:\n        await asyncio.sleep(0.5)\n        print('.')\nasync def receiver() -> None:\n    \"\"\"receive messages with polling\"\"\"\n    pull = ctx.socket(zmq.PULL)\n    pull.connect(url)",
         "detail": "examples.corrutines",
+        "documentation": {}
+    },
+    {
+        "label": "eliminar_contenido_directorio",
+        "kind": 2,
+        "importPath": "logs.delete_garbage",
+        "description": "logs.delete_garbage",
+        "peekOfCode": "def eliminar_contenido_directorio(ruta)->bool:\n    # Verificar si la ruta es un directorio\n    if os.path.isdir(ruta):\n        # Recorrer todos los elementos dentro del directorio\n        for nombre_archivo in os.listdir(ruta):\n            # Construir la ruta completa al archivo o subdirectorio\n            ruta_completa = os.path.join(ruta, nombre_archivo)\n            # Si es un directorio, llamar recursivamente a la misma función\n            if os.path.isdir(ruta_completa):\n                eliminar_contenido_directorio(ruta_completa)",
+        "detail": "logs.delete_garbage",
         "documentation": {}
     },
     {

@@ -146,6 +146,7 @@ class ChordNode:
                 log_message(f'Mi sucesor es {self.succ.id if self.succ else None} con ip {self.succ.ip  if self.succ else None}',level='INFO')
             log_message('*'*20,level='INFO')
             
+            
             time.sleep(3) # Se presenta cada 10 segundos
             
             
@@ -213,6 +214,8 @@ class ChordNode:
         Returns:
             ChordNodeReference: _description_
         """
+        if id==685966170926969970295131996809687121594286967556:
+            log_message(f'El nodo con id {id } se esta buscando en closest_preceding_finger',func=ChordNode.closest_preceding_finger)
         for i in range(self.m - 1, -1, -1):
             if self.finger[i] and self._inbetween(self.finger[i].id, self.id, id):
                 return self.finger[i]
@@ -226,6 +229,7 @@ class ChordNode:
         Args:
             node (ChordNodeReference): _description_
         """
+        log_message(f'El nodo {node.id} mando solicitud de unirse como predecesor',func=ChordNode.join )
         if node:
             self.pred = None
             self.succ = node.find_successor(self.id)
@@ -290,6 +294,9 @@ class ChordNode:
                         self.succ=self.pred.find_successor(0)
                     
                     self.pred.notify(self.ref)
+                
+                    
+                
                     
             except Exception as e:
                 
@@ -327,12 +334,32 @@ class ChordNode:
                     if a.check_predecessor(): # Chequear que el nodo esta vivo
                         ok=True
                         break
+                    else: 
+                        log_message(f'El nodo {a.id} no se encuentra en fix fingers')
                     time.sleep(0.5)
                # a=a.succ if not ok else a
                 if not ok:
                     log_message(f'El nodo {a.id} se desconecto de la red',func=ChordNode.fix_fingers)
-                    a=self.find_succ(a.id+1)
-                    log_message(f'El nodo a ahora es {a}',func=ChordNode.fix_fingers)
+                    try:
+                        i=self.next+1
+                        k=i if self.next<self.m else 0
+                        change=False
+                        while i!=self.next:
+                            q=self.closest_preceding_finger(i) # Buscar por los antecesores 
+                            log_message(f'El nodo q ahora es {q.id} con i = {i}')
+                            if q.id!=a.id: # Encontrar el prinero que sea distinto
+                                a=q
+                                log_message(f'Se va a parar aca el while con q ={q.id}')
+                                change=True
+                                break
+                            i= i+1 if i<self.m else 0
+                        
+                        if not change and self.ip=='172.17.0.4' :
+                            log_message(f'ENtro en el if ya kjkkkk',func=ChordNode.fix_fingers)
+                            a=ChordNodeReference('172.17.0.2')
+                        log_message(f'El nodo a ahora es {a}',func=ChordNode.fix_fingers)
+                    except:
+                        log_message(f'Fallo buscar el sucesor del prececesor del nodo {a.id+1}',)
                 
 
                 self.finger[self.next] = a
@@ -367,18 +394,11 @@ class ChordNode:
                 if  self.succ and self.pred.id==self.succ.id:
                     log_message('Entro en el de ponerse a si mimsmo como predecesor',func=ChordNode.check_predecessor)
                     self.succ=self.ref
+                
+                self.pred=None # Me quedo en none a la espera de un nuevo predecesor
+                log_message(f' Acabo de poner mi predecesor en None',func=ChordNode.check_predecessor)
                 time.sleep(3)
-                log_message('Espere_los 3 segundos para preguntar por mi nuevo predecesor ',func=ChordNode.check_predecessor)
-                try:
-                    log_message('Entrando en el Try',func=ChordNode.check_predecessor)
-                    a=self.find_pred(self.pred.id)
-                    log_message(f'A es igual {a.id}',func=ChordNode.check_predecessor)
-                    self.pred = a if a.id!= self.id else None #Busco quien ahora es el sucesor
-                except:
-                    log_message('ERROR in select new predecesor',func=ChordNode.check_predecessor,level='ERROR')
-                    
-                log_message('Salio del bloque try except',func=ChordNode.check_predecessor)
-                log_message(f'Mi nuevo predecesor es {self.pred.ip}',func=ChordNode.check_predecessor)
+                
             time.sleep(3)
 
     # Store key method to store a key-value pair and replicate to the successor
