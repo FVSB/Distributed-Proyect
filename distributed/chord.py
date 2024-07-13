@@ -6,7 +6,8 @@ import hashlib
 import traceback
 import logging
 from protocol_codes import *
-logger = logging.getLogger(__name__)
+from distributed.logguer import log_message
+#logger = logging.getLogger(__name__)
 
 # Function to hash a string using SHA-1 and return its integer representation
 def getShaRepr(data: str):
@@ -23,6 +24,7 @@ class ChordNodeReference:
     # Internal method to send data to the referenced node
     def _send_data(self, op: int, data: str = None) -> bytes:
         #print(f'mandando la data con op{op} - y data {data}')
+        log_message(f'mandando la data con op{op} - y data {data}',extra_data={'func':'send_data'})
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.connect((self.ip, self.port))

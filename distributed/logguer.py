@@ -1,10 +1,16 @@
 import logging
 import json
 import time
+import os
 from datetime import datetime
 
+# Crea la carpeta 'logs' si no existe
+logs_dir = "logs"
+if not os.path.exists(logs_dir):
+    os.makedirs(logs_dir)
+
 # Configura el manejador de archivos
-file_handler = logging.FileHandler("my_logs.txt")
+file_handler = logging.FileHandler(os.path.join(logs_dir, "my_logs.txt"))
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(lineno)d - %(message)s')
 file_handler.setFormatter(formatter)
 
@@ -20,7 +26,8 @@ logs_json = {}
 
 # Función para serializar los logs en JSON
 def serialize_logs(logs_json, filename="logs.json"):
-    with open(filename, 'w') as f:
+    full_path = os.path.join(logs_dir, filename)
+    with open(full_path, 'w') as f:
         json.dump(logs_json, f, indent=4)
 
 # Crea una función para registrar mensajes con información adicional
@@ -37,12 +44,14 @@ def log_message(message, level="INFO", extra_data={}):
     logs_json[time.time()] = log_entry
     logging.log(logging.getLevelName(level), message, extra=extra_data)
 
-# Ejemplo de uso
-log_message("Este es un mensaje de información.")
-log_message("Este es un mensaje de advertencia.", level="WARNING")
-log_message("Este es un mensaje de error.", level="ERROR", extra_data={"error_code": 123, "details": "Detalles del error"})
 
-# Serializa los logs en JSON cada cierto tiempo
-while True:
-    serialize_logs(logs_json)
-    time.sleep(60)  # Serializa cada 60 segundos (1 minuto)
+if __name__=='main':
+## Ejemplo de uso
+#log_message("Este es un mensaje de información.")
+#log_message("Este es un mensaje de advertencia.", level="WARNING")
+#log_message("Este es un mensaje de error.", level="ERROR", extra_data={"error_code": 123, "details": "Detalles del error"})
+
+    # Serializa los logs en JSON cada cierto tiempo
+    while True:
+        serialize_logs(logs_json)
+        time.sleep(1)  # Serializa cada 60 segundos (1 minuto)
