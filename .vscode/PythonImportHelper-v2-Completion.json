@@ -72,10 +72,10 @@
     },
     {
         "label": "log_message",
-        "importPath": "distributed.logguer",
-        "description": "distributed.logguer",
+        "importPath": "logguer",
+        "description": "logguer",
         "isExtraImport": true,
-        "detail": "distributed.logguer",
+        "detail": "logguer",
         "documentation": {}
     },
     {
@@ -102,6 +102,15 @@
         "description": "datetime",
         "isExtraImport": true,
         "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "inspect",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "inspect",
+        "description": "inspect",
+        "detail": "inspect",
         "documentation": {}
     },
     {
@@ -617,7 +626,7 @@
         "kind": 6,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "class ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n    # Internal method to send data to the referenced node\n    def _send_data(self, op: int, data: str = None) -> bytes:\n        #print(f'mandando la data con op{op} - y data {data}')\n        log_message(f'mandando la data con op{op} - y data {data}',extra_data={'func':'send_data'})\n        try:",
+        "peekOfCode": "class ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n    # Internal method to send data to the referenced node\n    def _send_data(self, op: int, data: str = None) -> bytes:\n        #print(f'mandando la data con op{op} - y data {data}')\n        log_message(f'mandando la data con op{op} - y data {data}',func=ChordNodeReference._send_data)\n        try:",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -653,7 +662,7 @@
         "kind": 2,
         "importPath": "distributed.logguer",
         "description": "distributed.logguer",
-        "peekOfCode": "def serialize_logs(logs_json, filename=\"logs.json\"):\n    full_path = os.path.join(logs_dir, filename)\n    with open(full_path, 'w') as f:\n        json.dump(logs_json, f, indent=4)\n# Crea una función para registrar mensajes con información adicional\ndef log_message(message, level=\"INFO\", extra_data={}):\n    \"\"\"\n    Registra un mensaje de log con información adicional.\n    \"\"\"\n    log_entry = {",
+        "peekOfCode": "def serialize_logs(logs_json, filename=\"logs_container.json\"):\n    full_path = os.path.join(logs_dir, filename)\n    with open(full_path, 'w') as f:\n        json.dump(logs_json, f, indent=4)\n# Crea una función para registrar mensajes con información adicional\ndef log_message(message, level=\"INFO\", extra_data={}, func=None):\n    \"\"\"\n    Registra un mensaje de log con información adicional.\n    Si se proporciona 'func', se usa como nombre de la función.\n    Si no, se detecta automáticamente.",
         "detail": "distributed.logguer",
         "documentation": {}
     },
@@ -662,7 +671,7 @@
         "kind": 2,
         "importPath": "distributed.logguer",
         "description": "distributed.logguer",
-        "peekOfCode": "def log_message(message, level=\"INFO\", extra_data={}):\n    \"\"\"\n    Registra un mensaje de log con información adicional.\n    \"\"\"\n    log_entry = {\n        \"timestamp\": datetime.now().isoformat(),\n        \"level\": level,\n        \"message\": message,\n        \"extra_data\": extra_data\n    }",
+        "peekOfCode": "def log_message(message, level=\"INFO\", extra_data={}, func=None):\n    \"\"\"\n    Registra un mensaje de log con información adicional.\n    Si se proporciona 'func', se usa como nombre de la función.\n    Si no, se detecta automáticamente.\n    \"\"\"\n    # Obtiene información sobre el llamador\n    caller_frame = inspect.currentframe().f_back\n    caller_line = caller_frame.f_lineno\n    if func is None:",
         "detail": "distributed.logguer",
         "documentation": {}
     },
@@ -671,7 +680,25 @@
         "kind": 5,
         "importPath": "distributed.logguer",
         "description": "distributed.logguer",
-        "peekOfCode": "logs_dir = \"logs\"\nif not os.path.exists(logs_dir):\n    os.makedirs(logs_dir)\n# Configura el manejador de archivos\nfile_handler = logging.FileHandler(os.path.join(logs_dir, \"my_logs.txt\"))\nformatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(lineno)d - %(message)s')\nfile_handler.setFormatter(formatter)\n# Configura el manejador de consola\nconsole_handler = logging.StreamHandler()\nconsole_handler.setFormatter(formatter)",
+        "peekOfCode": "logs_dir = \"app/logs\"\nif not os.path.exists(logs_dir):\n    os.makedirs(logs_dir)\n# Configura el manejador de archivos\nlog_file_name = f\"my_logs_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt\"\nlog_file_path = os.path.join(logs_dir, log_file_name)\nfile_handler = logging.FileHandler(log_file_path)\nformatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(lineno)d - %(custom_funcName)s - %(message)s')\nfile_handler.setFormatter(formatter)\n# Configura el manejador de consola",
+        "detail": "distributed.logguer",
+        "documentation": {}
+    },
+    {
+        "label": "log_file_name",
+        "kind": 5,
+        "importPath": "distributed.logguer",
+        "description": "distributed.logguer",
+        "peekOfCode": "log_file_name = f\"my_logs_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt\"\nlog_file_path = os.path.join(logs_dir, log_file_name)\nfile_handler = logging.FileHandler(log_file_path)\nformatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(lineno)d - %(custom_funcName)s - %(message)s')\nfile_handler.setFormatter(formatter)\n# Configura el manejador de consola\nconsole_handler = logging.StreamHandler()\nconsole_handler.setFormatter(formatter)\n# Configura el logger raíz\nlogging.basicConfig(handlers=[file_handler, console_handler], level=logging.DEBUG)",
+        "detail": "distributed.logguer",
+        "documentation": {}
+    },
+    {
+        "label": "log_file_path",
+        "kind": 5,
+        "importPath": "distributed.logguer",
+        "description": "distributed.logguer",
+        "peekOfCode": "log_file_path = os.path.join(logs_dir, log_file_name)\nfile_handler = logging.FileHandler(log_file_path)\nformatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(lineno)d - %(custom_funcName)s - %(message)s')\nfile_handler.setFormatter(formatter)\n# Configura el manejador de consola\nconsole_handler = logging.StreamHandler()\nconsole_handler.setFormatter(formatter)\n# Configura el logger raíz\nlogging.basicConfig(handlers=[file_handler, console_handler], level=logging.DEBUG)\n# Define un diccionario para almacenar los logs en JSON",
         "detail": "distributed.logguer",
         "documentation": {}
     },
@@ -680,7 +707,7 @@
         "kind": 5,
         "importPath": "distributed.logguer",
         "description": "distributed.logguer",
-        "peekOfCode": "file_handler = logging.FileHandler(os.path.join(logs_dir, \"my_logs.txt\"))\nformatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(lineno)d - %(message)s')\nfile_handler.setFormatter(formatter)\n# Configura el manejador de consola\nconsole_handler = logging.StreamHandler()\nconsole_handler.setFormatter(formatter)\n# Configura el logger raíz\nlogging.basicConfig(handlers=[file_handler, console_handler], level=logging.DEBUG)\n# Define un diccionario para almacenar los logs en JSON\nlogs_json = {}",
+        "peekOfCode": "file_handler = logging.FileHandler(log_file_path)\nformatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(lineno)d - %(custom_funcName)s - %(message)s')\nfile_handler.setFormatter(formatter)\n# Configura el manejador de consola\nconsole_handler = logging.StreamHandler()\nconsole_handler.setFormatter(formatter)\n# Configura el logger raíz\nlogging.basicConfig(handlers=[file_handler, console_handler], level=logging.DEBUG)\n# Define un diccionario para almacenar los logs en JSON\nlogs_json = {}",
         "detail": "distributed.logguer",
         "documentation": {}
     },
@@ -689,7 +716,7 @@
         "kind": 5,
         "importPath": "distributed.logguer",
         "description": "distributed.logguer",
-        "peekOfCode": "formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(lineno)d - %(message)s')\nfile_handler.setFormatter(formatter)\n# Configura el manejador de consola\nconsole_handler = logging.StreamHandler()\nconsole_handler.setFormatter(formatter)\n# Configura el logger raíz\nlogging.basicConfig(handlers=[file_handler, console_handler], level=logging.DEBUG)\n# Define un diccionario para almacenar los logs en JSON\nlogs_json = {}\n# Función para serializar los logs en JSON",
+        "peekOfCode": "formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(lineno)d - %(custom_funcName)s - %(message)s')\nfile_handler.setFormatter(formatter)\n# Configura el manejador de consola\nconsole_handler = logging.StreamHandler()\nconsole_handler.setFormatter(formatter)\n# Configura el logger raíz\nlogging.basicConfig(handlers=[file_handler, console_handler], level=logging.DEBUG)\n# Define un diccionario para almacenar los logs en JSON\nlogs_json = {}\n# Función para serializar los logs en JSON",
         "detail": "distributed.logguer",
         "documentation": {}
     },
@@ -698,7 +725,7 @@
         "kind": 5,
         "importPath": "distributed.logguer",
         "description": "distributed.logguer",
-        "peekOfCode": "console_handler = logging.StreamHandler()\nconsole_handler.setFormatter(formatter)\n# Configura el logger raíz\nlogging.basicConfig(handlers=[file_handler, console_handler], level=logging.DEBUG)\n# Define un diccionario para almacenar los logs en JSON\nlogs_json = {}\n# Función para serializar los logs en JSON\ndef serialize_logs(logs_json, filename=\"logs.json\"):\n    full_path = os.path.join(logs_dir, filename)\n    with open(full_path, 'w') as f:",
+        "peekOfCode": "console_handler = logging.StreamHandler()\nconsole_handler.setFormatter(formatter)\n# Configura el logger raíz\nlogging.basicConfig(handlers=[file_handler, console_handler], level=logging.DEBUG)\n# Define un diccionario para almacenar los logs en JSON\nlogs_json = {}\n# Función para serializar los logs en JSON\ndef serialize_logs(logs_json, filename=\"logs_container.json\"):\n    full_path = os.path.join(logs_dir, filename)\n    with open(full_path, 'w') as f:",
         "detail": "distributed.logguer",
         "documentation": {}
     },
@@ -707,7 +734,7 @@
         "kind": 5,
         "importPath": "distributed.logguer",
         "description": "distributed.logguer",
-        "peekOfCode": "logs_json = {}\n# Función para serializar los logs en JSON\ndef serialize_logs(logs_json, filename=\"logs.json\"):\n    full_path = os.path.join(logs_dir, filename)\n    with open(full_path, 'w') as f:\n        json.dump(logs_json, f, indent=4)\n# Crea una función para registrar mensajes con información adicional\ndef log_message(message, level=\"INFO\", extra_data={}):\n    \"\"\"\n    Registra un mensaje de log con información adicional.",
+        "peekOfCode": "logs_json = {}\n# Función para serializar los logs en JSON\ndef serialize_logs(logs_json, filename=\"logs_container.json\"):\n    full_path = os.path.join(logs_dir, filename)\n    with open(full_path, 'w') as f:\n        json.dump(logs_json, f, indent=4)\n# Crea una función para registrar mensajes con información adicional\ndef log_message(message, level=\"INFO\", extra_data={}, func=None):\n    \"\"\"\n    Registra un mensaje de log con información adicional.",
         "detail": "distributed.logguer",
         "documentation": {}
     },
