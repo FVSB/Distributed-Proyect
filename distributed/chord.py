@@ -8,7 +8,7 @@ import sys
 import time
 import hashlib
 import traceback
-import logging
+
 from helper.protocol_codes import *
 from helper.logguer import log_message
 from utils import getShaRepr
@@ -88,7 +88,7 @@ class ChordNodeReference:
         
         response=self._send_data(CHECK_PREDECESSOR)
         #print(f'La respuesta de si esta vivo el nodo vivo o no es {response}')
-        log_message(f'La respuesta de si esta vivo el nodo vivo o no es {response}',func=ChordNodeReference.check_predecessor,extra_data={'func':'check_predecesor from ChordReferenceNode'})
+        log_message(f'La respuesta de si esta vivo el nodo vivo o no es {response}',func=ChordNodeReference.check_predecessor)
         if response in ['',' ', None,EMPTYBIT]:
             return   False
         return True
@@ -133,13 +133,15 @@ class ChordNode:
         self.lock = threading.Lock()
         
          # Start background threads for stabilization, fixing fingers, and checking predecessor
-        #threading.Thread(target=self.stabilize, daemon=True).start()  # Start stabilize thread
-        #threading.Thread(target=self.fix_fingers, daemon=True).start()  # Start fix fingers thread
-        #threading.Thread(target=self.check_predecessor, daemon=True).start()  # Start check predecessor thread
-        #threading.Thread(target=self.start_server, daemon=True).start()  # Start server thread
-        asyncio.run(self.start_server()) # Start 
+        threading.Thread(target=self.stabilize, daemon=True).start()  # Start stabilize thread
+        threading.Thread(target=self.fix_fingers, daemon=True).start()  # Start fix fingers thread
+        threading.Thread(target=self.check_predecessor, daemon=True).start()  # Start check predecessor thread
+        threading.Thread(target=self.start_server, daemon=True).start()  # Start server thread
+        threading.Thread(target=self.broadcast,daemon=True).start()# Make all time broadcast
+        #asyncio.run(self.start_server()) # Start 
         threading.Thread(target=self.show,daemon=True).start() # Start funcion que se esta printeando todo el tipo cada n segundos
         
+    
     def show(self):
         """
         Show my ip and id and mi predecessor and succesors ips and ids
@@ -147,20 +149,19 @@ class ChordNode:
         print(f'ENtro en print')
         """Printea quien soy yo"""
         while True:
-            print('-'*20)
-            print(f'Mi predecesor es {self.pred.id if self.pred else None} con ip {self.pred.ip if self.pred else None} ')
-            print(f'Yo soy id:{self.id},con ip:{self.ip} ')
+            log_message('-'*20,level='INFO',func=ChordNode.show)
+            log_message(f'Mi predecesor es {self.pred.id if self.pred else None} con ip {self.pred.ip if self.pred else None} ',level='INFO',func=ChordNode.show)
+            log_message(f'Yo soy id:{self.id},con ip:{self.ip} ',level='INFO')
             if self.succ.id == self.id:
                 if self.succ.ip !=self.ip:
-                    print('El sucesor tiene igual ID pero no tiene igual ip')
-                print(f'Todavia no tengo sucesor')
+                    log_message('El sucesor tiene igual ID pero no tiene igual ip',level='INFO',func=ChordNode.show)
+                log_message(f'Todavia no tengo sucesor',level='INFO',func=ChordNode.show),
             else:
-                print(f'Mi sucesor es {self.succ.id if self.succ else None} con ip {self.succ.ip  if self.succ else None}')
-            print('*'*20)
+                log_message(f'Mi sucesor es {self.succ.id if self.succ else None} con ip {self.succ.ip  if self.succ else None}',level='INFO',func=ChordNode.show)
+            log_message('*'*20,level='INFO',func=ChordNode.show)
+            
             
             time.sleep(3) # Se presenta cada 10 segundos
-            
-            
 
     # Helper method to check if a value is in the range (start, end]
     def _inbetween(self, k: int, start: int, end: int) -> bool:
@@ -265,38 +266,74 @@ class ChordNode:
                 self.pred = None
             time.sleep(10)
 
-    async def publisher(self):
+    #async def publisher(self):
+    #    socket = self.context.socket(zmq.PUB)
+    #    socket.bind("tcp://*:8000")
+#
+    #    while True:
+    #        #message = f"{self.node_id}:{self.ip}"
+    #        message=Message(JOIN,self.ip)
+    #        await socket.send_pyobj(message)
+    #        #print(f"Mensaje enviado: {message}")
+    #        log_message(f'Mensaje de broadcast, Enviado ',func=ChordNode.publisher)
+    #        await asyncio.sleep(1)
+    
+    
+    def broadcast(self):
         socket = self.context.socket(zmq.PUB)
-        socket.bind("tcp://*:8000")
+        try:
+            socket.bind(f"tcp://{self.ip}:8000")
+        except zmq.ZMQError as e:
+            log_message(f"Error al enlazar el socket: {e}", func=self.publisher)
+            return
 
         while True:
-            #message = f"{self.node_id}:{self.ip}"
-            message=Message(JOIN,self.ip)
-            await socket.send_pyobj(message)
-            #print(f"Mensaje enviado: {message}")
-            log_message(f'Mensaje de broadcast, Enviado ')
-            await asyncio.sleep(1)
-
-    async def subscriber(self):
+            message = Message(JOIN, self.ip)
+            socket.send_pyobj(message)
+            log_message(f'Mensaje de broadcast, Enviado ', func=self.publisher)
+            time.sleep(1)
+            
+    def start_server(self):
         socket = self.context.socket(zmq.SUB)
-        socket.connect(f"tcp://{self.ip}:8000")
+        try:
+            socket.connect(f"tcp://{self.ip}:8000")
+        except zmq.ZMQError as e:
+            log_message(f"Error al conectar el socket: {e}", func=self.subscriber)
+            return
         socket.setsockopt_string(zmq.SUBSCRIBE, "")
 
         while True:
-            message:Message = await socket.recv_pyobj()
-            #print(message)
-            log_message(f'Mensaje recibido {message}')
-            ip =message.data
-            id_=getShaRepr(ip)
-            log_message(f'Se descubrio el nodo' )
-            with self.lock:
-                self.nodes_discovered[id_] = ip
-            print(f"Mensaje recibido: {message}, Nodo descubierto: {self.nodes_discovered}")
-            if message.op==JOIN:
+            message: Message = socket.recv_pyobj()
+            log_message(f'Mensaje recibido {message}', func=self.subscriber)
+            ip = message.data
+            id_ = getShaRepr(ip)
+            log_message(f'Se descubrio el nodo', func=self.subscriber)
+            #with self.lock: # Bloquear el hilo
+            #    self.nodes_discovered[id_] = ip
+            #log_message(f"Mensaje recibido: {message}, Nodo descubierto: {self.nodes_discovered}", func=self.subscriber)
+            if message.op == JOIN:
                 self.join(ChordNodeReference(ip))
 
-    async def start_server(self):
-        await asyncio.gather(self.publisher(), self.subscriber())
+    #async def subscriber(self):
+    #    socket = self.context.socket(zmq.SUB)
+    #    socket.connect(f"tcp://{self.ip}:8000")
+    #    socket.setsockopt_string(zmq.SUBSCRIBE, "")
+#
+    #    while True:
+    #        message:Message = await socket.recv_pyobj()
+    #        #print(message)
+    #        log_message(f'Mensaje recibido {message}',func=ChordNode.subscriber)
+    #        ip =message.data
+    #        id_=getShaRepr(ip)
+    #        log_message(f'Se descubrio el nodo',func=ChordNode.subscriber )
+    #        with self.lock:
+    #            self.nodes_discovered[id_] = ip
+    #        log_message(f"Mensaje recibido: {message}, Nodo descubierto: {self.nodes_discovered}",func=ChordNode.subscriber)
+    #        if message.op==JOIN:
+    #            self.join(ChordNodeReference(ip))
+
+    #async def start_server(self):
+    #    await asyncio.gather(self.publisher(), self.subscriber())
 
 if __name__ == "__main__":
     ip = socket.gethostbyname(socket.gethostname()) # Tomar mi ip
