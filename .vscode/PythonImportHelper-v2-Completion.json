@@ -97,6 +97,49 @@
         "documentation": {}
     },
     {
+        "label": "asyncio",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "asyncio",
+        "description": "asyncio",
+        "detail": "asyncio",
+        "documentation": {}
+    },
+    {
+        "label": "zmq",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "zmq",
+        "description": "zmq",
+        "detail": "zmq",
+        "documentation": {}
+    },
+    {
+        "label": "zmq.asyncio",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "zmq.asyncio",
+        "description": "zmq.asyncio",
+        "detail": "zmq.asyncio",
+        "documentation": {}
+    },
+    {
+        "label": "Context",
+        "importPath": "zmq.asyncio",
+        "description": "zmq.asyncio",
+        "isExtraImport": true,
+        "detail": "zmq.asyncio",
+        "documentation": {}
+    },
+    {
+        "label": "Poller",
+        "importPath": "zmq.asyncio",
+        "description": "zmq.asyncio",
+        "isExtraImport": true,
+        "detail": "zmq.asyncio",
+        "documentation": {}
+    },
+    {
         "label": "List",
         "importPath": "typing",
         "description": "typing",
@@ -536,12 +579,21 @@
         "documentation": {}
     },
     {
-        "label": "zmq",
+        "label": "Pyro5.api",
         "kind": 6,
         "isExtraImport": true,
-        "importPath": "zmq",
-        "description": "zmq",
-        "detail": "zmq",
+        "importPath": "Pyro5.api",
+        "description": "Pyro5.api",
+        "detail": "Pyro5.api",
+        "documentation": {}
+    },
+    {
+        "label": "aiozmq",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "aiozmq",
+        "description": "aiozmq",
+        "detail": "aiozmq",
         "documentation": {}
     },
     {
@@ -557,7 +609,7 @@
         "kind": 6,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "class ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n    # Internal method to send data to the referenced node\n    def _send_data(self, op: int, data: str = None) -> bytes:\n        print(f'mandando la data con op{op} - y data {data}')\n        try:\n            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:",
+        "peekOfCode": "class ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n    # Internal method to send data to the referenced node\n    def _send_data(self, op: int, data: str = None) -> bytes:\n        #print(f'mandando la data con op{op} - y data {data}')\n        try:\n            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -922,6 +974,24 @@
         "documentation": {}
     },
     {
+        "label": "url",
+        "kind": 5,
+        "importPath": "examples.corrutines",
+        "description": "examples.corrutines",
+        "peekOfCode": "url = 'tcp://127.0.0.1:5555'\nctx = Context.instance()\nasync def ping() -> None:\n    \"\"\"print dots to indicate idleness\"\"\"\n    while True:\n        await asyncio.sleep(0.5)\n        print('.')\nasync def receiver() -> None:\n    \"\"\"receive messages with polling\"\"\"\n    pull = ctx.socket(zmq.PULL)",
+        "detail": "examples.corrutines",
+        "documentation": {}
+    },
+    {
+        "label": "ctx",
+        "kind": 5,
+        "importPath": "examples.corrutines",
+        "description": "examples.corrutines",
+        "peekOfCode": "ctx = Context.instance()\nasync def ping() -> None:\n    \"\"\"print dots to indicate idleness\"\"\"\n    while True:\n        await asyncio.sleep(0.5)\n        print('.')\nasync def receiver() -> None:\n    \"\"\"receive messages with polling\"\"\"\n    pull = ctx.socket(zmq.PULL)\n    pull.connect(url)",
+        "detail": "examples.corrutines",
+        "documentation": {}
+    },
+    {
         "label": "Corpus",
         "kind": 6,
         "importPath": "src.Pre_Processing.Corpus",
@@ -1207,6 +1277,33 @@
         "description": "src.utils",
         "peekOfCode": "def is_eq(array1, array2):\n    a1_only, a2_only = compare_arrays(array1, array2)\n    return (len(a1_only) == 0) and (len(a2_only) == 0)",
         "detail": "src.utils",
+        "documentation": {}
+    },
+    {
+        "label": "ChatRoom",
+        "kind": 6,
+        "importPath": "test.pyro5_DNS.server",
+        "description": "test.pyro5_DNS.server",
+        "peekOfCode": "class ChatRoom:\n    def __init__(self):\n        self.subscribers = []\n        self.other_servers = []\n    # Métodos para la suscripción y desuscripción de clientes\n    def subscribe(self, subscriber):\n        self.subscribers.append(subscriber)\n    def unsubscribe(self, subscriber):\n        self.subscribers.remove(subscriber)\n    # Método para recibir mensajes y retransmitirlos a todos los suscriptores",
+        "detail": "test.pyro5_DNS.server",
+        "documentation": {}
+    },
+    {
+        "label": "ChatServer",
+        "kind": 6,
+        "importPath": "test.pyro5_DNS.server",
+        "description": "test.pyro5_DNS.server",
+        "peekOfCode": "class ChatServer:\n    def __init__(self, host, port):\n        self.rooms = {}\n        self.host = host\n        self.port = port\n    # Método para obtener o crear una sala\n    def get_room(self, room_name):\n        if room_name not in self.rooms:\n            self.rooms[room_name] = ChatRoom()\n        return self.rooms[room_name]",
+        "detail": "test.pyro5_DNS.server",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "test.pyro5_DNS.server",
+        "description": "test.pyro5_DNS.server",
+        "peekOfCode": "def main():\n    import argparse\n    parser = argparse.ArgumentParser(description=\"Start the chat server.\")\n    parser.add_argument(\"host\", help=\"Host IP address\")\n    parser.add_argument(\"-p\", \"--port\", type=int, default=8000, help=\"Port number\")\n    parser.add_argument(\"-r\", \"--room\", default=\"default_room\", help=\"Room name\")\n    parser.add_argument(\"-s\", \"--servers\", nargs='+', default=[], help=\"Other server URIs to connect to\")\n    args = parser.parse_args()\n    chat_server = ChatServer(args.host, args.port)\n    chat_server.start()",
+        "detail": "test.pyro5_DNS.server",
         "documentation": {}
     },
     {

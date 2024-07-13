@@ -22,13 +22,13 @@ class ChordNodeReference:
 
     # Internal method to send data to the referenced node
     def _send_data(self, op: int, data: str = None) -> bytes:
-        print(f'mandando la data con op{op} - y data {data}')
+        #print(f'mandando la data con op{op} - y data {data}')
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.connect((self.ip, self.port))
                 s.sendall(f'{op},{data}'.encode('utf-8'))
                 new_data=s.recv(1024)
-                print(f'Se recibioo de data envada con opcion {op} {str(new_data)}')
+               # print(f'Se recibioo de data envada con opcion {op} {str(new_data)}')
                 return new_data
         except Exception as e:
             print(f"Error sending data: {e} al nodo con id {self.id} e ip {self.ip}")
@@ -66,7 +66,7 @@ class ChordNodeReference:
     def check_predecessor(self)->bool:
         
         response=self._send_data(CHECK_PREDECESSOR)
-        print(f'La respuesta de si esta vivo el lider o no es {response}')
+        print(f'La respuesta de si esta vivo el nodo vivo o no es {response}')
         if response in ['',' ', None,EMPTYBIT]:
             return   False
         return True
@@ -317,14 +317,14 @@ class ChordNode:
                     raise Exception(f'Si logro encontrar un nodo menor {a.id},en el indice {self.next}, {self.finger[1]} ')
                 ok=False
                 for _ in range(3):
-                    if a.check_predecessor():
+                    if a.check_predecessor(): # Chequear que el nodo esta vivo
                         ok=True
                         break
-                    time.sleep(3)
+                    time.sleep(0.5)
                # a=a.succ if not ok else a
                 if not ok:
                     print(f'El nodo {a.id} se desconecto de la red')
-                    a=a.succ
+                    a=self.find_succ(a.id+1)
                     print(f'El nodo a ahora es {a}')
                 
 
@@ -359,10 +359,19 @@ class ChordNode:
                 if  self.succ and self.pred.id==self.succ.id:
                     print('Entro en el de ponerse a si mimsmo como predecesor')
                     self.succ=self.ref
-            
-                self.pred = None
-                
-            time.sleep(5)
+                time.sleep(3)
+                print('Espere_los 3 segundos para preguntar por mi nuevo predecesor ')
+                try:
+                    print('Entrando en el Try')
+                    a=self.find_pred(self.pred.id)
+                    print(f'A es igual {a.id}')
+                    self.pred = a if a.id!= self.id else None #Busco quien ahora es el sucesor
+                except:
+                    print('Error in select new predecesor')
+                    
+                print('Salio del bloque try except')
+                print(f'Mi nuevo predecesor es {self.pred.ip}')
+            time.sleep(3)
 
     # Store key method to store a key-value pair and replicate to the successor
     def store_key(self, key: str, value: str):
