@@ -461,6 +461,22 @@
         "documentation": {}
     },
     {
+        "label": "Sender",
+        "importPath": "utils",
+        "description": "utils",
+        "isExtraImport": true,
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
+        "label": "Sender",
+        "importPath": "utils",
+        "description": "utils",
+        "isExtraImport": true,
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
         "label": "ir_datasets",
         "kind": 6,
         "isExtraImport": true,
@@ -520,20 +536,20 @@
         "documentation": {}
     },
     {
-        "label": "*",
-        "importPath": "logger",
-        "description": "logger",
-        "isExtraImport": true,
-        "detail": "logger",
-        "documentation": {}
-    },
-    {
         "label": "zmq",
         "kind": 6,
         "isExtraImport": true,
         "importPath": "zmq",
         "description": "zmq",
         "detail": "zmq",
+        "documentation": {}
+    },
+    {
+        "label": "*",
+        "importPath": "logger",
+        "description": "logger",
+        "isExtraImport": true,
+        "detail": "logger",
         "documentation": {}
     },
     {
@@ -1191,6 +1207,15 @@
         "description": "src.utils",
         "peekOfCode": "def is_eq(array1, array2):\n    a1_only, a2_only = compare_arrays(array1, array2)\n    return (len(a1_only) == 0) and (len(a2_only) == 0)",
         "detail": "src.utils",
+        "documentation": {}
+    },
+    {
+        "label": "Sender",
+        "kind": 6,
+        "importPath": "test.zmq.utils",
+        "description": "test.zmq.utils",
+        "peekOfCode": "class Sender:\n    def __init__(self,a,b):\n        self.a=a\n        self.b=b",
+        "detail": "test.zmq.utils",
         "documentation": {}
     },
     {
