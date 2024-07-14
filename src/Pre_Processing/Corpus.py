@@ -1,6 +1,6 @@
 from typing import List, Tuple
 import gensim
-from Pre_Processing.Document import Document, DATA_UBICATION
+from Pre_Processing.Document import Document, DATA_UBICATION, DOCUMENTS_UBICATION
 from Pre_Processing.Document_Folder_Access import read_documents
 class Corpus:
     def __init__(self,docs : List[Document], model : gensim.models.TfidfModel, dictionary : gensim.corpora.Dictionary, sim_matrix : gensim.similarities.MatrixSimilarity):

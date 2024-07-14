@@ -1,0 +1,15 @@
+Técnicas de Aprendizaje Automático y Profundo
+•	Aprendizaje Espaciotemporal: Los modelos basados en aprendizaje automático han sido adaptados para capturar la naturaleza espaciotemporal de los datos de vuelos, incluyendo la ubicación geográfica de los aeropuertos y los patrones temporales de operaciones y retrasos [1].
+•	Propagación de Retrasos: Algunos estudios se han centrado específicamente en predecir cómo los retrasos en un vuelo pueden afectar a otros vuelos conectados, utilizando redes neuronales profundas para modelar estas dinámicas complejas [3].
+
+Integración con Tecnologías de Voz Domésticas
+•	Interfaz de Usuario Amigable: La integración de sistemas de predicción de retrasos con tecnologías de voz domésticas, como Amazon Alexa, ha demostrado ser una forma efectiva de hacer que la información sea accesible para los usuarios de manera rápida y eficiente [2].
+
+Mejora Continua y Perspectivas Futuras
+•	Evaluación y Comparación: Los modelos propuestos han sido evaluados comparativamente con métodos tradicionales, mostrando una mejora significativa en la precisión de las predicciones de retrasos de vuelos [1, 2, 3].
+•	Expansión de Aplicaciones: Existe un potencial considerable para expandir estos enfoques a otras áreas donde la predicción precisa y la adaptabilidad sean críticas, como el transporte público, el tráfico urbano, y la logística [2].
+
+[1] Spatiotemporal Propagation Learning for Network-Wide Flight Delay Prediction
+[2] Alexa, Predict My Flight Delay
+[3] Flight Delay Propagation Prediction Based on Deep Learning
+Correcto
