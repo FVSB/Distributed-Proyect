@@ -4,7 +4,7 @@ import time
 import os
 from datetime import datetime
 import inspect
-
+import traceback
 # Crea la carpeta 'logs' si no existe
 logs_dir = "app/logs"
 if not os.path.exists(logs_dir):
@@ -56,7 +56,7 @@ def log_message(message, level="INFO", extra_data={}, func=None):
     log_entry = {
         "timestamp": datetime.now().isoformat(),
         "level": level,
-        "message": message,
+        "message": f'{message} Error: {traceback.format_exc()}',
         "extra_data": extra_data,
         "method": caller_method,
         "line": caller_line

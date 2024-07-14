@@ -233,8 +233,7 @@ class ChordNode:
         Returns:
             ChordNodeReference: _description_
         """
-        if id==685966170926969970295131996809687121594286967556:
-            log_message(f'El nodo con id {id } se esta buscando en closest_preceding_finger',func=ChordNode.closest_preceding_finger)
+        
         for i in range(self.m - 1, -1, -1):
             if self.finger[i] and self._inbetween(self.finger[i].id, self.id, id):
                 return self.finger[i]
@@ -244,17 +243,33 @@ class ChordNode:
     # Method to join a Chord network using 'node' as an entry point
     def join(self, node: 'ChordNodeReference'):
         """
-            Method to join a Chord network using 'node' as an entry point
+            Method to join a Chord network using 'node' as an entry point 
+            Siempre se busca un sucesor por lo tanto tengo que chequear si el nodo puede ser predecesor mio
         Args:
             node (ChordNodeReference): _description_
         """
         log_message(f'El nodo {node.id} mando solicitud de unirse como predecesor',func=ChordNode.join )
+        # Si 
+        
         if node:
-            self.pred = None
-            self.succ = node.find_successor(self.id)
-            log_message(f'Este es el sucesor {self.succ}',func=ChordNode.join)
-            self.succ.notify(self.ref)
-        else:
+            if self.succ.id==self.id:# Es pq no tengo sucesor entonces acepto a cualquiera
+                # Acepto y le digo que me haga su predecesor
+                # Mi succ nuevo será el sucesor en el nuevo nodo
+                self.succ=node  #node.find_successor(self.id) # Si da bateo solo quedarme con el nodo
+                log_message(f'Acabo de actualizar mi sucesor al nodo {self.succ.id}',func=self.join)
+                self.succ.notify(self.id)
+                log_message(f'Mande a notificar a mi nuevo sucesor :{self.succ.id} para que me haga su predecesor ',func=self.join)
+            else: # Caso que ya tengo un sucesor
+                # Le pido al nodo el sucesor mio en su anillo
+                node_succ=node   #node.find_successor(self.id) # Despues añado que busque al sucesor
+                if self._inbetween(node_succ.id,self.id,self.succ.id): # Es que se puede insertar pq debe estar entre yo y mi sucesor
+                   self.succ=node_succ # Actualizo mi sucesor
+                   log_message(f'Acabo de actualizar mi sucesor al nodo {self.succ.id}',func=self.join)
+                   self.succ.notify(self.id)# Notifico para que me haga su predecesor
+                   log_message(f'Mande a notificar a mi nuevo sucesor :{self.succ.id} para que me haga su predecesor ',func=self.join)
+                
+          
+        else: # Despues eliminar esto
             self.succ = self.ref
             self.pred = None
         # Si no puedo le respondo por mis ips
@@ -274,7 +289,7 @@ class ChordNode:
                     log_message('stabilize',func=ChordNode.stabilize)
                     if self.succ is None: self.succ=self.ref
                     try: 
-                        x = self.succ.pred 
+                        x = self.succ.pred # Aca seria preguntar por quien es el sucesor de mi id
                     except: # Esto es que no responde el sucesor 
                         count_failed+=1
                         
@@ -302,22 +317,7 @@ class ChordNode:
                             # y se desconecto pues poner al sucesor como yo mismo
                             log_message(f' Fallo comunicarse con el nuevo sucesor {e}',func=ChordNode.stabilize,level='ERROR')
                             self.succ=self.ref
-                elif self.pred: # Caso que no tengo sucesor pero si tengo predecesor 
-                    
-                    #Caso de que el predecesor no tenga predecesor => son dos nodos solos en la red:
-                    node=self.pred.pred
-                    if node.id==self.pred.id:  # En este caso hacemos que el sucesor sea  nuestro predecesor
-                       
-                        self.succ=self.pred
-                    else: # Entonces es que hay mas 2 nodos en la red => implica buscar el sucesor de 0
-                        log_message(f'Entro en buscar el nodo 0')
-                        self.succ=self.pred.find_successor(0)
-                        
-                    
-                    self.pred.notify(self.ref)
-                
-                    
-                
+        
                     
             except Exception as e:
                 
@@ -335,6 +335,8 @@ class ChordNode:
             pass
         if not self.pred or self._inbetween(node.id, self.pred.id, self.id):
             self.pred = node
+        else:
+            pass # Enviar mensaje que de no puede y le paso al que tengo como como predecesor de ese id
 
     # Fix fingers method to periodically update the finger table
     def fix_fingers(self):
@@ -375,18 +377,15 @@ class ChordNode:
                                 break
                             i= i+1 if i<self.m else 0
                         
-                        if not change and self.ip=='172.17.0.4' :
-                            log_message(f'ENtro en el if ya kjkkkk',func=ChordNode.fix_fingers)
-                            a=ChordNodeReference('172.17.0.2')
+                        if not change  :
+                            log_message(f'No se pudo encontrar un nuevo sucesor para el nodo {a.id} por lo tanto yo sere el sucesor',func=ChordNode.fix_fingers)
+                            a=self.ref # Despues ver si se puede llamar al nodo '0' para que sea el
                         log_message(f'El nodo a ahora es {a}',func=ChordNode.fix_fingers)
                     except:
                         log_message(f'Fallo buscar el sucesor del prececesor del nodo {a.id+1}',)
                 
 
                 self.finger[self.next] = a
-               # print('/'*40)
-               # print(f'Mis finger table es {self.finger} ')
-               # print('+'*40)
             except Exception as e:
                 log_message(f"ERROR in fix_fingers: {e}",func=ChordNode.fix_fingers,level='ERROR')
             time.sleep(3) # 10
