@@ -59,13 +59,21 @@ class ChordNodeReference:
     
     def find_successor(self, id: int) -> 'ChordNodeReference':
         """ Method to find the successor of a given id"""
-        response = self._send_data(FIND_SUCCESSOR, str(id)).decode().split(',')
-        return ChordNodeReference(response[1], self.port)
+        response=-1
+        try:
+            response = self._send_data(FIND_SUCCESSOR, str(id)).decode().split(',')
+            return ChordNodeReference(response[1], self.port)
+        except Exception as e:
+            log_message(f'Hubo un error en find_successor con response {response} de tipo {type(response)} con Error:{e}',func=self.find_successor)
 
     # Method to find the predecessor of a given id
     def find_predecessor(self, id: int) -> 'ChordNodeReference':
-        response = self._send_data(FIND_PREDECESSOR, str(id)).decode().split(',')
-        return ChordNodeReference(response[1], self.port)
+        try:
+            response = self._send_data(FIND_PREDECESSOR, str(id)).decode().split(',')
+            return ChordNodeReference(response[1], self.port)
+        except Exception as e:
+            log_message(f'Hubo un error en find_successor con response {response} de tipo {type(response)} con Error:{e}',func=self.find_predecessor)
+            
 
     
     # Property to get the successor of the current node
@@ -148,6 +156,7 @@ class ChordNode:
         threading.Thread(target=self.show,daemon=True).start() # Start funcion que se esta printeando todo el tipo cada n segundos
         threading.Thread(target=self._send_broadcast,daemon=True,args=(JOIN,self.ref,)).start() # Enviar broadcast cuando no tengo sucesor
         threading.Thread(target=self._recive_broadcastt,daemon=True).start() # Recibir continuamente broadcast
+        threading.Thread(target=self.search_test,daemon=True).start()
 
     @property
     def key_range(self):
@@ -157,6 +166,20 @@ class ChordNode:
         """
         return self._key_range
     
+    
+    def search_test(self):
+        try:
+            while True:
+                time.sleep(3)
+                log_message('%'*20,level='INFO')
+                for i in range(0,20):
+                    node=self.find_succ(i)
+                    log_message(f'El nodo que le pertenece el id {i} es el nodo con id {node.id}')
+                log_message('+'*20,level='INFO')
+        except Exception as e:
+            log_message(f'Error buscando informacion {e}',self.search_test)
+        
+            
     def show(self):
         """
         Show my ip and id and mi predecessor and succesors ips and ids
@@ -280,14 +303,20 @@ class ChordNode:
         """
         node:ChordNodeReference = self
         # Comprobar que el sucesor esta vivo, sino se comprueba por 
-
-        while not self._inbetween(id, node.id, node.succ.id):
-            if node.id==self.id:
-                node=self.closest_preceding_finger(id)
-            else:
-                node = node.closest_preceding_finger(id)
+        asked=set() # ids a los que ya le pregunte
+        if not self._inbetween(id, node.id, node.succ.id):
+        #while not self._inbetween(id, node.id, node.succ.id):
+        #    if node.id==self.id:
+        #        node=self.closest_preceding_finger(id)
+        #    else:
+        #        node = node.closest_preceding_finger(id)
+        #    
+        #if id in [i for i in range(0,20)]:log_message(f'El nodo a retornar tiene id {node.id } a buscar la llave {id}',func=self.find_pred)
+            try:
+                return self.succ.find_predecessor(id)
+            except :
+                log_message(f'Hubo un error preguntando a los nodos por el id {id}',func=self.find_pred)
             
-        #print(f'El nodo a retornar tiene id {node.id } a buscar la llave {id}')
         return node
 
     # Method to find the closest preceding finger of a given id

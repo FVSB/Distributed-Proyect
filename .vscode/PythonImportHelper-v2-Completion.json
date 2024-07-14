@@ -53,6 +53,15 @@
         "documentation": {}
     },
     {
+        "label": "traceback",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "traceback",
+        "description": "traceback",
+        "detail": "traceback",
+        "documentation": {}
+    },
+    {
         "label": "hashlib",
         "kind": 6,
         "isExtraImport": true,
@@ -95,15 +104,6 @@
         "importPath": "sys",
         "description": "sys",
         "detail": "sys",
-        "documentation": {}
-    },
-    {
-        "label": "traceback",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "traceback",
-        "description": "traceback",
-        "detail": "traceback",
         "documentation": {}
     },
     {
@@ -984,7 +984,7 @@
         "kind": 6,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "class ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n    # Internal method to send data to the referenced node\n    def _send_data(self, op: int, data: str = None) -> bytes:\n        #print(f'mandando la data con op{op} - y data {data}')\n        log_message(f'mandando la data con op{op} - y data {data}',func=ChordNodeReference._send_data)\n        try:",
+        "peekOfCode": "class ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n    # Internal method to send data to the referenced node\n    def _send_data(self, op: int, data: str = None) -> bytes:\n        #print(f'mandando la data con op{op} - y data {data}')\n        #log_message(f'mandando la data con op{op} - y data {data}',func=ChordNodeReference._send_data)\n        try:",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -1418,6 +1418,60 @@
         "description": "src.utils",
         "peekOfCode": "def is_eq(array1, array2):\n    a1_only, a2_only = compare_arrays(array1, array2)\n    return (len(a1_only) == 0) and (len(a2_only) == 0)",
         "detail": "src.utils",
+        "documentation": {}
+    },
+    {
+        "label": "RecursoCompartido",
+        "kind": 6,
+        "importPath": "test.concurrencia_con_hilos.example",
+        "description": "test.concurrencia_con_hilos.example",
+        "peekOfCode": "class RecursoCompartido:\n    def __init__(self):\n        self.recurso = 0\n        self.thread_lock = threading.Lock()\n        self.async_lock = asyncio.Lock()\n    def leer_recurso(self):\n        with self.thread_lock:\n            valor = self.recurso\n            print(f\"[Hilo] Leyendo el recurso: {valor}\")\n            return valor",
+        "detail": "test.concurrencia_con_hilos.example",
+        "documentation": {}
+    },
+    {
+        "label": "lector",
+        "kind": 2,
+        "importPath": "test.concurrencia_con_hilos.example",
+        "description": "test.concurrencia_con_hilos.example",
+        "peekOfCode": "def lector():\n    for _ in range(5):\n        recurso_compartido.leer_recurso()\n        threading.Event().wait(1)\ndef escritor():\n    for i in range(5):\n        recurso_compartido.escribir_recurso(i)\n        threading.Event().wait(1)\n# Funciones asincrónicas\nasync def lector_async():",
+        "detail": "test.concurrencia_con_hilos.example",
+        "documentation": {}
+    },
+    {
+        "label": "escritor",
+        "kind": 2,
+        "importPath": "test.concurrencia_con_hilos.example",
+        "description": "test.concurrencia_con_hilos.example",
+        "peekOfCode": "def escritor():\n    for i in range(5):\n        recurso_compartido.escribir_recurso(i)\n        threading.Event().wait(1)\n# Funciones asincrónicas\nasync def lector_async():\n    for _ in range(5):\n        await recurso_compartido.leer_recurso_async()\n        await asyncio.sleep(1)\nasync def escritor_async():",
+        "detail": "test.concurrencia_con_hilos.example",
+        "documentation": {}
+    },
+    {
+        "label": "recurso_compartido",
+        "kind": 5,
+        "importPath": "test.concurrencia_con_hilos.example",
+        "description": "test.concurrencia_con_hilos.example",
+        "peekOfCode": "recurso_compartido = RecursoCompartido()\n# Funciones de hilo\ndef lector():\n    for _ in range(5):\n        recurso_compartido.leer_recurso()\n        threading.Event().wait(1)\ndef escritor():\n    for i in range(5):\n        recurso_compartido.escribir_recurso(i)\n        threading.Event().wait(1)",
+        "detail": "test.concurrencia_con_hilos.example",
+        "documentation": {}
+    },
+    {
+        "label": "hilo_lector",
+        "kind": 5,
+        "importPath": "test.concurrencia_con_hilos.example",
+        "description": "test.concurrencia_con_hilos.example",
+        "peekOfCode": "hilo_lector = threading.Thread(target=lector)\nhilo_escritor = threading.Thread(target=escritor)\nhilo_lector.start()\nhilo_escritor.start()\n# Ejecución asincrónica\nasync def main():\n    await asyncio.gather(\n        lector_async(),\n        escritor_async()\n    )",
+        "detail": "test.concurrencia_con_hilos.example",
+        "documentation": {}
+    },
+    {
+        "label": "hilo_escritor",
+        "kind": 5,
+        "importPath": "test.concurrencia_con_hilos.example",
+        "description": "test.concurrencia_con_hilos.example",
+        "peekOfCode": "hilo_escritor = threading.Thread(target=escritor)\nhilo_lector.start()\nhilo_escritor.start()\n# Ejecución asincrónica\nasync def main():\n    await asyncio.gather(\n        lector_async(),\n        escritor_async()\n    )\nasyncio.run(main())",
+        "detail": "test.concurrencia_con_hilos.example",
         "documentation": {}
     },
     {
