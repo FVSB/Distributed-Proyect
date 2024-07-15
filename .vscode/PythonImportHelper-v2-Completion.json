@@ -205,6 +205,41 @@
         "documentation": {}
     },
     {
+        "label": "utils",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "utils",
+        "description": "utils",
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
+        "label": "uuid",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "uuid",
+        "description": "uuid",
+        "detail": "uuid",
+        "documentation": {}
+    },
+    {
+        "label": "copy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "copy",
+        "description": "copy",
+        "detail": "copy",
+        "documentation": {}
+    },
+    {
+        "label": "*",
+        "importPath": "chord",
+        "description": "chord",
+        "isExtraImport": true,
+        "detail": "chord",
+        "documentation": {}
+    },
+    {
         "label": "asyncio",
         "kind": 6,
         "isExtraImport": true,
@@ -608,15 +643,6 @@
         "description": "Pre_Processing.Corpus",
         "isExtraImport": true,
         "detail": "Pre_Processing.Corpus",
-        "documentation": {}
-    },
-    {
-        "label": "utils",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "utils",
-        "description": "utils",
-        "detail": "utils",
         "documentation": {}
     },
     {
@@ -1112,7 +1138,7 @@
         "kind": 6,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "class ChordNodeReference:\n    def __init__(self,ip: str, port: int = 8001):\n        self.id=getShaRepr(ip)\n        self.ip=ip\n        self.port=port\n        self.url=getChordNameAddress(self.id)\n    def ping(self):\n        \"\"\"Devuelve la instancia de la clase\n            Si la clase se desconecto None\n        Raises:",
+        "peekOfCode": "class ChordNodeReference:\n    def __init__(self,ip: str, port: int = 8001):\n        self.id_=getShaRepr(ip)\n        self.ip_=ip\n        self.port_=port\n        self.url_=getChordNameAddress(self.id)\n    @property \n    def id(self):\n        return self.id_\n    @id.setter",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -1121,7 +1147,16 @@
         "kind": 6,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "class ChordNode:\n    def register_url(self,object,url:str,daemon:Pyro5.server.Daemon)->bool:\n        \"\"\"\n        Dado una instancia de un objeto , la url y el daemon de pyro lo registra\n        Args:\n            object (_type_): _description_\n            url (_type_): _description_\n            daemon (_type_): _description_\n        \"\"\"\n        ns=Pyro5.api.locate_ns()",
+        "peekOfCode": "class ChordNode:\n    def check_url(self,object,url:str,time_=4):\n        \"\"\"\n        Dado una instancia de un objecto y una url chequea que esté activa\n        Si no la esta la registra\n        Args:\n            object (object): _description_\n            url (str): _description_\n            time_ (int, optional): _description_. Defaults to 4.\n        \"\"\"",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "get_remote_objet",
+        "kind": 2,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "def get_remote_objet(url:str):\n    \"\"\"Devuelve el objeto remoto dada una url\n        Puede lanzar excep si no la url se desconecto\n    Args:\n        url (str): _description_\n    \"\"\"\n    ns = Pyro5.api.locate_ns()\n    uri = ns.lookup(url)\n    return  Pyro5.api.Proxy(uri)\ndef getShaRepr(data: str, max_value: int = 16):",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -1139,7 +1174,7 @@
         "kind": 2,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "def getChordNameAddress(id_:int):\n    return f'{id_}.chord'\ndef check_if_url_is_active(url:str):\n        \"\"\"Chequea que urls estan activas \"\"\"\n        ns = Pyro5.api.locate_ns()\n        uri = ns.lookup(url)\n        try:\n            proxy = Pyro5.api.Proxy(uri)\n            # Intentar llamar a un método que confirme la conexión o estado del servidor\n            # Puedes usar cualquier método definido en el objeto remoto para confirmar la conexión",
+        "peekOfCode": "def getChordNameAddress(id_:int):\n    return f'{id_}.chord'\ndef check_if_url_is_active(url:str):\n        \"\"\"Chequea que urls estan activas \"\"\"\n        ns = Pyro5.api.locate_ns()\n        uri = ns.lookup(url)\n        try:\n            proxy:ChordNode = Pyro5.api.Proxy(uri)\n            # Intentar llamar a un método que confirme la conexión o estado del servidor\n            # Puedes usar cualquier método definido en el objeto remoto para confirmar la conexión",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -1148,7 +1183,43 @@
         "kind": 2,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "def check_if_url_is_active(url:str):\n        \"\"\"Chequea que urls estan activas \"\"\"\n        ns = Pyro5.api.locate_ns()\n        uri = ns.lookup(url)\n        try:\n            proxy = Pyro5.api.Proxy(uri)\n            # Intentar llamar a un método que confirme la conexión o estado del servidor\n            # Puedes usar cualquier método definido en el objeto remoto para confirmar la conexión\n            node:ChordNodeReference = proxy.ping()  # Suponiendo que el objeto remoto tiene un método ping() para verificar la conexión\n            if node is not None:  # Puedes definir el criterio para confirmar que el servidor está activo",
+        "peekOfCode": "def check_if_url_is_active(url:str):\n        \"\"\"Chequea que urls estan activas \"\"\"\n        ns = Pyro5.api.locate_ns()\n        uri = ns.lookup(url)\n        try:\n            proxy:ChordNode = Pyro5.api.Proxy(uri)\n            # Intentar llamar a un método que confirme la conexión o estado del servidor\n            # Puedes usar cualquier método definido en el objeto remoto para confirmar la conexión\n            node:ChordNodeReference = proxy.ping()  # Suponiendo que el objeto remoto tiene un método ping() para verificar la conexión\n            node=ChordNodeReference(node.ip,node.port)",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "get_guid",
+        "kind": 2,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "def get_guid():\n    # Generar dos GUIDs\n    guid1 = uuid.uuid4()\n    return str(guid1)\ndef clone_object(obj):\n    return copy.deepcopy(obj)\ndef objects_to_send(object,daemon):\n        copy_ref=clone_object(object)\n        random_url=f'{get_guid()}.{get_guid()}'\n        register_url(copy_ref,random_url,daemon)",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "clone_object",
+        "kind": 2,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "def clone_object(obj):\n    return copy.deepcopy(obj)\ndef objects_to_send(object,daemon):\n        copy_ref=clone_object(object)\n        random_url=f'{get_guid()}.{get_guid()}'\n        register_url(copy_ref,random_url,daemon)\n        return copy_ref\ndef register_url(object,url:str,daemon:Pyro5.server.Daemon)->bool:\n    \"\"\"\n    Dado una instancia de un objeto , la url y el daemon de pyro lo registra",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "objects_to_send",
+        "kind": 2,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "def objects_to_send(object,daemon):\n        copy_ref=clone_object(object)\n        random_url=f'{get_guid()}.{get_guid()}'\n        register_url(copy_ref,random_url,daemon)\n        return copy_ref\ndef register_url(object,url:str,daemon:Pyro5.server.Daemon)->bool:\n    \"\"\"\n    Dado una instancia de un objeto , la url y el daemon de pyro lo registra\n    Args:\n        object (_type_): _description_",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "register_url",
+        "kind": 2,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "def register_url(object,url:str,daemon:Pyro5.server.Daemon)->bool:\n    \"\"\"\n    Dado una instancia de un objeto , la url y el daemon de pyro lo registra\n    Args:\n        object (_type_): _description_\n        url (_type_): _description_\n        daemon (_type_): _description_\n    \"\"\"\n    ns=Pyro5.api.locate_ns()\n    # Registrar los objetos remotos en el servidor de no",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -1162,11 +1233,38 @@
         "documentation": {}
     },
     {
+        "label": "ChordNodeReference",
+        "kind": 6,
+        "importPath": "distributed.chord_referenc",
+        "description": "distributed.chord_referenc",
+        "peekOfCode": "class ChordNodeReference:\n    def __init__(self,ip: str, port: int = 8001):\n        self.id=getShaRepr(ip)\n        self.ip=ip\n        self.port=port\n        self.url=getChordNameAddress(self.id)\n    #def ping(self):\n    #    \"\"\"Devuelve la instancia de la clase\n    #        Si la clase se desconecto None\n#",
+        "detail": "distributed.chord_referenc",
+        "documentation": {}
+    },
+    {
+        "label": "getShaRepr",
+        "kind": 2,
+        "importPath": "distributed.chord_referenc",
+        "description": "distributed.chord_referenc",
+        "peekOfCode": "def getShaRepr(data: str, max_value: int = 16):\n    # Genera el hash SHA-1 y obtén su representación en hexadecimal\n    hash_hex = hashlib.sha1(data.encode()).hexdigest()\n    # Convierte el hash hexadecimal a un entero\n    hash_int = int(hash_hex, 16)\n    # Define un arreglo o lista con los valores del 0 al 16\n    values = list(range(max_value + 1))\n    # Usa el hash como índice para seleccionar un valor del arreglo\n    # Asegúrate de que el índice esté dentro del rango válido\n    index = hash_int % len(values)",
+        "detail": "distributed.chord_referenc",
+        "documentation": {}
+    },
+    {
+        "label": "getChordNameAddress",
+        "kind": 2,
+        "importPath": "distributed.chord_referenc",
+        "description": "distributed.chord_referenc",
+        "peekOfCode": "def getChordNameAddress(id_:int):\n    return f'{id_}.chord'\nimport Pyro5.api\n@Pyro5.api.expose\nclass ChordNodeReference:\n    def __init__(self,ip: str, port: int = 8001):\n        self.id=getShaRepr(ip)\n        self.ip=ip\n        self.port=port\n        self.url=getChordNameAddress(self.id)",
+        "detail": "distributed.chord_referenc",
+        "documentation": {}
+    },
+    {
         "label": "Sender",
         "kind": 6,
         "importPath": "distributed.emisor",
         "description": "distributed.emisor",
-        "peekOfCode": "class Sender:\n    def send_string(self, string, receiver_uri):\n        with Pyro5.api.Proxy(receiver_uri) as receiver:\n            confirmation = receiver.receive_string(string)\n            print(f\"Confirmación del receptor: {confirmation}\")\ndef main():\n    #ns = Pyro5.api.locate_ns(host=\"localhost\", port=9090)\n    #print(\"Nameserver located successfully.\")\n    # Ubicar el servidor de nombres PyroNS\n                with Pyro5.api.locate_ns() as ns:",
+        "peekOfCode": "class Sender:\n    def send_string(self, string, receiver_uri):\n        with Pyro5.api.Proxy(receiver_uri) as receiver:\n            confirmation = receiver.receive_string(string)\n            print(f\"Confirmación del receptor: {confirmation}\")\ndef main():\n    ns = Pyro5.api.locate_ns()\n    print(\"Nameserver located successfully.\")\n     #Ubicar el servidor de nombres PyroNS\n                #with Pyro5.api.locate_ns() as ns:",
         "detail": "distributed.emisor",
         "documentation": {}
     },
@@ -1175,8 +1273,17 @@
         "kind": 2,
         "importPath": "distributed.emisor",
         "description": "distributed.emisor",
-        "peekOfCode": "def main():\n    #ns = Pyro5.api.locate_ns(host=\"localhost\", port=9090)\n    #print(\"Nameserver located successfully.\")\n    # Ubicar el servidor de nombres PyroNS\n                with Pyro5.api.locate_ns() as ns:\n                    # Obtener todos los nombres registrados\n                    nombres_registrados = ns.list()\n                    print(nombres_registrados)\n    #receiver_uri = \"PYRO:example.receiver@receptor:9090\"  # Cambiar a 9091\n    #ns.lookup(\"example.receivere\")",
+        "peekOfCode": "def main():\n    ns = Pyro5.api.locate_ns()\n    print(\"Nameserver located successfully.\")\n     #Ubicar el servidor de nombres PyroNS\n                #with Pyro5.api.locate_ns() as ns:\n                #    # Obtener todos los nombres registrados\n                #    nombres_registrados = ns.list()\n                #    print(nombres_registrados)\n    receiver_uri = \"PYRO:example.receiver@receptor:9090\"  # Cambiar a 9091\n    ns.lookup(\"example.receiver\")",
         "detail": "distributed.emisor",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "distributed.iniciar",
+        "description": "distributed.iniciar",
+        "peekOfCode": "def main():\n    ip = socket.gethostbyname(socket.gethostname())\n    objeto = ChordNode(ip,m=3)\n    #daemon = Pyro5.server.Daemon()\n    #uri = daemon.register(objeto)\n    #\n    #ns = Pyro5.api.locate_ns(host='127.0.0.1')\n    #ns.register(objeto.url, uri)\n    #\n    #print(f\"Objeto1 en Server1 URI: {uri}\")",
+        "detail": "distributed.iniciar",
         "documentation": {}
     },
     {
@@ -1225,11 +1332,29 @@
         "documentation": {}
     },
     {
+        "label": "ChordNodeReference",
+        "kind": 6,
+        "importPath": "distributed.utils",
+        "description": "distributed.utils",
+        "peekOfCode": "class ChordNodeReference:\n    def __init__(self,ip: str, port: int = 8001):\n        self.id=getShaRepr(ip)\n        self.ip=ip\n        self.port=port\n        self.url=getChordNameAddress(self.id)\n    def ping(self):\n        \"\"\"Devuelve la instancia de la clase\n            Si la clase se desconecto None\n        Raises:",
+        "detail": "distributed.utils",
+        "documentation": {}
+    },
+    {
         "label": "getShaRepr",
         "kind": 2,
         "importPath": "distributed.utils",
         "description": "distributed.utils",
         "peekOfCode": "def getShaRepr(data: str, max_value: int = 16):\n    # Genera el hash SHA-1 y obtén su representación en hexadecimal\n    hash_hex = hashlib.sha1(data.encode()).hexdigest()\n    # Convierte el hash hexadecimal a un entero\n    hash_int = int(hash_hex, 16)\n    # Define un arreglo o lista con los valores del 0 al 16\n    values = list(range(max_value + 1))\n    # Usa el hash como índice para seleccionar un valor del arreglo\n    # Asegúrate de que el índice esté dentro del rango válido\n    index = hash_int % len(values)",
+        "detail": "distributed.utils",
+        "documentation": {}
+    },
+    {
+        "label": "getChordNameAddress",
+        "kind": 2,
+        "importPath": "distributed.utils",
+        "description": "distributed.utils",
+        "peekOfCode": "def getChordNameAddress(id_:int):\n    return f'{id_}.chord'\nclass ChordNodeReference:\n    def __init__(self,ip: str, port: int = 8001):\n        self.id=getShaRepr(ip)\n        self.ip=ip\n        self.port=port\n        self.url=getChordNameAddress(self.id)\n    def ping(self):\n        \"\"\"Devuelve la instancia de la clase",
         "detail": "distributed.utils",
         "documentation": {}
     },
