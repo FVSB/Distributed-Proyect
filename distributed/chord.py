@@ -1,190 +1,283 @@
+import Pyro5.api
 import socket
 import threading
 import sys
 import time
 import hashlib
 import traceback
+import subprocess
 import logging
-from helper.protocol_codes import *
 from helper.logguer import log_message
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
-#logger = logging.getLogger(__name__)
 
-# Function to hash a string using SHA-1 and return its integer representation
-#def getShaRepr(data: str):
-#    return int(hashlib.sha1(data.encode()).hexdigest(), 16)
-#
-
+    
 def getShaRepr(data: str, max_value: int = 16):
     # Genera el hash SHA-1 y obtén su representación en hexadecimal
     hash_hex = hashlib.sha1(data.encode()).hexdigest()
-    
+
     # Convierte el hash hexadecimal a un entero
     hash_int = int(hash_hex, 16)
-    
+
     # Define un arreglo o lista con los valores del 0 al 16
     values = list(range(max_value + 1))
-    
+
     # Usa el hash como índice para seleccionar un valor del arreglo
     # Asegúrate de que el índice esté dentro del rango válido
     index = hash_int % len(values)
-    
+
     # Devuelve el valor seleccionado
     return values[index]    
 
-# Class to reference a Chord node
-class ChordNodeReference:
-    def __init__(self, ip: str, port: int = 8001):
-        self.id = getShaRepr(ip)
-        self.ip = ip
-        self.port = port
+def getChordNameAddress(id_:int):
+    return f'{id_}.chord'
 
-    # Internal method to send data to the referenced node
-    def _send_data(self, op: int, data: str = None) -> bytes:
-        #print(f'mandando la data con op{op} - y data {data}')
-        #log_message(f'mandando la data con op{op} - y data {data}',func=ChordNodeReference._send_data)
-        try:
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                s.connect((self.ip, self.port))
-                s.sendall(f'{op},{data}'.encode('utf-8'))
-                new_data=s.recv(1024)
-                # print(f'Se recibioo de data envada con opcion {op} {str(new_data)}')
-                #log_message(f'Se recibioo de data envada con opcion {op} {str(new_data)}',func=ChordNodeReference._send_data)
-                return new_data
-        except Exception as e:
-            #print(f"ERROR sending data: {e} al nodo con id {self.id} e ip {self.ip}")
-            log_message(f"ERROR sending data: {e} al nodo con id {self.id} e ip {self.ip},Error:{str(traceback.format_exc())}",level='ERROR')
-            #logger.info()
-            traceback.print_exc()
-            return b''
-    
-    def find_successor(self, id: int) -> 'ChordNodeReference':
-        """ Method to find the successor of a given id"""
-        response=-1
-        try:
-            response = self._send_data(FIND_SUCCESSOR, str(id)).decode().split(',')
-            return ChordNodeReference(response[1], self.port)
-        except Exception as e:
-            log_message(f'Hubo un error en find_successor con response {response} de tipo {type(response)} con Error:{e}',func=self.find_successor)
-
-    # Method to find the predecessor of a given id
-    def find_predecessor(self, id: int) -> 'ChordNodeReference':
-        try:
-            response = self._send_data(FIND_PREDECESSOR, str(id)).decode().split(',')
-            return ChordNodeReference(response[1], self.port)
-        except Exception as e:
-            log_message(f'Hubo un error en find_successor con response {response} de tipo {type(response)} con Error:{e}',func=self.find_predecessor)
+def check_if_url_is_active(url:str):
+        """Chequea que urls estan activas """
             
-
-    
-    # Property to get the successor of the current node
-    @property
-    def succ(self) -> 'ChordNodeReference':
-        response = self._send_data(GET_SUCCESSOR).decode().split(',')
-        return ChordNodeReference(response[1], self.port)
-
-    # Property to get the predecessor of the current node
-    @property
-    def pred(self) -> 'ChordNodeReference':
-        response = self._send_data(GET_PREDECESSOR).decode().split(',')
-        return ChordNodeReference(response[1], self.port)
-
-    # Method to notify the current node about another node
-    def notify(self, node: 'ChordNodeReference'):
-        self._send_data(NOTIFY, f'{node.id},{node.ip}')
-
-    # Method to check if the predecessor is alive
-    def check_predecessor(self)->bool:
-        
-        response=self._send_data(CHECK_PREDECESSOR).decode().split(',')
-        
-        #print(f'La respuesta de si esta vivo el nodo vivo o no es {response}')
-        log_message(f'La respuesta de si esta vivo el nodo vivo o no es {response}',func=ChordNodeReference.check_predecessor,extra_data={'func':'check_predecesor from ChordReferenceNode'})
-        if response in ['',' ', None,EMPTYBIT]:
-            return   False
+        ns = Pyro5.api.locate_ns()
+        uri = ns.lookup(url)
         try:
-            node= ChordNodeReference(response[1], self.port)
-            return node.id==self.id
-        except:
-            log_message(f'Hubo problemas al tratar de conocer la respuesta del nodo predecesor que el envio',level='ERROR',func=self.check_predecessor)
-            return False
+            proxy = Pyro5.api.Proxy(uri)
+            # Intentar llamar a un método que confirme la conexión o estado del servidor
+            # Puedes usar cualquier método definido en el objeto remoto para confirmar la conexión
+            node:ChordNodeReference = proxy.ping()  # Suponiendo que el objeto remoto tiene un método ping() para verificar la conexión
+            if node is not None:  # Puedes definir el criterio para confirmar que el servidor está activo
+                return node
+            return None
+        except Exception as e:
+            log_message(f"Error al acceder a {uri}: {e}",func=check_if_url_is_active)
+            return None
 
-    # Method to find the closest preceding finger of a given id
-    def closest_preceding_finger(self, id: int) -> 'ChordNodeReference':
-        response = self._send_data(CLOSEST_PRECEDING_FINGER, str(id)).decode().split(',')
-        return ChordNodeReference(response[1], self.port)
+class ChordNodeReference:
+    def __init__(self,ip: str, port: int = 8001):
+        self.id=getShaRepr(ip)
+        self.ip=ip
+        self.port=port
+        self.url=getChordNameAddress(self.id)
+      
+     
+    def ping(self):
+        """Devuelve la instancia de la clase
+            Si la clase se desconecto None
 
-    # Method to store a key-value pair in the current node
-    def store_key(self, key: str, value: str):
-        self._send_data(STORE_KEY, f'{key},{value}')
+        Raises:
+            Exception: _description_
 
-    # Method to retrieve a value for a given key from the current node
-    def retrieve_key(self, key: str) -> str:
-        response = self._send_data(RETRIEVE_KEY, key).decode()
-        return response
-
-    def __str__(self) -> str:
-        return f'ChordNodeReference:{self.id},{self.ip},{self.port}'
-
-    def __repr__(self) -> str:
-        return str(self)
+        Returns:
+            _type_: _description_
+        """
+        return check_if_url_is_active(self.url) # Devuelvo el nodo de chord, None si se desconecto
+        
 
 
-# Class representing a Chord node
+@Pyro5.api.expose
 class ChordNode:
+    
+    def register_url(self,object,url:str,daemon:Pyro5.server.Daemon)->bool:
+        """
+        Dado una instancia de un objeto , la url y el daemon de pyro lo registra
+
+        Args:
+            object (_type_): _description_
+            url (_type_): _description_
+            daemon (_type_): _description_
+        """
+    
+        ns=Pyro5.api.locate_ns()
+        # Registrar los objetos remotos en el servidor de no
+        uri1 = daemon.register(object)
+        ns.register(url, uri1)
+        log_message(f'Registrada la url {url}',func=self.register_url)
+        return True
+    
+    def check_url(self,object,url:str,time_=4):
+        """
+        Dado una instancia de un objecto y una url chequea que esté activa
+        Si no la esta la registra
+        Args:
+            object (object): _description_
+            url (str): _description_
+            time_ (int, optional): _description_. Defaults to 4.
+        """
+        if not isinstance(url,str):
+            raise Exception(f'La url tiene que ser un string {url} no tipo, {type(url)}')
+        
+        while True:
+             # Iniciar el daemon
+                time.sleep(time_)
+                daemon = Pyro5.server.Daemon()
+                try:
+                    try:
+                            # Intentar conectar al servidor de nombres
+                            ns = Pyro5.api.locate_ns()
+                            log_message(f'El servidor de nombres existe',func=self.check_url)
+                            #Localizar la url
+                            uri = ns.lookup(url)
+                            log_message(f'La url: {url} se encuentra en el nameserver',func=self.check_url)
+                    except Exception:
+                            
+                            try:
+                                log_message(f'Mandando a registrar la url {url}',func=self.check_url)
+                                self.register_url(object,url,daemon)
+
+
+                            except:
+                                log_message(f'No se a podido registrar el link {url}',func=self.check_url)
+                                continue
+                            try:
+                                threading.Thread(target=daemon.requestLoop,daemon=True).start()
+                                log_message(f'Corriendo hilo del demonio de pyro para el url',func=self.check_url)
+                            except:
+                                traceback.print_exc()
+                except Exception as e:
+                    log_message(f'Hubo un problema con el registro de nombres: {e} Traceback: {traceback.format_exc()}',func=self.check_url)
+    
+    
+    
+    def check_nameserver(self,time_=4):
+        """Chequea que el DNS de pyro este activo
+
+        Args:
+            time_ (int, optional): _description_. Defaults to 4.
+        """
+        while True:
+            time.sleep(time_)
+            try:
+                # Intentar conectar al servidor de nombres
+                ns = Pyro5.api.locate_ns()
+                log_message(f'El name server de pyro está activo')
+            except Pyro5.errors.NamingError:
+                # Si no se puede conectar, levantar el servicio
+                log_message("No se encontró servidor de nombres en la red",func=self.check_nameserver)
+                time.sleep(time_*2)
+                subprocess.Popen(["python3", "-m", "Pyro5.nameserver","-H",""])
+                log_message(f'Reiniciado el nameserver',func=self.check_nameserver)
+                # Esperar un breve momento para que el servi
+                time.sleep(time_)
+
+                continue
+            
+    
+        
+            
+    def update_all_chord_url(self):
+        """Actualiza todas las urls activas de chrod en el NameServer
+        """
+        while True:
+            try:
+                
+                # Ubicar el servidor de nombres PyroNS
+                with Pyro5.api.locate_ns() as ns:
+                    # Obtener todos los nombres registrados
+                    nombres_registrados = ns.list()
+
+                    # Filtrar los nombres que terminan con ".chord"
+                    nombres_chord = [nombre for nombre in nombres_registrados if nombre.endswith(".chord")]
+                    log_message(f'Los nombres que hay hasta ahora {nombres_chord}')
+                    temp=[]
+                    temp_nodes=[]
+                    # Chequear por cada una si esta activa
+                    for url in nombres_chord:
+                        node=check_if_url_is_active(url)
+                        if node is None: continue
+                        #Añadir los nombres 
+                        temp.append(url)
+                        temp_nodes.append(node)
+  
+                    with self._check_url_lock: # Bloquea los recursos para poder hacer todo
+                        self.chord_urls= sorted(temp, key=lambda x: int(x.split('.')[0]), reverse=True) # Ahora actualizo los nombres de url
+                        self.actives_chord_nodes=sorted(temp, key=lambda x: x.id, reverse=True) # Ahora actualizo los nombres de los nodos
+                
+            except Exception as e:
+                log_message(f'Hubo un problema actualizando las urls de la chord_network {e} {traceback.format_exc()}',func=self.update_all_chord_url)
+
+    def _check_My_Url(self):
+        """Chequea constantemente que mi url esta activa
+        """
+        self.check_url(self,self.url,time_=4)
+        
+    
     def __init__(self, ip: str, port: int = 8001, m: int = 160): #m=160
         self.id = getShaRepr(ip)
         self.ip = ip
         self.port = port
-        self.ref:ChordNodeReference = ChordNodeReference(self.ip, self.port)
-        self.succ:ChordNodeReference = self.ref  # Initial successor is itself
-        self.pred:ChordNodeReference = None  # Initially no predecessor
+        self.url=getChordNameAddress(self.id)
+        self.ref:ChordNodeReference = ChordNodeReference(self.ip,self.port)
+        self.succ_:ChordNodeReference = self.ref # Initial successor is itself
+        self.pred_:ChordNodeReference = None  # Initially no predecessor
         self.m = m  # Number of bits in the hash/key space
         self.finger = [self.ref] * self.m  # Finger table
         self.index_in_fingers:dict[int,set[int]]={} # Diccionario que a cada id le asigna que indices ocupa en la finger table
         self.next = 0  # Finger table index to fix next
         self.data = {}  # Dictionary to store key-value pairs
-
         self._key_range=(-1,self.ip) # the key_range [a,b) if a =-1 because no have predecesor
         self.cache:dict[int,str]={} #diccionario con la cache de todos los nodos de la red
-        self._broadcast_lock:threading.Lock = threading.Lock()
-
-        # Start background threads for stabilization, fixing fingers, and checking predecessor
-        threading.Thread(target=self.stabilize, daemon=True).start()  # Start stabilize thread
-        threading.Thread(target=self.fix_fingers, daemon=True).start()  # Start fix fingers thread
-        threading.Thread(target=self.check_predecessor, daemon=True).start()  # Start check predecessor thread
-        threading.Thread(target=self.start_server, daemon=True).start()  # Start server thread
+        self._check_url_lock:threading.Lock =threading.RLock() # Lock para que solo un hilo pueda comprobar a la vez 
+        #las urls disponibles el hilo puede entrar a varias funciones con el mismo lock al mismo tiempo
+        self._chord_urls:list[str]=[]
+        self._chord_nodes:list[ChordNodeReference]=[]# ESta lista contiene los nodos referencias de los nodos activos de la red
+        
+        
+        # Threads
+        threading.Thread(target=self.check_nameserver,daemon=False).start() # thread to check the name server its active always
+        threading.Thread(target=self._check_My_Url,daemon=False).start() # Inicializa mi Url y ademas chequea que todo el tiempo este activa
+        threading.Thread(target=self.update_all_chord_url,daemon=True).start()#Actualiza todas las urls disponibles en el NameServer
         threading.Thread(target=self.show,daemon=True).start() # Start funcion que se esta printeando todo el tipo cada n segundos
-        threading.Thread(target=self._send_broadcast,daemon=True,args=(JOIN,self.ref,)).start() # Enviar broadcast cuando no tengo sucesor
-        threading.Thread(target=self._recive_broadcastt,daemon=True).start() # Recibir continuamente broadcast
-        threading.Thread(target=self.search_test,daemon=True).start()
-
+    
+    
     @property
-    def key_range(self):
+    def succ(self):
+        return self.succ_
+   
+    @succ.setter
+    def succ(self,value:ChordNodeReference):
+        self.succ_=value
+    @property
+    def pred(self):
+        return self.pred_
+    @pred.setter
+    def pred(self,value):
+        self.pred_=value
+    
+    
+    
+    @property
+    def chord_urls(self):
+        """"""
+        with self._check_url_lock:# No dejar que 2 hilos accediendo al mismo tiempo
+            return self._chord_urls
+        
+    @chord_urls.setter
+    def chord_urls(self,value:list[str]):
+        
+        with self._check_url_lock:
+            self._chord_urls=value
+    
+    
+    @property
+    def actives_chord_nodes(self)->list[ChordNodeReference]:
+        """Retorna una lista
+        con los nodos de chord activos ordenado de mayor a menor por si id
+
+        Returns:
+            _type_: _description_
+        """
+        with self._check_url_lock:
+            return self._chord_nodes
+    @actives_chord_nodes.setter
+    def actives_chord_nodes(self,value:list[ChordNodeReference]):
+        with self._check_url_lock:
+            self._chord_nodes=value
+        
+    @property
+    def key_range(self)->tuple[int,int]:
         """ 
         The key range of the chrod node [a,b) b is the id of this node
         
         """
         return self._key_range
-    
-    
-    def search_test(self):
-       
-            while True:
-                try:
-                    time.sleep(3)
-                    log_message('%'*20,level='INFO')
-                    for i in range(0,20):
-                        with ThreadPoolExecutor() as executor:
-                            future=executor.submit(self.find_succ,i) # Meterlo en el pool de hilos
-                            node=future.result(timeout=10)
-                            
-                            log_message(f'El nodo que le pertenece el id {i} es el nodo con id {node.id}')
-                    log_message('+'*20,level='INFO')
-                except Exception as e:
-                    log_message(f'Error buscando informacion {e}',self.search_test)
         
-            
+    
     def show(self):
         """
         Show my ip and id and mi predecessor and succesors ips and ids
@@ -205,149 +298,58 @@ class ChordNode:
             
             
             time.sleep(3) # Se presenta cada 10 segundos
-            
-    def _send_broadcast(self, op: int, data: str = None) -> bytes:
+    
+    
+    def ping(self)->ChordNodeReference:
+        """Devuelve mi referencia, osea mi url, id, ip ...
+        """
+        return self.ref
+    
+    def _send_broadcast(self) -> bytes:
        # Enviar broadcast cada vez que sienta que mi sucesor no existe
         while True:
             log_message(f'Tratando de hacer broadcast',func=self._send_broadcast)
-        #Enviar broadcast para descubrir mi nuevo sucesor 
+        #Enviar Broadcast por todas la urls menores que yo
             if self.succ.id==self.id or (self.succ.id!=self.id and self.pred is None) :
-                #with self._broadcast_lock:
+                
                     log_message(f'Voy a enviar un broadcast para buscar un sucesor ',func=self._send_broadcast)
                     try:
-                        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                        s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-                        s.sendto(f'{op}-{str(data)}'.encode(), (str(socket.INADDR_BROADCAST), self.port))
-                        log_message(f'Enviado el broadcast',func=self._send_broadcast) 
-                        s.close()
+                           for node_ref in self.actives_chord_nodes: # Por los nodos que hay esta  ordenados de mayor a menor
+                               if node_ref.id<self.id:
+                                   node:'ChordNode'=node_ref.ping()
+                                   if node is None:
+                                       log_message(f'El nodo {node_ref.ip} no está activo ',self._send_broadcast)
+                                       continue
+                                   if not node.join(self.ref): # Si no me puedo unir a el 
+                                       continue # Continuo hasta que uno me acepta
+                                   self.notify(node_ref)# Verifico si puedo hacerlo mi predecesor
+                                    
+                                   
+                                  
                          
                     except Exception as e:
                         log_message(f'Ocurrio un problema enviando el broadcast: {e}',level='ERROR',func=self._send_broadcast)
             time.sleep(3)
-       
-    def _recive_broadcastt(self):
-        try:
-            client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            client_socket.bind(('', self.port))  # Escucha en todas las interfaces en el puerto 8001
-            client_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-            # Habilitar el uso compartido del puerto
-            #client_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             
-            # Configurar un tiempo de espera
-            #client_socket.settimeout(0.2)  # Tiempo de espera de 200 ms
-            
-            while True:
-                try:
-                #with self._broadcast_lock:
-                    log_message('Esperando Broadcast',func=self._recive_broadcastt)
-                    message, address = client_socket.recvfrom(1024)
-                    log_message(f'El tipo de lo recibido en broadcast es {type(message)} ,  {type(address)}')
-                    log_message(f"Mensaje recibido desde {address}: {message.decode()}",func=self._recive_broadcastt)
-                    if address[0]!=socket.gethostbyname(socket.gethostname()):
-                        log_message('Se recibio desde otro nodo',func=self._recive_broadcastt)
-                        message=str(message.decode())
-                        log_message(f'Este ahora es el mensaje {message} que tiene un tipo {type(message)}',func=self._recive_broadcastt)
-                        op,node=message.split('-')
-                        op=int(op)
-                        log_message(f'LLego la respuesta con opcion {op} de tipo {type(op)}')
-                        if int(op)==JOIN:
-                            log_message(f'El mensaje recibido al broadcast era para join desde el ip {address[0]} de tipo {type(address[0])}')
-                            self.join(ChordNodeReference(address[0],self.port))
-                    time.sleep(3)
-                except:
-                    log_message(f'Error en el while True del recv broadcast Error: {traceback.format_exc()}',self._recive_broadcastt)
-        except Exception as e:
-            log_message(f'Error recibiendo broadcast {e}, Error: {traceback.format_exc()}',func=self._recive_broadcastt,level='ERROR')
-        
-        
-    # Helper method to check if a value is in the range (start, end]
-    def _inbetween(self, k: int, start: int, end: int) -> bool:
-        """Helper method to check if a value is in the range (start, end]
-
-        Args:
-            k (int): _description_
-            start (int): _description_
-            end (int): _description_
-
-        Returns:
-            bool: _description_
-        """
-        if start < end:
-            return start < k <= end
-        else:  # The interval wraps around 0
-            return start < k or k <= end
-
-      # Method to find the successor of a given id
-    def find_succ(self, id: int) -> 'ChordNodeReference':
-        """Method to find the successor of a given id
-
-        Args:
-            id (int): _description_
-
-        Returns:
-            ChordNodeReference: _description_
-        """
-        node = self.find_pred(id)  # Find predecessor of id
-        if node.id!= self.id:
-            return node.succ
+     # Notify method to INFOrm the node about another node
+    def notify(self, node: 'ChordNodeReference'):
+        """ Notify method to INFOrm the node about another node"""
+        if node.id == self.id:
+            pass
+        if not self.pred or self._inbetween(node.id, self.pred.id, self.id):
+            self.pred = node
         else:
-            return self.succ
-        
-            
-           
-
-    # Method to find the predecessor of a given id
-    def find_pred(self, id: int) -> 'ChordNodeReference':
-        """Method to find the predecessor of a given id
-
-        Args:
-            id (int): _description_
-
-        Returns:
-            ChordNodeReference: _description_
-        """
-        node:ChordNodeReference = self
-        # Comprobar que el sucesor esta vivo, sino se comprueba por 
-        asked=set() # ids a los que ya le pregunte
-        if not self._inbetween(id, node.id, node.succ.id):
-        #while not self._inbetween(id, node.id, node.succ.id):
-        #    if node.id==self.id:
-        #        node=self.closest_preceding_finger(id)
-        #    else:
-        #        node = node.closest_preceding_finger(id)
-        #    
-        #if id in [i for i in range(0,20)]:log_message(f'El nodo a retornar tiene id {node.id } a buscar la llave {id}',func=self.find_pred)
-            try:
-                return self.succ.find_predecessor(id)
-            except :
-                log_message(f'Hubo un error preguntando a los nodos por el id {id}',func=self.find_pred)
-            
-        return node
-
-    # Method to find the closest preceding finger of a given id
-    def closest_preceding_finger(self, id: int) -> 'ChordNodeReference':
-        """Method to find the closest preceding finger of a given id
-
-        Args:
-            id (int): _description_
-
-        Returns:
-            ChordNodeReference: _description_
-        """
-        
-        for i in range(self.m - 1, -1, -1):
-            if self.finger[i] and self._inbetween(self.finger[i].id, self.id, id):
-                return self.finger[i]
-        #log_message('El más cercano soy yo',func=ChordNode.closest_preceding_finger)
-        return self.ref
-
+            pass # Enviar mensaje que de no puede y le paso al que tengo como como predecesor de ese id
+    
     # Method to join a Chord network using 'node' as an entry point
-    def join(self, node: 'ChordNodeReference'):
+    def join(self, node: 'ChordNodeReference')->bool:
         """
             Method to join a Chord network using 'node' as an entry point 
             Siempre se busca un sucesor por lo tanto tengo que chequear si el nodo puede ser predecesor mio
         Args:
             node (ChordNodeReference): _description_
+            True para que si que el va hacer mi sucesor 
+            False a que no puede
         """
         log_message(f'El nodo {node.id} mando solicitud de unirse como predecesor',func=ChordNode.join )
         # Si 
@@ -357,9 +359,9 @@ class ChordNode:
                 # Acepto y le digo que me haga su predecesor
                 # Mi succ nuevo será el sucesor en el nuevo nodo
                 self.succ=node  #node.find_successor(self.id) # Si da bateo solo quedarme con el nodo
-                log_message(f'Acabo de actualizar mi sucesor al nodo {self.succ.id}',func=self.join)
-                self.succ.notify(self)
+                log_message(f'Acabo de actualizar mi sucesor al nodo {self.succ.id}',func=self.join)  
                 log_message(f'Mande a notificar a mi nuevo sucesor :{self.succ.id} para que me haga su predecesor ',func=self.join)
+                return True
             else: # Caso que ya tengo un sucesor
                 # Le pido al nodo el sucesor mio en su anillo
                 log_message(f'Entro aca la peticion del nodo {node.id}',func=self.join)
@@ -367,244 +369,28 @@ class ChordNode:
                 if self._inbetween(node_succ.id,self.id,self.succ.id) or self.pred is None: # Es que se puede insertar pq debe estar entre yo y mi sucesor
                    self.succ=node_succ if node_succ.id<self.id else node # Actualizo mi sucesor
                    log_message(f'Acabo de actualizar mi sucesor al nodo {self.succ.id}',func=self.join)
-                   self.succ.notify(self)# Notifico para que me haga su predecesor
-                   log_message(f'Mande a notificar a mi nuevo sucesor :{self.succ.id} para que me haga su predecesor ',func=self.join)
-                
+                   return True# Notifico para que me haga su predecesor
+                   #log_message(f'Mande a notificar a mi nuevo sucesor :{self.succ.id} para que me haga su predecesor ',func=self.join)
+            
           
         else: # Despues eliminar esto
             self.succ = self.ref
             self.pred = None
         # Si no puedo le respondo por mis ips
-
-    # Stabilize method to periodically verify and update the successor and predecessor
-    def stabilize(self):
-        """Stabilize method to periodically verify and update the successor and predecessor
-        """
-        Is=False
-        node=None
-        count_failed=0 # Cant de veces que se a tratado de establecer conexion  sin exito con el predecesor del sucesor
-        x=None
-        while True:
-            try:
-                Is=False
-                if self.succ.id != self.id: # Es pq tengo sucesor
-                    log_message('stabilize',func=ChordNode.stabilize)
-                    if self.succ is None: self.succ=self.ref
-                    try: 
-                        x = self.succ.pred # Aca seria preguntar por quien es el sucesor de mi id
-                    except: # Esto es que no responde el sucesor 
-                        count_failed+=1
-                        
-                        if count_failed>3:
-                            # Trata de contactar con el succ y preguntarle por el predecesor si pasa algun problema en la peticion
-                            # Mi sucesor soy yo
-                            #Si mi sucesor era mi antecesor entonces hago el antecesor null
-                            #if self.succ.id==self.pred.id: self.pred=None
-                            time.sleep(20)
-                            log_message('Seleccionando_Nuevo_Sucesor',func=ChordNode.stabilize)
-                            nearest_node=self.find_succ(self.id+1)
-                            log_message(f'EL nodo que tiene {nearest_node.id} el mas cercano',func=ChordNode.stabilize)
-                            self.succ=nearest_node if nearest_node.id!=self.succ.id else self.ref
-                            continue
-                       
-                    log_message(f' Este es X {x}',func=ChordNode.stabilize)
-                    if x and x.id != self.id:
-                        log_message(f'Otra vez x {x}',func=ChordNode.stabilize)
-                        if x and self._inbetween(x.id, self.id, self.succ.id):
-                            self.succ = x
-                        log_message('A Notificar',func=ChordNode.stabilize)
-                        try:
-                            self.succ.notify(self)
-                        except Exception as e: # Si no se puede conumicar con el nuevo sucesor caso que sea que era sucesor y predecesor
-                            # y se desconecto pues poner al sucesor como yo mismo
-                            log_message(f' Fallo comunicarse con el nuevo sucesor {e}',func=ChordNode.stabilize,level='ERROR')
-                            self.succ=self.ref
+        return False
         
-                    
-            except Exception as e:
-                
-                
-                log_message(f"  Is_True:{Is}_  node:{node}_  _::: ERROR in stabilize: {e}",func=ChordNode.stabilize,level='ERROR')
-                traceback.print_exc() 
-
-            log_message(f"successor : {self.succ} predecessor {self.pred}",func=ChordNode.stabilize)
-            time.sleep(3) #Poner en produccion en 1 segundo
-
-    # Notify method to INFOrm the node about another node
-    def notify(self, node: 'ChordNodeReference'):
-        """ Notify method to INFOrm the node about another node"""
-        if node.id == self.id:
-            pass
-        if not self.pred or self._inbetween(node.id, self.pred.id, self.id):
-            self.pred = node
-        else:
-            pass # Enviar mensaje que de no puede y le paso al que tengo como como predecesor de ese id
-    def _delete_from_all_ocurrencies(self,id_node:int,new_node:ChordNodeReference):
-        """_summary_
-
-        Args:
-            id_node (int): ID del nodo a eliminar
-            new_node (ChordNodeReference): NOdo a insertar
-
-        Raises:
-            Exception: _description_
-        """
-        log_message(f'La finger table antes {self.finger}',func=self._delete_from_all_ocurrencies)
-        lis_to_change=self.index_in_fingers[id_node] # cambiar pir mi todas las  apararicones d ela finger table
-        log_message(f'La lista de ocurrencias es {lis_to_change}',func=self._delete_from_all_ocurrencies)
-        for index in lis_to_change:
-            temp= self.finger[index]
-            if temp.id!=id_node:
-               raise Exception(f'Para poder quitar de la finger table tiene que coincidir el que esta en la table {temp.id} en el index {index} con {old.id}')
-            self.finger[index]=new_node
-                            # ELiminar la llave del diccionario
-        del self.index_in_fingers[id_node]
-        log_message(f'Se elimino de la lista de fungers_index el nodo {id_node} por el nodo {new_node.id}',func=self._delete_from_all_ocurrencies)
-        log_message(f'la nueva finger table {self.finger}',func=self._delete_from_all_ocurrencies)
-    # Fix fingers method to periodically update the finger table
-    def fix_fingers(self):
-        """Fix fingers method to periodically update the finger table
-        """
-        while True:
-            log_message(f'La finger table {self.finger}',func=self.fix_fingers)
-            try:
-                self.next += 1
-                if self.next >= self.m:
-                    self.next = 0
-                a=self.find_succ((self.id + 2 ** self.next) % 2 ** self.m)
-                ok=False
-                for _ in range(3):
-                    if a.check_predecessor(): # Chequear que el nodo esta vivo
-                        ok=True
-                        break
-                    else: 
-                        log_message(f'El nodo {a.id} no se encuentra en fix fingers',func=ChordNode.fix_fingers)
-                    time.sleep(0.5)
-               # a=a.succ if not ok else a
-                if not ok:
-                    log_message(f'El nodo {a.id} se desconecto de la red',func=ChordNode.fix_fingers)
-                    try:
-                        i=self.next+1
-                        k=i if self.next<self.m else 0
-                        change=False
-                        while i!=self.next:
-                            q=self.closest_preceding_finger(i) # Buscar por los antecesores 
-                            log_message(f'El nodo q ahora es {q.id} con i = {i}',func=self.fix_fingers)
-                            if q.id!=a.id: # Encontrar el primero que sea distinto
-                                self._delete_from_all_ocurrencies(a.id,q) #ELiminar todas las ocurriencias de id y poner las de q
-                                a=q
-                                log_message(f'Se va a parar aca el while con q ={q.id}',func=self.fix_fingers)
-                                change=True
-                                break
-                            i= i+1 if i<self.m else 0
-                
-                        
-                        if not change  :# Entonces lo cambio por mi en la finger table
-                           
-                            log_message(f'No se pudo encontrar un nuevo sucesor para el nodo {a.id} por lo tanto yo sere el sucesor',func=ChordNode.fix_fingers)
-                            self._delete_from_all_ocurrencies(a.id,self.ref) #Eliminar las referencias de la finger table y ponerme a mi como sucesor de ese id
-                            
-                            a=self.ref # Despues ver si se puede llamar al nodo '0' para que sea el
-                            
-                        log_message(f'El nodo a ahora es {a}',func=ChordNode.fix_fingers)
-                    except:
-                        log_message(f'Fallo buscar el sucesor del prececesor del nodo {a.id+1} Error:{traceback.format_exc()} ',func=self.fix_fingers)
-                
-
-                self.finger[self.next] = a
-                # Añadir al diccionario 
-                self.index_in_fingers.setdefault(a.id,set([self.next]))
-                self.index_in_fingers[a.id].add(self.next)
-                
-            except Exception as e:
-                log_message(f"ERROR in fix_fingers: {e} Error:{traceback.format_exc()}",func=ChordNode.fix_fingers,level='ERROR')
-            time.sleep(3) # 10
-
-    # Check predecessor method to periodically verify if the predecessor is alive
-    def check_predecessor(self):
-        """Check predecessor method to periodically verify if the predecessor is alive
-        """
-        counter=0
-        while True:
-            try:
-                if self.pred:
-                    if not  self.pred.check_predecessor() or self.pred.succ.id!=self.id:# Saber si esta vivo y su sucesor soy yo
-                        counter+=1
-                        if counter>3:
-                            log_message(f'No se restablecio conexion con el predecesor {self.pred} ',func=ChordNode.check_predecessor,level='ERROR')
-                            raise Exception(f'No se restablecio conexion con el predecesor {self.pred} ')
-                    else:
-                        counter=0
-                        log_message(f'El predecesor de mi sucesor es { self.pred.succ.id}',func=self.check_predecessor)
-                                          
-                    log_message(f'Chequeando predecesor ...',func=ChordNode.check_predecessor)
-            except Exception as e:
-                log_message(f'Se desconecto el predecesor con id {self.pred.id} e ip {self.pred.ip},error:{e}',func=ChordNode.check_predecessor,level='ERROR')
-                traceback.print_exc()
-                self.pred=None # Hago mi predecesor en None
-                
-            time.sleep(3)
-
-    
-    # Start server method to handle incoming requests
-    def start_server(self):
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            s.bind((self.ip, self.port))
-            s.listen(10)
-
-            while True:
-                conn, addr = s.accept()
-                #log_message(f'new connection from {addr}',func=ChordNode.start_server)
-
-                data = conn.recv(1024).decode().split(',')
-
-                data_resp = None
-                option = int(data[0])
-
-                if option == FIND_SUCCESSOR:
-                    id = int(data[1])
-                    data_resp = self.find_succ(id)
-                elif option == FIND_PREDECESSOR:
-                   
-                    id = int(data[1])
-                    log_message(f'Me llego una peticion de buscar el predecesor de {id}',func=ChordNode.start_server)
-                    data_resp = self.find_pred(id)
-                elif option == GET_SUCCESSOR:
-                    data_resp = self.succ if self.succ else self.ref
-                elif option == GET_PREDECESSOR:
-                    data_resp = self.pred if self.pred else self.ref
-                elif option == NOTIFY:
-                    id = int(data[1])
-                    ip = data[2]
-                    log_message(f'Llego una notificacion del ip:{ip}',func=ChordNode.start_server)
-                    self.notify(ChordNodeReference(ip, self.port))
-                elif option == CHECK_PREDECESSOR:
-                   
-                    data_resp=self.ref
-                elif option == CLOSEST_PRECEDING_FINGER:
-                    id = int(data[1])
-                    data_resp = self.closest_preceding_finger(id)
-                elif option == JOIN:
-                    ip = data[2]
-                    log_message(f'Recibido la peticion de JOIN desde ip {ip} con id: {getShaRepr(ip)} ')
-                    self.join(ChordNodeReference(ip, self.port))
-                    
-              
-                if data_resp:
-                    response = f'{data_resp.id},{data_resp.ip}'.encode()
-                    conn.sendall(response)
-                conn.close()
+def main():
+    ip = socket.gethostbyname(socket.gethostname())
+    objeto = ChordNode(ip,m=3)
+    #daemon = Pyro5.server.Daemon()
+    #uri = daemon.register(objeto)
+    #
+    #ns = Pyro5.api.locate_ns(host='127.0.0.1')
+    #ns.register(objeto.url, uri)
+    #
+    #print(f"Objeto1 en Server1 URI: {uri}")
+    #print("Servidor Pyro5 en Server1 corriendo...")
+    #daemon.requestLoop()
 
 if __name__ == "__main__":
-    print("Hello dht")
-    #time.sleep(10)
-    ip = socket.gethostbyname(socket.gethostname())
-    node = ChordNode(ip,m=3)
-
-    if len(sys.argv) >= 2:
-        other_ip = sys.argv[1]
-        #node.join(ChordNodeReference(other_ip, node.port))
-    
-    while True:
-        pass
+    main()

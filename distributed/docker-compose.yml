@@ -1,0 +1,30 @@
+version: "0.1"
+services:
+  chord-node-1:
+    image: chord_test
+    container_name: chord-node-1
+    command: /bin/sh -c "echo 'export IP=10.0.0.2' >> ~/.bashrc && while sleep 1000; do :; done"
+    volumes:
+      - .:/app
+    networks:
+      default:
+        ipv4_address: 10.0.0.2
+    expose:
+      - 8000
+  chord-node-2:
+    image: chord_test
+    container_name: chord-node-2
+    command: /bin/sh -c "echo 'export IP=10.0.0.3' >> ~/.bashrc && while sleep 1000; do :; done"
+    volumes:
+      - .:/app
+    networks:
+      default:
+        ipv4_address: 10.0.0.3
+    expose:
+      - 8000
+
+networks:
+  default:
+    external: true
+    name: chord_test_net
+

@@ -1,0 +1,6 @@
+FROM cp4
+
+RUN pip install Pyro5
+
+
+WORKDIR /app
