@@ -98,6 +98,15 @@
         "documentation": {}
     },
     {
+        "label": "Pyro5.api",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "Pyro5.api",
+        "description": "Pyro5.api",
+        "detail": "Pyro5.api",
+        "documentation": {}
+    },
+    {
         "label": "sys",
         "kind": 6,
         "isExtraImport": true,
@@ -107,19 +116,36 @@
         "documentation": {}
     },
     {
-        "label": "*",
-        "importPath": "helper.protocol_codes",
-        "description": "helper.protocol_codes",
+        "label": "subprocess",
+        "kind": 6,
         "isExtraImport": true,
-        "detail": "helper.protocol_codes",
+        "importPath": "subprocess",
+        "description": "subprocess",
+        "detail": "subprocess",
         "documentation": {}
     },
     {
         "label": "log_message",
-        "importPath": "helper.logguer",
-        "description": "helper.logguer",
+        "importPath": "logguer",
+        "description": "logguer",
         "isExtraImport": true,
-        "detail": "helper.logguer",
+        "detail": "logguer",
+        "documentation": {}
+    },
+    {
+        "label": "log_message",
+        "importPath": "logguer",
+        "description": "logguer",
+        "isExtraImport": true,
+        "detail": "logguer",
+        "documentation": {}
+    },
+    {
+        "label": "log_message",
+        "importPath": "logguer",
+        "description": "logguer",
+        "isExtraImport": true,
+        "detail": "logguer",
         "documentation": {}
     },
     {
@@ -136,6 +162,38 @@
         "description": "concurrent.futures",
         "isExtraImport": true,
         "detail": "concurrent.futures",
+        "documentation": {}
+    },
+    {
+        "label": "ThreadPoolExecutor",
+        "importPath": "concurrent.futures",
+        "description": "concurrent.futures",
+        "isExtraImport": true,
+        "detail": "concurrent.futures",
+        "documentation": {}
+    },
+    {
+        "label": "TimeoutError",
+        "importPath": "concurrent.futures",
+        "description": "concurrent.futures",
+        "isExtraImport": true,
+        "detail": "concurrent.futures",
+        "documentation": {}
+    },
+    {
+        "label": "*",
+        "importPath": "helper.protocol_codes",
+        "description": "helper.protocol_codes",
+        "isExtraImport": true,
+        "detail": "helper.protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "log_message",
+        "importPath": "helper.logguer",
+        "description": "helper.logguer",
+        "isExtraImport": true,
+        "detail": "helper.logguer",
         "documentation": {}
     },
     {
@@ -204,22 +262,6 @@
         "description": "protocol_codes",
         "isExtraImport": true,
         "detail": "protocol_codes",
-        "documentation": {}
-    },
-    {
-        "label": "log_message",
-        "importPath": "logguer",
-        "description": "logguer",
-        "isExtraImport": true,
-        "detail": "logguer",
-        "documentation": {}
-    },
-    {
-        "label": "log_message",
-        "importPath": "logguer",
-        "description": "logguer",
-        "isExtraImport": true,
-        "detail": "logguer",
         "documentation": {}
     },
     {
@@ -637,15 +679,6 @@
         "documentation": {}
     },
     {
-        "label": "Pyro5.api",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "Pyro5.api",
-        "description": "Pyro5.api",
-        "detail": "Pyro5.api",
-        "documentation": {}
-    },
-    {
         "label": "*",
         "importPath": "registrar_name_server",
         "description": "registrar_name_server",
@@ -660,15 +693,6 @@
         "importPath": "Pyro5.server",
         "description": "Pyro5.server",
         "detail": "Pyro5.server",
-        "documentation": {}
-    },
-    {
-        "label": "subprocess",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "subprocess",
-        "description": "subprocess",
-        "detail": "subprocess",
         "documentation": {}
     },
     {
@@ -1019,6 +1043,51 @@
         "description": "distributed.helper.vectorial_lamport",
         "peekOfCode": "comm = int(input(\"Enter the no of communication lines : \"))\nprint(\"\\n\")\nwhile inc < comm:\n    sent = int(input(\"Enter the sending process number : \"))\n    recv = int(input(\"Enter the receiving process number : \"))\n    sent_event_no = int(input(\"Enter the sending event number : \"))\n    recv_event_no = int(input(\"Enter the receiving event number : \"))\n    if sent <= 3 and recv <= 3:\n        print (\"P{} --> P{}\".format(sent,recv))\n        new_vector = vector_compare(P[sent][sent_event_no],P[recv][recv_event_no])",
         "detail": "distributed.helper.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "ChordNodeReference",
+        "kind": 6,
+        "importPath": "distributed.pyro.chord",
+        "description": "distributed.pyro.chord",
+        "peekOfCode": "class ChordNodeReference:\n    def __init__(self,ip: str, port: int = 8001):\n        self.id=getShaRepr(ip)\n        self.port=port\n        self.url=getChordNameAddress(self.id)\n@Pyro5.api.expose\nclass ChordNode:\n    def register_url(self,object,url:str,daemon:Pyro5.server.Daemon)->bool:\n        \"\"\"\n        Dado una instancia de un objeto , la url y el daemon de pyro lo registra",
+        "detail": "distributed.pyro.chord",
+        "documentation": {}
+    },
+    {
+        "label": "ChordNode",
+        "kind": 6,
+        "importPath": "distributed.pyro.chord",
+        "description": "distributed.pyro.chord",
+        "peekOfCode": "class ChordNode:\n    def register_url(self,object,url:str,daemon:Pyro5.server.Daemon)->bool:\n        \"\"\"\n        Dado una instancia de un objeto , la url y el daemon de pyro lo registra\n        Args:\n            object (_type_): _description_\n            url (_type_): _description_\n            daemon (_type_): _description_\n        \"\"\"\n        ns=Pyro5.api.locate_ns()",
+        "detail": "distributed.pyro.chord",
+        "documentation": {}
+    },
+    {
+        "label": "getShaRepr",
+        "kind": 2,
+        "importPath": "distributed.pyro.chord",
+        "description": "distributed.pyro.chord",
+        "peekOfCode": "def getShaRepr(data: str, max_value: int = 16):\n    # Genera el hash SHA-1 y obtén su representación en hexadecimal\n    hash_hex = hashlib.sha1(data.encode()).hexdigest()\n    # Convierte el hash hexadecimal a un entero\n    hash_int = int(hash_hex, 16)\n    # Define un arreglo o lista con los valores del 0 al 16\n    values = list(range(max_value + 1))\n    # Usa el hash como índice para seleccionar un valor del arreglo\n    # Asegúrate de que el índice esté dentro del rango válido\n    index = hash_int % len(values)",
+        "detail": "distributed.pyro.chord",
+        "documentation": {}
+    },
+    {
+        "label": "getChordNameAddress",
+        "kind": 2,
+        "importPath": "distributed.pyro.chord",
+        "description": "distributed.pyro.chord",
+        "peekOfCode": "def getChordNameAddress(id_:int):\n    return f'{id_}.chord'\nclass ChordNodeReference:\n    def __init__(self,ip: str, port: int = 8001):\n        self.id=getShaRepr(ip)\n        self.port=port\n        self.url=getChordNameAddress(self.id)\n@Pyro5.api.expose\nclass ChordNode:\n    def register_url(self,object,url:str,daemon:Pyro5.server.Daemon)->bool:",
+        "detail": "distributed.pyro.chord",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "distributed.pyro.chord",
+        "description": "distributed.pyro.chord",
+        "peekOfCode": "def main():\n    ip = socket.gethostbyname(socket.gethostname())\n    objeto = ChordNode(ip,m=3)\n    daemon = Pyro5.server.Daemon()\n    uri = daemon.register(objeto)\n    ns = Pyro5.api.locate_ns(host='127.0.0.1')\n    ns.register(objeto.url, uri)\n    print(f\"Objeto1 en Server1 URI: {uri}\")\n    print(\"Servidor Pyro5 en Server1 corriendo...\")\n    daemon.requestLoop()",
+        "detail": "distributed.pyro.chord",
         "documentation": {}
     },
     {
