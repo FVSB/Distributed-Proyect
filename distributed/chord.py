@@ -7,7 +7,7 @@ import traceback
 import logging
 from helper.protocol_codes import *
 from helper.logguer import log_message
-
+from concurrent.futures import ThreadPoolExecutor, TimeoutError
 #logger = logging.getLogger(__name__)
 
 # Function to hash a string using SHA-1 and return its integer representation
@@ -53,8 +53,9 @@ class ChordNodeReference:
                 return new_data
         except Exception as e:
             #print(f"ERROR sending data: {e} al nodo con id {self.id} e ip {self.ip}")
-            log_message(f"ERROR sending data: {e} al nodo con id {self.id} e ip {self.ip}",level='ERROR')
+            log_message(f"ERROR sending data: {e} al nodo con id {self.id} e ip {self.ip},Error:{str(traceback.format_exc())}",level='ERROR')
             #logger.info()
+            traceback.print_exc()
             return b''
     
     def find_successor(self, id: int) -> 'ChordNodeReference':
@@ -168,16 +169,20 @@ class ChordNode:
     
     
     def search_test(self):
-        try:
+       
             while True:
-                time.sleep(3)
-                log_message('%'*20,level='INFO')
-                for i in range(0,20):
-                    node=self.find_succ(i)
-                    log_message(f'El nodo que le pertenece el id {i} es el nodo con id {node.id}')
-                log_message('+'*20,level='INFO')
-        except Exception as e:
-            log_message(f'Error buscando informacion {e}',self.search_test)
+                try:
+                    time.sleep(3)
+                    log_message('%'*20,level='INFO')
+                    for i in range(0,20):
+                        with ThreadPoolExecutor() as executor:
+                            future=executor.submit(self.find_succ,i) # Meterlo en el pool de hilos
+                            node=future.result(timeout=10)
+                            
+                            log_message(f'El nodo que le pertenece el id {i} es el nodo con id {node.id}')
+                    log_message('+'*20,level='INFO')
+                except Exception as e:
+                    log_message(f'Error buscando informacion {e}',self.search_test)
         
             
     def show(self):

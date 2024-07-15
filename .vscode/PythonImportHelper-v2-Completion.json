@@ -123,6 +123,22 @@
         "documentation": {}
     },
     {
+        "label": "ThreadPoolExecutor",
+        "importPath": "concurrent.futures",
+        "description": "concurrent.futures",
+        "isExtraImport": true,
+        "detail": "concurrent.futures",
+        "documentation": {}
+    },
+    {
+        "label": "TimeoutError",
+        "importPath": "concurrent.futures",
+        "description": "concurrent.futures",
+        "isExtraImport": true,
+        "detail": "concurrent.futures",
+        "documentation": {}
+    },
+    {
         "label": "asyncio",
         "kind": 6,
         "isExtraImport": true,
@@ -627,6 +643,32 @@
         "importPath": "Pyro5.api",
         "description": "Pyro5.api",
         "detail": "Pyro5.api",
+        "documentation": {}
+    },
+    {
+        "label": "*",
+        "importPath": "registrar_name_server",
+        "description": "registrar_name_server",
+        "isExtraImport": true,
+        "detail": "registrar_name_server",
+        "documentation": {}
+    },
+    {
+        "label": "Pyro5.server",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "Pyro5.server",
+        "description": "Pyro5.server",
+        "detail": "Pyro5.server",
+        "documentation": {}
+    },
+    {
+        "label": "subprocess",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "subprocess",
+        "description": "subprocess",
+        "detail": "subprocess",
         "documentation": {}
     },
     {
@@ -1697,6 +1739,177 @@
         "description": "test.pyro5_DNS.server",
         "peekOfCode": "def main():\n    import argparse\n    parser = argparse.ArgumentParser(description=\"Start the chat server.\")\n    parser.add_argument(\"host\", help=\"Host IP address\")\n    parser.add_argument(\"-p\", \"--port\", type=int, default=8000, help=\"Port number\")\n    parser.add_argument(\"-r\", \"--room\", default=\"default_room\", help=\"Room name\")\n    parser.add_argument(\"-s\", \"--servers\", nargs='+', default=[], help=\"Other server URIs to connect to\")\n    args = parser.parse_args()\n    chat_server = ChatServer(args.host, args.port)\n    chat_server.start()",
         "detail": "test.pyro5_DNS.server",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "test.sockets.client.client",
+        "description": "test.sockets.client.client",
+        "peekOfCode": "def main():\n    ns = Pyro5.api.locate_ns()\n    uri1 = ns.lookup(\"ejemplo.objeto1\")\n    #uri2 = ns.lookup(\"ejemplo.objeto2\")\n    objeto1 = Pyro5.api.Proxy(uri1)\n    #objeto2 = Pyro5.api.Proxy(uri2)\n    while True:\n        time.sleep(2)\n        print(objeto1.metodo1(\"Hola desde el cliente\"))\n    #print(objeto2.metodo2(123))",
+        "detail": "test.sockets.client.client",
+        "documentation": {}
+    },
+    {
+        "label": "#ip",
+        "kind": 5,
+        "importPath": "test.sockets.client.client",
+        "description": "test.sockets.client.client",
+        "peekOfCode": "#ip = ip = socket.gethostbyname(socket.gethostname())\n#port=8000\n#with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:\n#            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)\n#            s.bind((ip, port))\n#            s.listen(10)\n#\n#while True:\n#                conn, addr = s.accept()\n#                #log_message(f'new connection from {addr}',func=ChordNode.start_server)",
+        "detail": "test.sockets.client.client",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "test.sockets.client",
+        "description": "test.sockets.client",
+        "peekOfCode": "def main():\n    ns = Pyro5.api.locate_ns()\n    uri1 = ns.lookup(\"ejemplo.objeto1\")\n    uri2 = ns.lookup(\"ejemplo.objeto2\")\n    print(f'La uri es {uri1}')\n    objeto1 = Pyro5.api.Proxy(uri1)\n    objeto2 = Pyro5.api.Proxy(uri2)\n    for i in range(2000):\n        time.sleep(2)\n        print(objeto1.metodo1(f\"Hola desde el cliente\",1))",
+        "detail": "test.sockets.client",
+        "documentation": {}
+    },
+    {
+        "label": "#ip",
+        "kind": 5,
+        "importPath": "test.sockets.client",
+        "description": "test.sockets.client",
+        "peekOfCode": "#ip = ip = socket.gethostbyname(socket.gethostname())\n#port=8000\n#with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:\n#            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)\n#            s.bind((ip, port))\n#            s.listen(10)\n#\n#while True:\n#                conn, addr = s.accept()\n#                #log_message(f'new connection from {addr}',func=ChordNode.start_server)",
+        "detail": "test.sockets.client",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "test.sockets.desresgistrar_name_server",
+        "description": "test.sockets.desresgistrar_name_server",
+        "peekOfCode": "def main():\n    # Conectar al servidor de nombres\n    ns = Pyro5.api.locate_ns(host='127.0.0.1')\n    # Intentar desregistrar el nombre si ya existe\n    try:\n        ns.remove(\"ejemplo.contenedor\")\n        print(\"Nombre 'ejemplo.contenedor' desregistrado exitosamente.\")\n    except Pyro5.errors.NamingError:\n        print(\"El nombre 'ejemplo.contenedor' no estaba registrado.\")\n    # Crear una nueva instancia del contenedor",
+        "detail": "test.sockets.desresgistrar_name_server",
+        "documentation": {}
+    },
+    {
+        "label": "Objeto1",
+        "kind": 6,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "class Objeto1:\n    def __init__(self):\n        self.a = 0\n    def metodo1(self, mensaje,numero):\n        self.a+=numero\n        return f\"Objeto1 dice: {mensaje} numero:{self.a}\"\n@Pyro5.api.expose\nclass Objeto2:\n    def __init__(self,obj=None):\n        self.obj=None",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "Objeto2",
+        "kind": 6,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "class Objeto2:\n    def __init__(self,obj=None):\n        self.obj=None\n    def get_obj_met(self,obje,mensaje,num):\n        return f'Desde el objeto 2 invoco el metodo1 del objeto 1 {obje.metodo1(mensaje,num)}'\n    def metodo2(self, numero):\n        return f\"Objeto2 recibió el número: {numero}\"\n    def start(self):\n        while True:\n            time.sleep(3)",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "register_url",
+        "kind": 2,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "def register_url(a,url,daemon):\n    ns=Pyro5.api.locate_ns()\n    # Registrar los objetos remotos en el servidor de no\n    uri1 = daemon.register(a)\n    ns.register(url, uri1)\n    print(f'Registrada la url {url}')\ndef check_nameserver(a,url,time_:int=4):\n    while True:\n        time.sleep(time_)\n        try:",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "check_nameserver",
+        "kind": 2,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "def check_nameserver(a,url,time_:int=4):\n    while True:\n        time.sleep(time_)\n        try:\n            # Intentar conectar al servidor de nombres\n            ns = Pyro5.api.locate_ns()\n            print(\"Servidor de nombres encontrado en la\" )\n            # Iniciar el daemon\n            daemon = Pyro5.server.Daemon()\n            try:",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "check",
+        "kind": 2,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "def check(a,url,time_=4):\n    while True:\n        time.sleep(time_)\n        try:\n            # Intentar conectar al servidor de nombres\n            ns = Pyro5.api.locate_ns()\n        except Pyro5.errors.NamingError:\n            # Iniciar el daemon\n            #daemon = Pyro5.server.Daemon()\n            # Si no se puede conectar, levantar el servi",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "check_url",
+        "kind": 2,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "def check_url(a,url,time_=4):\n    while True:\n         # Iniciar el daemon\n            time.sleep(time_)\n            daemon = Pyro5.server.Daemon()\n            try:\n                try:\n                        # Intentar conectar al servidor de nombres\n                        ns = Pyro5.api.locate_ns()\n                        print('Acafff')",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "def main():\n    # Función para verificar y levantar el servidor de nombres si no está disponible\n    def verificar_y_levantar_nameserver():\n        try:\n            # Intentar conectar al servidor de nombres\n            ns = Pyro5.api.locate_ns()\n            print(\"Servidor de nombres encontrado en la red.\")\n            return ns\n        except Pyro5.errors.NamingError:\n            # Si no se puede conectar, levantar el servidor de nombres",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "#ip",
+        "kind": 5,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "#ip = ip = socket.gethostbyname(socket.gethostname())\n#port=12345\n#while True:\n#    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:\n#                    s.connect((ip, port))\n#                    s.sendall(f'Enviar'.encode('utf-8'))\n#                   new_data=s.recv(1024)\n#import Pyro5.api\n#import time\n#@Pyro5.api.expose",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "#objeto1",
+        "kind": 5,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "#objeto1 = Objeto1()\n#objeto2 = Objeto2()\n#\n## Iniciar el servidor de nombres de Pyro\n#daemon = Pyro5.server.Daemon()\n#ns = Pyro5.api.locate_ns()\n#\n## Registrar los objetos remotos en el servidor de nombres\n#uri1 = daemon.register(objeto1)\n#",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "#objeto2",
+        "kind": 5,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "#objeto2 = Objeto2()\n#\n## Iniciar el servidor de nombres de Pyro\n#daemon = Pyro5.server.Daemon()\n#ns = Pyro5.api.locate_ns()\n#\n## Registrar los objetos remotos en el servidor de nombres\n#uri1 = daemon.register(objeto1)\n#\n## Intentar desregistrar el nombre si ya existe",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "#daemon",
+        "kind": 5,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "#daemon = Pyro5.server.Daemon()\n#ns = Pyro5.api.locate_ns()\n#\n## Registrar los objetos remotos en el servidor de nombres\n#uri1 = daemon.register(objeto1)\n#\n## Intentar desregistrar el nombre si ya existe\n#try:\n#    ns.remove(\"ejemplo.objeto1\")\n#    print(\"Nombre 'ejemplo.contenedor' desregistrado exitosamente.\")",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "#ns",
+        "kind": 5,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "#ns = Pyro5.api.locate_ns()\n#\n## Registrar los objetos remotos en el servidor de nombres\n#uri1 = daemon.register(objeto1)\n#\n## Intentar desregistrar el nombre si ya existe\n#try:\n#    ns.remove(\"ejemplo.objeto1\")\n#    print(\"Nombre 'ejemplo.contenedor' desregistrado exitosamente.\")\n#except Pyro5.errors.NamingError:",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "#uri1",
+        "kind": 5,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "#uri1 = daemon.register(objeto1)\n#\n## Intentar desregistrar el nombre si ya existe\n#try:\n#    ns.remove(\"ejemplo.objeto1\")\n#    print(\"Nombre 'ejemplo.contenedor' desregistrado exitosamente.\")\n#except Pyro5.errors.NamingError:\n#    print(\"El nombre 'ejemplo.contenedor' no estaba registrado.\")\n#\n#",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "#uri2",
+        "kind": 5,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "#uri2 = daemon.register(objeto2)\n#ns.register(\"ejemplo.objeto2\", uri2)\n#\n#print(f\"Objeto1 URI: {uri1}\")\n#print(f\"Objeto2 URI: {uri2}\")\n#\n## Iniciar el bucle de eventos del servidor\n#print(\"Servidor Pyro5 corriendo...\")\n#daemon.requestLoop()\n#",
+        "detail": "test.sockets.server",
         "documentation": {}
     },
     {
