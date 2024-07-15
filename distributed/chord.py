@@ -105,7 +105,7 @@ class ChordNode:
         while True:
              # Iniciar el daemon
                 time.sleep(time_)
-                daemon = Pyro5.server.Daemon()
+                daemon = Pyro5.server.Daemon(host="0.0.0.0")
                 try:
                     try:
                             # Intentar conectar al servidor de nombres
@@ -150,7 +150,7 @@ class ChordNode:
                 # Si no se puede conectar, levantar el servicio
                 log_message("No se encontró servidor de nombres en la red",func=self.check_nameserver)
                 time.sleep(time_*2)
-                subprocess.Popen(["python3", "-m", "Pyro5.nameserver","-H",""])
+                subprocess.Popen(["python3", "-m", "Pyro5.nameserver",'--host','0.0.0.0'])
                 log_message(f'Reiniciado el nameserver',func=self.check_nameserver)
                 # Esperar un breve momento para que el servi
                 time.sleep(time_)
