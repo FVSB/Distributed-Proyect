@@ -31,11 +31,42 @@ def getShaRepr(data: str, max_value: int = 16):
 def getChordNameAddress(id_:int):
     return f'{id_}.chord'
 
+def check_if_url_is_active(url:str):
+        """Chequea que urls estan activas """
+            
+        ns = Pyro5.api.locate_ns()
+        uri = ns.lookup(url)
+        try:
+            proxy = Pyro5.api.Proxy(uri)
+            # Intentar llamar a un método que confirme la conexión o estado del servidor
+            # Puedes usar cualquier método definido en el objeto remoto para confirmar la conexión
+            node:ChordNodeReference = proxy.ping()  # Suponiendo que el objeto remoto tiene un método ping() para verificar la conexión
+            if node is not None:  # Puedes definir el criterio para confirmar que el servidor está activo
+                return node
+            return None
+        except Pyro5.errors.CommunicationError as e:
+            log_message(f"Error al acceder a {uri}: {e}",func=check_if_url_is_active)
+            return None
+
 class ChordNodeReference:
     def __init__(self,ip: str, port: int = 8001):
         self.id=getShaRepr(ip)
         self.port=port
         self.url=getChordNameAddress(self.id)
+      
+     
+    def ping(self):
+        """Devuelve la instancia de la clase
+            Si la clase se desconecto None
+
+        Raises:
+            Exception: _description_
+
+        Returns:
+            _type_: _description_
+        """
+        return check_if_url_is_active(self.url) # Devuelvo el nodo de chord, None si se desconecto
+        
 
 
 @Pyro5.api.expose
@@ -125,11 +156,15 @@ class ChordNode:
 
                 continue
             
+    
+        
+            
     def update_all_chord_url(self):
         """Actualiza todas las urls activas de chrod en el NameServer
         """
         while True:
             try:
+                
                 # Ubicar el servidor de nombres PyroNS
                 with Pyro5.api.locate_ns() as ns:
                     # Obtener todos los nombres registrados
@@ -138,7 +173,19 @@ class ChordNode:
                     # Filtrar los nombres que terminan con ".chord"
                     nombres_chord = [nombre for nombre in nombres_registrados if nombre.endswith(".chord")]
                     
-                    self.chord_urls=nombres_chord
+                    temp=[]
+                    temp_nodes=[]
+                    # Chequear por cada una si esta activa
+                    for url in nombres_chord:
+                        node=check_if_url_is_active(url)
+                        if node is None: continue
+                        #Añadir los nombres 
+                        temp.append(url)
+                        temp_nodes.append(node)
+  
+                    with self._check_url_lock: # Bloquea los recursos para poder hacer todo
+                        self.chord_urls= sorted(temp, key=lambda x: int(x.split('.')[0]), reverse=True) # Ahora actualizo los nombres de url
+                        self.actives_chord_nodes=sorted(temp, key=lambda x: x.id, reverse=True) # Ahora actualizo los nombres de los nodos
                 
             except Exception as e:
                 log_message(f'Hubo un problema actualizando las urls de la chord_network {e} {traceback.format_exc()}',func=self.check_all_chord_url)
@@ -164,8 +211,11 @@ class ChordNode:
         self.data = {}  # Dictionary to store key-value pairs
         self._key_range=(-1,self.ip) # the key_range [a,b) if a =-1 because no have predecesor
         self.cache:dict[int,str]={} #diccionario con la cache de todos los nodos de la red
-        self._check_url_lock:threading.Lock = threading.Lock() # Lock para que solo un hilo pueda comprobar a la vez las urls disponibles
+        self._check_url_lock:threading.Lock =threading.RLock() # Lock para que solo un hilo pueda comprobar a la vez 
+        #las urls disponibles el hilo puede entrar a varias funciones con el mismo lock al mismo tiempo
         self._chord_urls:list[str]=[]
+        self._chord_nodes:list[ChordNodeReference]=[]# ESta lista contiene los nodos referencias de los nodos activos de la red
+        
         
         # Threads
         threading.Thread(target=self.check_nameserver,daemon=False).start() # thread to check the name server its active always
@@ -183,8 +233,23 @@ class ChordNode:
         
         with self._check_url_lock:
             self._chord_urls=value
-            
     
+    
+    @property
+    def actives_chord_nodes(self)->list[ChordNodeReference]:
+        """Retorna una lista
+        con los nodos de chord activos ordenado de mayor a menor por si id
+
+        Returns:
+            _type_: _description_
+        """
+        with self._check_url_lock:
+            return self._chord_nodes
+    @actives_chord_nodes.setter
+    def actives_chord_nodes(self,value:list[ChordNodeReference]):
+        with self._check_url_lock:
+            self._chord_nodes=value
+        
     @property
     def key_range(self)->tuple[int,int]:
         """ 
@@ -202,6 +267,11 @@ class ChordNode:
         return self.pred
     
     
+    def ping(self)->ChordNodeReference:
+        """Devuelve mi referencia, osea mi url, id, ip ...
+        """
+        return self.ref
+    
     def _send_broadcast(self) -> bytes:
        # Enviar broadcast cada vez que sienta que mi sucesor no existe
         while True:
@@ -211,14 +281,32 @@ class ChordNode:
                 
                     log_message(f'Voy a enviar un broadcast para buscar un sucesor ',func=self._send_broadcast)
                     try:
-                          for url in self.chord_urls:
-                              id=int(url.split('.')[0])
-                              if id < self.id:
+                           for node_ref in self.actives_chord_nodes: # Por los nodos que hay esta  ordenados de mayor a menor
+                               if node_ref.id<self.id:
+                                   node:'ChordNode'=node_ref.ping()
+                                   if node is None:
+                                       log_message(f'El nodo {node_ref.ip} no está activo ',self._send_broadcast)
+                                       continue
+                                   if not node.join(self.ref): # Si no me puedo unir a el 
+                                       continue # Continuo hasta que uno me acepta
+                                   self.notify(node_ref)# Verifico si puedo hacerlo mi predecesor
+                                    
+                                   
                                   
                          
                     except Exception as e:
                         log_message(f'Ocurrio un problema enviando el broadcast: {e}',level='ERROR',func=self._send_broadcast)
             time.sleep(3)
+            
+     # Notify method to INFOrm the node about another node
+    def notify(self, node: 'ChordNodeReference'):
+        """ Notify method to INFOrm the node about another node"""
+        if node.id == self.id:
+            pass
+        if not self.pred or self._inbetween(node.id, self.pred.id, self.id):
+            self.pred = node
+        else:
+            pass # Enviar mensaje que de no puede y le paso al que tengo como como predecesor de ese id
     
     # Method to join a Chord network using 'node' as an entry point
     def join(self, node: 'ChordNodeReference')->bool:

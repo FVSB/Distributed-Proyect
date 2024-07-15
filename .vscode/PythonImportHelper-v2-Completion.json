@@ -1050,7 +1050,7 @@
         "kind": 6,
         "importPath": "distributed.pyro.chord",
         "description": "distributed.pyro.chord",
-        "peekOfCode": "class ChordNodeReference:\n    def __init__(self,ip: str, port: int = 8001):\n        self.id=getShaRepr(ip)\n        self.port=port\n        self.url=getChordNameAddress(self.id)\n@Pyro5.api.expose\nclass ChordNode:\n    def register_url(self,object,url:str,daemon:Pyro5.server.Daemon)->bool:\n        \"\"\"\n        Dado una instancia de un objeto , la url y el daemon de pyro lo registra",
+        "peekOfCode": "class ChordNodeReference:\n    def __init__(self,ip: str, port: int = 8001):\n        self.id=getShaRepr(ip)\n        self.port=port\n        self.url=getChordNameAddress(self.id)\n    def ping(self):\n        \"\"\"Devuelve la instancia de la clase\n            Si la clase se desconecto None\n        Raises:\n            Exception: _description_",
         "detail": "distributed.pyro.chord",
         "documentation": {}
     },
@@ -1077,7 +1077,16 @@
         "kind": 2,
         "importPath": "distributed.pyro.chord",
         "description": "distributed.pyro.chord",
-        "peekOfCode": "def getChordNameAddress(id_:int):\n    return f'{id_}.chord'\nclass ChordNodeReference:\n    def __init__(self,ip: str, port: int = 8001):\n        self.id=getShaRepr(ip)\n        self.port=port\n        self.url=getChordNameAddress(self.id)\n@Pyro5.api.expose\nclass ChordNode:\n    def register_url(self,object,url:str,daemon:Pyro5.server.Daemon)->bool:",
+        "peekOfCode": "def getChordNameAddress(id_:int):\n    return f'{id_}.chord'\ndef check_if_url_is_active(url:str):\n        \"\"\"Chequea que urls estan activas \"\"\"\n        ns = Pyro5.api.locate_ns()\n        uri = ns.lookup(url)\n        try:\n            proxy = Pyro5.api.Proxy(uri)\n            # Intentar llamar a un método que confirme la conexión o estado del servidor\n            # Puedes usar cualquier método definido en el objeto remoto para confirmar la conexión",
+        "detail": "distributed.pyro.chord",
+        "documentation": {}
+    },
+    {
+        "label": "check_if_url_is_active",
+        "kind": 2,
+        "importPath": "distributed.pyro.chord",
+        "description": "distributed.pyro.chord",
+        "peekOfCode": "def check_if_url_is_active(url:str):\n        \"\"\"Chequea que urls estan activas \"\"\"\n        ns = Pyro5.api.locate_ns()\n        uri = ns.lookup(url)\n        try:\n            proxy = Pyro5.api.Proxy(uri)\n            # Intentar llamar a un método que confirme la conexión o estado del servidor\n            # Puedes usar cualquier método definido en el objeto remoto para confirmar la conexión\n            node:ChordNodeReference = proxy.ping()  # Suponiendo que el objeto remoto tiene un método ping() para verificar la conexión\n            if node is not None:  # Puedes definir el criterio para confirmar que el servidor está activo",
         "detail": "distributed.pyro.chord",
         "documentation": {}
     },
