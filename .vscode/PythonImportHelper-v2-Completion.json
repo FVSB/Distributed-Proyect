@@ -1264,7 +1264,7 @@
         "kind": 2,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "def get_guid():\n    # Generar dos GUIDs\n    guid1 = uuid.uuid4()\n    return str(guid1)\ndef clone_object(obj):\n    return copy.deepcopy(obj)\ndef objects_to_send(object,daemon):\n        copy_ref=clone_object(object)\n        random_url=f'{get_guid()}.{get_guid()}'\n        register_url(copy_ref,random_url,daemon)",
+        "peekOfCode": "def get_guid():\n    # Generar dos GUIDs\n    guid1 = uuid.uuid4()\n    return str(guid1)\ndef clone_object(obj):\n    return copy.deepcopy(obj)\ndef objects_to_send(object,daemon,ns=None):\n    \"\"\"_summary_\n    Args:\n        object (_type_): _description_",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -1273,7 +1273,7 @@
         "kind": 2,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "def clone_object(obj):\n    return copy.deepcopy(obj)\ndef objects_to_send(object,daemon):\n        copy_ref=clone_object(object)\n        random_url=f'{get_guid()}.{get_guid()}'\n        register_url(copy_ref,random_url,daemon)\n        return copy_ref\ndef register_url(object,url:str,daemon:Pyro5.server.Daemon)->bool:\n    \"\"\"\n    Dado una instancia de un objeto , la url y el daemon de pyro lo registra",
+        "peekOfCode": "def clone_object(obj):\n    return copy.deepcopy(obj)\ndef objects_to_send(object,daemon,ns=None):\n    \"\"\"_summary_\n    Args:\n        object (_type_): _description_\n        daemon (_type_): _description_\n        ns (_type_, optional): Pyro.api.locate_ns() osea el nameserver. Defaults to None.\n    Returns:\n        _type_: _description_",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -1282,7 +1282,7 @@
         "kind": 2,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "def objects_to_send(object,daemon):\n        copy_ref=clone_object(object)\n        random_url=f'{get_guid()}.{get_guid()}'\n        register_url(copy_ref,random_url,daemon)\n        return copy_ref\ndef register_url(object,url:str,daemon:Pyro5.server.Daemon)->bool:\n    \"\"\"\n    Dado una instancia de un objeto , la url y el daemon de pyro lo registra\n    Args:\n        object (_type_): _description_",
+        "peekOfCode": "def objects_to_send(object,daemon,ns=None):\n    \"\"\"_summary_\n    Args:\n        object (_type_): _description_\n        daemon (_type_): _description_\n        ns (_type_, optional): Pyro.api.locate_ns() osea el nameserver. Defaults to None.\n    Returns:\n        _type_: _description_\n    \"\"\"\n    copy_ref=clone_object(object)",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -1291,7 +1291,7 @@
         "kind": 2,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "def register_url(object,url:str,daemon:Pyro5.server.Daemon)->bool:\n    \"\"\"\n    Dado una instancia de un objeto , la url y el daemon de pyro lo registra\n    Args:\n        object (_type_): _description_\n        url (_type_): _description_\n        daemon (_type_): _description_\n    \"\"\"\n    ns=Pyro5.api.locate_ns()\n    # Registrar los objetos remotos en el servidor de no",
+        "peekOfCode": "def register_url(object,url:str,daemon:Pyro5.server.Daemon,ns=None)->bool:\n    \"\"\"\n    Dado una instancia de un objeto , la url y el daemon de pyro lo registra\n    Args:\n        object (_type_): _description_\n        url (_type_): _description_\n        daemon (_type_): _description_\n        ns:Pyro Locate_ns()\n    \"\"\"\n    if ns is None:",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -1302,33 +1302,6 @@
         "description": "distributed.chord",
         "peekOfCode": "def main():\n    ip = socket.gethostbyname(socket.gethostname())\n    objeto = ChordNode(ip,m=3)\n    #daemon = Pyro5.server.Daemon()\n    #uri = daemon.register(objeto)\n    #\n    #ns = Pyro5.api.locate_ns(host='127.0.0.1')\n    #ns.register(objeto.url, uri)\n    #\n    #print(f\"Objeto1 en Server1 URI: {uri}\")",
         "detail": "distributed.chord",
-        "documentation": {}
-    },
-    {
-        "label": "ChordNodeReference",
-        "kind": 6,
-        "importPath": "distributed.chord_referenc",
-        "description": "distributed.chord_referenc",
-        "peekOfCode": "class ChordNodeReference:\n    def __init__(self,ip: str, port: int = 8001):\n        self.id=getShaRepr(ip)\n        self.ip=ip\n        self.port=port\n        self.url=getChordNameAddress(self.id)\n    #def ping(self):\n    #    \"\"\"Devuelve la instancia de la clase\n    #        Si la clase se desconecto None\n#",
-        "detail": "distributed.chord_referenc",
-        "documentation": {}
-    },
-    {
-        "label": "getShaRepr",
-        "kind": 2,
-        "importPath": "distributed.chord_referenc",
-        "description": "distributed.chord_referenc",
-        "peekOfCode": "def getShaRepr(data: str, max_value: int = 16):\n    # Genera el hash SHA-1 y obtén su representación en hexadecimal\n    hash_hex = hashlib.sha1(data.encode()).hexdigest()\n    # Convierte el hash hexadecimal a un entero\n    hash_int = int(hash_hex, 16)\n    # Define un arreglo o lista con los valores del 0 al 16\n    values = list(range(max_value + 1))\n    # Usa el hash como índice para seleccionar un valor del arreglo\n    # Asegúrate de que el índice esté dentro del rango válido\n    index = hash_int % len(values)",
-        "detail": "distributed.chord_referenc",
-        "documentation": {}
-    },
-    {
-        "label": "getChordNameAddress",
-        "kind": 2,
-        "importPath": "distributed.chord_referenc",
-        "description": "distributed.chord_referenc",
-        "peekOfCode": "def getChordNameAddress(id_:int):\n    return f'{id_}.chord'\nimport Pyro5.api\n@Pyro5.api.expose\nclass ChordNodeReference:\n    def __init__(self,ip: str, port: int = 8001):\n        self.id=getShaRepr(ip)\n        self.ip=ip\n        self.port=port\n        self.url=getChordNameAddress(self.id)",
-        "detail": "distributed.chord_referenc",
         "documentation": {}
     },
     {

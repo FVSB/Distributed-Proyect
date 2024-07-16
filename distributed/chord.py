@@ -79,25 +79,36 @@ def clone_object(obj):
     return copy.deepcopy(obj)
 
 
-def objects_to_send(object,daemon):
-        
+def objects_to_send(object,daemon,ns=None):
+    """_summary_
+
+    Args:
+        object (_type_): _description_
+        daemon (_type_): _description_
+        ns (_type_, optional): Pyro.api.locate_ns() osea el nameserver. Defaults to None.
+
+    Returns:
+        _type_: _description_
+    """
        
         
-        copy_ref=clone_object(object)
-        random_url=f'{get_guid()}.{get_guid()}'
-        register_url(copy_ref,random_url,daemon)
-        return copy_ref
+    copy_ref=clone_object(object)
+    random_url=f'{get_guid()}.{get_guid()}'
+    register_url(copy_ref,random_url,daemon)
+    return copy_ref
     
-def register_url(object,url:str,daemon:Pyro5.server.Daemon)->bool:
+def register_url(object,url:str,daemon:Pyro5.server.Daemon,ns=None)->bool:
     """
     Dado una instancia de un objeto , la url y el daemon de pyro lo registra
     Args:
         object (_type_): _description_
         url (_type_): _description_
         daemon (_type_): _description_
+        ns:Pyro Locate_ns()
     """
-
-    ns=Pyro5.api.locate_ns()
+    if ns is None:
+        ns=Pyro5.api.locate_ns()
+    
     # Registrar los objetos remotos en el servidor de no
     uri1 = daemon.register(object)
     ns.register(url, uri1)
@@ -158,8 +169,8 @@ class ChordNodeReference:
         """
         log_message(f'Tratando de recuperar el nodo {self.id}',func=self.ping)
         try:
-            remote_obj= get_remote_objet(self.url)# Devuelvo el nodo de chord, None si se desconecto
-            return remote_obj
+            
+            return  get_remote_objet(self.url)# Devuelvo el nodo de chord, None si se desconecto
         except Exception as e:
             log_message(f'Error en ping de ChordNodeRefrecne  {traceback.format_exc()}',func=self.ping)
             raise Exception('Error en ping de chornodereference')
@@ -234,12 +245,43 @@ class ChordNode:
                 time.sleep(time_*2)
                 subprocess.Popen(["python3", "-m", "Pyro5.nameserver",'--host','0.0.0.0'])
                 log_message(f'Reiniciado el nameserver',func=self.check_nameserver)
+                
+                log_message(f'Limpiando el servidor de nombres recien creado',func=self.check_nameserver)
+                self.clear_nameserver()# Limpiar el nameserver 
                 # Esperar un breve momento para que el servi
                 time.sleep(time_)
 
                 continue
             
     
+
+
+    def clear_nameserver(self):
+        try:
+            # Conectar al Name Server
+            ns = Pyro5.api.locate_ns()
+
+            # Obtener todos los nombres registrados
+            registered_names = ns.list()
+
+            # Eliminar cada nombre registrado
+            for name in registered_names:
+                ns.remove(name)
+                log_message(f"Removed {name}",func=self.clear_nameserver)
+
+            log_message("All names removed from the Name Server.",func=self.clear_nameserver)
+
+        except Pyro5.errors.NamingError as e:
+            log_message(f"Error locating the Name Server: {e}",func=self.clear_nameserver)
+
+        except Pyro5.errors.PyroError as e:
+            log_message(f"Pyro error: {e}",func=self.clear_nameserver)
+
+        except Exception as e:
+            log_message(f"An unexpected error occurred: {e}",func=self.clear_nameserver)
+
+
+
         
             
     def update_all_chord_url(self):
@@ -282,7 +324,15 @@ class ChordNode:
         """Chequea constantemente que mi url esta activa
         """
         self.check_url(self,self.url,time_=4)
-        
+     
+    def clean_old_registers(self):
+        ns = Pyro5.api.locate_ns()
+         # Intentar desregistrar el nombre si ya existe
+        try:
+            ns.remove(self.url)
+            log_message(f"Nombre {self.url} desregistrado exitosamente.",func=self.clean_old_registers)
+        except Exception:
+            log_message(f"El nombre {self.url} no estaba registrado.",func=self.clean_old_registers)   
     
     def __init__(self, ip: str, port: int = 8001, m: int = 160): #m=160
         self.id_ = getShaRepr(ip)
@@ -305,13 +355,18 @@ class ChordNode:
         self._chord_nodes:list[ChordNodeReference]=[]# ESta lista contiene los nodos referencias de los nodos activos de la red
         self.daemon = Pyro5.server.Daemon(self.ip)
         
+        
+        #Limpiar el name server
+        
+        
         # Threads
         threading.Thread(target=self.check_nameserver,daemon=False).start() # thread to check the name server its active always
         threading.Thread(target=self._check_My_Url,daemon=False).start() # Inicializa mi Url y ademas chequea que todo el tiempo este activa
         threading.Thread(target=self.update_all_chord_url,daemon=True).start()#Actualiza todas las urls disponibles en el NameServer
         threading.Thread(target=self.show,daemon=True).start() # Start funcion que se esta printeando todo el tipo cada n segundos
         threading.Thread(target=self._send_broadcast,daemon=True).start()
-        #threading.Thread(target=self.notify_to_my_succ,daemon=True).start()
+        threading.Thread(target=self.check_predecessor,daemon=True).start()
+        threading.Thread(target=self.check_succ,daemon=True).start()
     
     @property
     def succid(self):
@@ -413,32 +468,76 @@ class ChordNode:
     def ping(self)->ChordNodeReference:
         """Devuelve mi referencia, osea mi url, id, ip ...
         """
-        
+        ns=Pyro5.api.locate_ns()
         # Mandar a resializar el objeto
-        copy_ref=objects_to_send(self.ref,self.daemon)
+        copy_ref=objects_to_send(self.ref,self.daemon,ns)
         return copy_ref
     
-    def notify_to_my_succ(self):
+    
+    def get_succ(self)->ChordNodeReference:
+        """
+        Expone el succesor
+         
+        """
+        ns=Pyro5.api.locate_ns()
+        # Mandar a reidentificar
+        copy_ref=objects_to_send(self.succ,self.daemon,ns)
+        return copy_ref
+    
+    def get_pred(self)->ChordNodeReference:
+        ns=Pyro5.api.locate_ns()
+        # Mandar a reidentidicar el objeto
+        copy_ref=objects_to_send(self.pred,self.daemon,ns)
+        return copy_ref
+    
+    
+    def check_predecessor(self,max_iter=4,time_=3):
+        """Chequea el predecesor"""
+        time.sleep(time_)
+        i=0
         while True:
+           
+           
             try:
-                
-                proxy=Pyro5.api.Proxy
-                if self.succ.id!=self.id:
-                    url=self.succ.url
-                    log_message(f'La url del sucesor es {url}',func=self.notify_to_my_succ)
-                    ns = Pyro5.api.locate_ns()
-                    uri = ns.lookup(url)
-                    node=Pyro5.api.Proxy(uri)  #get_remote_objet(self.succ.url,proxy)
-                    log_message(f'Se tiene al nodo con el id {node.id}',func=self.notify_to_my_succ)
-                    ip=self.ip
-                    res=node.tt(ip)
-                    log_message(f'respondio el nodo {node.id} con {res}',func=self.notify_to_my_succ)
+                if self.pred is None: continue
+                node=self.pred.ping()
+                node_succ:ChordNode=node.get_succ()
+                if node_succ.id!=self.id:
+                  self.pred=None
+                  i=0
             except Exception as e:
-                log_message(f'Error en notyfy my succ {e}, {traceback.format_exc()}',func=self.notify_to_my_succ)
+                try:
+                    i+=1
+                    if i >max_iter:
+                        self.pred=None
+                        i=0
+                except:
+                    pass
+                log_message(f'Error en check_predecessor el valor de i {i} {e}, {traceback.format_exc()}',func=self.check_predecessor)
             time.sleep(3)
             
-    #def tt(self,a):
-    #    return f'{str(self.id)}+{a}'
+    def check_succ(self,max_iter=4,time_=3):
+        """Chequea que este vivo el succesor
+        """
+        i=0
+        time.sleep(time_)
+        
+        while True:
+            try:
+                if self.succ.id==self.id: continue
+                node:ChordNode=self.succ.ping()
+                node_pred=node.get_pred()
+                if node_pred.id!=self.id:
+                    self.succ=self.ref
+                    i=0
+            except Exception as e:
+                i+=1
+                if i >max_iter:
+                    self.succ=self.ref
+                    i=0
+                
+                log_message(f'Error en check_predecessor el valor de i {i} {e}, {traceback.format_exc()}',func=self.check_predecessor)
+        
     
     def _send_broadcast(self) -> bytes:
        # Enviar broadcast cada vez que sienta que mi sucesor no existe
@@ -454,7 +553,7 @@ class ChordNode:
                            active_nodes:list[ChordNodeReference]=clone_object(self.actives_chord_nodes)
                            for node_ref in active_nodes: # Por los nodos que hay esta  ordenados de mayor a menor
                                log_message(f'Analizando al nodo {node_ref.id} el tipo del {type(node_ref)}',func=self._send_broadcast)
-                               if node_ref.id>self.id:
+                               if node_ref.id>self.id or (self.pred is not None and self.succ.id==self.id):
                                    node:'ChordNode'=node_ref.ping()
                                    log_message(f'El nodo {node.id} despues de hacer ping esta vivo',func=self._send_broadcast)
                                    if node is None:
@@ -467,9 +566,9 @@ class ChordNode:
                                    log_message(f'Decirle al nodo {node_ref.id} que me haga su predecesor',func=self._send_broadcast)
                                    to_ask_node:ChordNode=get_remote_objet(node_ref.url,proxy)# Nodo a preguntar si le cuadra ser mi sucesor
                                    log_message(f'Recuperado el objeto remoto con id {to_ask_node.id} ',func=self._send_broadcast)
-                                   my_ref_to_send=objects_to_send(self.ref,daemon)# REferencia mia para enviar al nodo
+                               
                                    
-                                   resp=to_ask_node.tt(my_ref_to_send)# Verifico si puedo hacerlo mi predecesor
+                                   resp=to_ask_node.notify_succ(self.ip)# Verifico si puedo hacerlo mi predecesor
                                    log_message(f'Se le envio al nodo {node_ref.id} que yo sea su predecesor y obtuve de respuesta {resp}',func=self._send_broadcast)  
                                      
                                    
@@ -480,21 +579,21 @@ class ChordNode:
             time.sleep(3)
             
      # Notify method to INFOrm the node about another node
-    def tt(self,ip:str)->bool:
+    def notify_succ(self,ip:str)->bool:
         """ Notify method to INFOrm the node about another node"""
         
         node=ChordNodeReference(ip)
-        log_message(f'El nodo {node.id} quiere que lo haga mi predecesor',func=self.tt)
+        log_message(f'El nodo {node.id} quiere que lo haga mi predecesor',func=self.notify_succ)
         if node.id == self.id:
-            log_message(f'Le dije que no al mnodo {node.id}',func=self.tt)
+            log_message(f'Le dije que no al mnodo {node.id}',func=self.notify_succ)
             return False
            
         if not self.pred or self._inbetween(node.id, self.pred.id, self.id):
-            log_message(f'Le dije que no al mnodo {node.id}',func=self.tt)
+            log_message(f'Le dije que SI al mnodo {node.id}',func=self.notify_succ)
             self.pred = node
             return True
         else:
-            log_message(f'Le dije que no al mnodo {node.id}',func=self.tt)
+            log_message(f'Le dije que no al mnodo {node.id}',func=self.notify_succ)
             return False
             # Enviar mensaje que de no puede y le paso al que tengo como como predecesor de ese id
     
