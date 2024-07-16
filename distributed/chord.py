@@ -8,6 +8,7 @@ import logging
 from helper.protocol_codes import *
 from helper.logguer import log_message
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
+import zmq
 #logger = logging.getLogger(__name__)
 
 # Function to hash a string using SHA-1 and return its integer representation
@@ -40,38 +41,70 @@ class ChordNodeReference:
         self.port = port
 
     # Internal method to send data to the referenced node
-    def _send_data(self, op: int, data: str = None) -> bytes:
-        #print(f'mandando la data con op{op} - y data {data}')
-        #log_message(f'mandando la data con op{op} - y data {data}',func=ChordNodeReference._send_data)
+    #def _send_data(self, op: int, data: str = None) -> bytes:
+    #    #print(f'mandando la data con op{op} - y data {data}')
+    #    #log_message(f'mandando la data con op{op} - y data {data}',func=ChordNodeReference._send_data)
+    #    try:
+    #        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    #            s.connect((self.ip, self.port))
+    #            s.sendall(f'{op},{data}'.encode('utf-8'))
+    #            new_data=s.recv(1024)
+    #            # print(f'Se recibioo de data envada con opcion {op} {str(new_data)}')
+    #            #log_message(f'Se recibioo de data envada con opcion {op} {str(new_data)}',func=ChordNodeReference._send_data)
+    #            return new_data
+    #    except Exception as e:
+    #        #print(f"ERROR sending data: {e} al nodo con id {self.id} e ip {self.ip}")
+    #        log_message(f"ERROR sending data: {e} al nodo con id {self.id} e ip {self.ip},Error:{str(traceback.format_exc())}",level='ERROR')
+    #        #logger.info()
+    #        traceback.print_exc()
+    #        return b''
+    
+    def _send_data(self, op:int, data:str=None)->'ChordNodeReference':
+        if isinstance(data,ChordNodeReference):
+            data={'id':data.id,'ip':data.ip}
+        #log_message(f'Typo de op {type(op)}  tipo de data{type(data)}')
+        context = zmq.Context()
+        socket = context.socket(zmq.REQ)
+        socket.connect(f"tcp://{self.ip}:{self.port}")
+
         try:
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                s.connect((self.ip, self.port))
-                s.sendall(f'{op},{data}'.encode('utf-8'))
-                new_data=s.recv(1024)
-                # print(f'Se recibioo de data envada con opcion {op} {str(new_data)}')
-                #log_message(f'Se recibioo de data envada con opcion {op} {str(new_data)}',func=ChordNodeReference._send_data)
-                return new_data
+            # Enviar datos al servidor
+            socket.send_pyobj((op,data))
+
+            # Esperar la respuesta del servidor
+            new_data = socket.recv_pyobj()
+
+            # Puedes descomentar estas líneas si deseas imprimir o registrar la respuesta
+            # print(f'Se recibió de data enviada con opción {op}: {new_data.decode()}')
+            # log_message(f'Se recibió de data enviada con opción {op}: {new_data.decode()}', func=self._send_data)
+
+            return new_data
+        
         except Exception as e:
             #print(f"ERROR sending data: {e} al nodo con id {self.id} e ip {self.ip}")
             log_message(f"ERROR sending data: {e} al nodo con id {self.id} e ip {self.ip},Error:{str(traceback.format_exc())}",level='ERROR')
             #logger.info()
             traceback.print_exc()
             return b''
+        finally:
+            socket.close()
+            context.term()
     
     def find_successor(self, id: int) -> 'ChordNodeReference':
         """ Method to find the successor of a given id"""
         response=-1
         try:
-            response = self._send_data(FIND_SUCCESSOR, str(id)).decode().split(',')
-            return ChordNodeReference(response[1], self.port)
+            response = self._send_data(FIND_SUCCESSOR, id)
+            response.port=self.port
+            return response
         except Exception as e:
             log_message(f'Hubo un error en find_successor con response {response} de tipo {type(response)} con Error:{e}',func=self.find_successor)
 
     # Method to find the predecessor of a given id
     def find_predecessor(self, id: int) -> 'ChordNodeReference':
         try:
-            response = self._send_data(FIND_PREDECESSOR, str(id)).decode().split(',')
-            return ChordNodeReference(response[1], self.port)
+            response = self._send_data(FIND_PREDECESSOR, id)
+            return response
         except Exception as e:
             log_message(f'Hubo un error en find_successor con response {response} de tipo {type(response)} con Error:{e}',func=self.find_predecessor)
             
@@ -80,30 +113,30 @@ class ChordNodeReference:
     # Property to get the successor of the current node
     @property
     def succ(self) -> 'ChordNodeReference':
-        response = self._send_data(GET_SUCCESSOR).decode().split(',')
-        return ChordNodeReference(response[1], self.port)
+        response = self._send_data(GET_SUCCESSOR)
+        return response
 
     # Property to get the predecessor of the current node
     @property
     def pred(self) -> 'ChordNodeReference':
-        response = self._send_data(GET_PREDECESSOR).decode().split(',')
-        return ChordNodeReference(response[1], self.port)
+        response = self._send_data(GET_PREDECESSOR)
+        return response
 
     # Method to notify the current node about another node
     def notify(self, node: 'ChordNodeReference'):
-        self._send_data(NOTIFY, f'{node.id},{node.ip}')
+        self._send_data(NOTIFY, node)
 
     # Method to check if the predecessor is alive
     def check_predecessor(self)->bool:
         
-        response=self._send_data(CHECK_PREDECESSOR).decode().split(',')
+        response=self._send_data(CHECK_PREDECESSOR)
         
         #print(f'La respuesta de si esta vivo el nodo vivo o no es {response}')
         log_message(f'La respuesta de si esta vivo el nodo vivo o no es {response}',func=ChordNodeReference.check_predecessor,extra_data={'func':'check_predecesor from ChordReferenceNode'})
         if response in ['',' ', None,EMPTYBIT]:
             return   False
         try:
-            node= ChordNodeReference(response[1], self.port)
+            node= response
             return node.id==self.id
         except:
             log_message(f'Hubo problemas al tratar de conocer la respuesta del nodo predecesor que el envio',level='ERROR',func=self.check_predecessor)
@@ -111,16 +144,16 @@ class ChordNodeReference:
 
     # Method to find the closest preceding finger of a given id
     def closest_preceding_finger(self, id: int) -> 'ChordNodeReference':
-        response = self._send_data(CLOSEST_PRECEDING_FINGER, str(id)).decode().split(',')
-        return ChordNodeReference(response[1], self.port)
+        response = self._send_data(CLOSEST_PRECEDING_FINGER, str(id))
+        return response
 
     # Method to store a key-value pair in the current node
     def store_key(self, key: str, value: str):
-        self._send_data(STORE_KEY, f'{key},{value}')
+        self._send_data(STORE_KEY, (key,value))
 
     # Method to retrieve a value for a given key from the current node
     def retrieve_key(self, key: str) -> str:
-        response = self._send_data(RETRIEVE_KEY, key).decode()
+        response = self._send_data(RETRIEVE_KEY, key)
         return response
 
     def __str__(self) -> str:
@@ -308,20 +341,14 @@ class ChordNode:
         """
         node:ChordNodeReference = self
         # Comprobar que el sucesor esta vivo, sino se comprueba por 
-        asked=set() # ids a los que ya le pregunte
-        if not self._inbetween(id, node.id, node.succ.id):
-        #while not self._inbetween(id, node.id, node.succ.id):
-        #    if node.id==self.id:
-        #        node=self.closest_preceding_finger(id)
-        #    else:
-        #        node = node.closest_preceding_finger(id)
-        #    
-        #if id in [i for i in range(0,20)]:log_message(f'El nodo a retornar tiene id {node.id } a buscar la llave {id}',func=self.find_pred)
-            try:
-                return self.succ.find_predecessor(id)
-            except :
-                log_message(f'Hubo un error preguntando a los nodos por el id {id}',func=self.find_pred)
+        while not self._inbetween(id, node.id, node.succ.id):
             
+            if node.id==self.id:
+                node=self.closest_preceding_finger(id)
+            else:
+                node = node.closest_preceding_finger(id)
+            
+        
         return node
 
     # Method to find the closest preceding finger of a given id
@@ -358,7 +385,7 @@ class ChordNode:
                 # Mi succ nuevo será el sucesor en el nuevo nodo
                 self.succ=node  #node.find_successor(self.id) # Si da bateo solo quedarme con el nodo
                 log_message(f'Acabo de actualizar mi sucesor al nodo {self.succ.id}',func=self.join)
-                self.succ.notify(self)
+                self.succ.notify(self.ref)
                 log_message(f'Mande a notificar a mi nuevo sucesor :{self.succ.id} para que me haga su predecesor ',func=self.join)
             else: # Caso que ya tengo un sucesor
                 # Le pido al nodo el sucesor mio en su anillo
@@ -367,7 +394,7 @@ class ChordNode:
                 if self._inbetween(node_succ.id,self.id,self.succ.id) or self.pred is None: # Es que se puede insertar pq debe estar entre yo y mi sucesor
                    self.succ=node_succ if node_succ.id<self.id else node # Actualizo mi sucesor
                    log_message(f'Acabo de actualizar mi sucesor al nodo {self.succ.id}',func=self.join)
-                   self.succ.notify(self)# Notifico para que me haga su predecesor
+                   self.succ.notify(self.ref)# Notifico para que me haga su predecesor
                    log_message(f'Mande a notificar a mi nuevo sucesor :{self.succ.id} para que me haga su predecesor ',func=self.join)
                 
           
@@ -414,7 +441,7 @@ class ChordNode:
                             self.succ = x
                         log_message('A Notificar',func=ChordNode.stabilize)
                         try:
-                            self.succ.notify(self)
+                            self.succ.notify(self.ref)
                         except Exception as e: # Si no se puede conumicar con el nuevo sucesor caso que sea que era sucesor y predecesor
                             # y se desconecto pues poner al sucesor como yo mismo
                             log_message(f' Fallo comunicarse con el nuevo sucesor {e}',func=ChordNode.stabilize,level='ERROR')
@@ -545,56 +572,126 @@ class ChordNode:
                 
             time.sleep(3)
 
-    
-    # Start server method to handle incoming requests
+    def store_key(self,key:int,value)->ChordNodeReference:
+        node=self.find_succ(key)
+        if node.id==self.id:
+            self.data.setdefault(key,value)
+            return self.ref
+        else:
+            return  node.store_key(key,value)
+        
+        
     def start_server(self):
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            s.bind((self.ip, self.port))
-            s.listen(10)
-
-            while True:
-                conn, addr = s.accept()
-                #log_message(f'new connection from {addr}',func=ChordNode.start_server)
-
-                data = conn.recv(1024).decode().split(',')
-
-                data_resp = None
+        context = zmq.Context()
+        socket = context.socket(zmq.REP)
+        socket.bind(f"tcp://{self.ip}:{self.port}")
+        while True:
+            try:
+                message = socket.recv_pyobj()
+                data = message
                 option = int(data[0])
+                #log_message(f'LLego un mensaje con opcion {option}',func=self.start_server)
+                a=data[1]
+                if isinstance(a,dict):
+                    data=(data[0],ChordNodeReference(a['ip']))
+                    
+                data_resp = None
 
                 if option == FIND_SUCCESSOR:
                     id = int(data[1])
                     data_resp = self.find_succ(id)
                 elif option == FIND_PREDECESSOR:
-                   
                     id = int(data[1])
-                    log_message(f'Me llego una peticion de buscar el predecesor de {id}',func=ChordNode.start_server)
+                   # log_message(f'Me llego una peticion de buscar el predecesor de {id}',func=self.start_server)
                     data_resp = self.find_pred(id)
                 elif option == GET_SUCCESSOR:
                     data_resp = self.succ if self.succ else self.ref
                 elif option == GET_PREDECESSOR:
                     data_resp = self.pred if self.pred else self.ref
                 elif option == NOTIFY:
-                    id = int(data[1])
-                    ip = data[2]
-                    log_message(f'Llego una notificacion del ip:{ip}',func=ChordNode.start_server)
+                    #id = int(data[1])
+                    #ip = data[2]
+                    
+                    node:ChordNodeReference=data[1]
+                    #log_message(f'LLegado al notify {node}',func=self.start_server)
+                    id=node.id
+                    ip=node.ip
+                    #log_message(f'Llego una notificacion del ip:{ip}',func=self.start_server)
                     self.notify(ChordNodeReference(ip, self.port))
                 elif option == CHECK_PREDECESSOR:
-                   
-                    data_resp=self.ref
+                    data_resp = self.ref
                 elif option == CLOSEST_PRECEDING_FINGER:
                     id = int(data[1])
                     data_resp = self.closest_preceding_finger(id)
                 elif option == JOIN:
-                    ip = data[2]
-                    log_message(f'Recibido la peticion de JOIN desde ip {ip} con id: {getShaRepr(ip)} ')
-                    self.join(ChordNodeReference(ip, self.port))
-                    
-              
+                    node:ChordNodeReference=data[1]
+                    ip = node.ip
+                    #log_message(f'Recibido la peticion de JOIN desde ip {ip} con id: {getShaRepr(ip)} ',func=self.start_server)
+                    self.join(node)
+                elif option == STORE_KEY:
+                     response=self.store_key()
+
                 if data_resp:
-                    response = f'{data_resp.id},{data_resp.ip}'.encode()
-                    conn.sendall(response)
-                conn.close()
+                    response = data_resp
+                    socket.send_pyobj(response)
+                else:
+                    socket.send_pyobj('')
+            except Exception as e:
+                log_message(f'Error en start server {e}  {traceback.format_exc()}',func=self.start_server)
+            
+        socket.close()
+        context.term()
+            
+    # Start server method to handle incoming requests
+    #ef start_server(self):
+    #   with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    #       s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    #       s.bind((self.ip, self.port))
+    #       s.listen(10)
+
+    #       while True:
+    #           conn, addr = s.accept()
+    #           #log_message(f'new connection from {addr}',func=ChordNode.start_server)
+
+    #           data = conn.recv(1024).decode().split(',')
+
+    #           data_resp = None
+    #           option = int(data[0])
+
+    #           if option == FIND_SUCCESSOR:
+    #               id = int(data[1])
+    #               data_resp = self.find_succ(id)
+    #           elif option == FIND_PREDECESSOR:
+    #              
+    #               id = int(data[1])
+    #               log_message(f'Me llego una peticion de buscar el predecesor de {id}',func=ChordNode.start_server)
+    #               data_resp = self.find_pred(id)
+    #           elif option == GET_SUCCESSOR:
+    #               data_resp = self.succ if self.succ else self.ref
+    #           elif option == GET_PREDECESSOR:
+    #               data_resp = self.pred if self.pred else self.ref
+    #           elif option == NOTIFY:
+    #               id = int(data[1])
+    #               ip = data[2]
+    #               log_message(f'Llego una notificacion del ip:{ip}',func=ChordNode.start_server)
+    #               self.notify(ChordNodeReference(ip, self.port))
+    #           elif option == CHECK_PREDECESSOR:
+    #              
+    #               data_resp=self.ref
+    #           elif option == CLOSEST_PRECEDING_FINGER:
+    #               id = int(data[1])
+    #               data_resp = self.closest_preceding_finger(id)
+    #           elif option == JOIN:
+    #               ip = data[2]
+    #               log_message(f'Recibido la peticion de JOIN desde ip {ip} con id: {getShaRepr(ip)} ')
+    #               self.join(ChordNodeReference(ip, self.port))
+    #           elif option == STORE_KEY:
+    #               pass
+    #         
+    #           if data_resp:
+    #               response = f'{data_resp.id},{data_resp.ip}'.encode()
+    #               conn.sendall(response)
+    #           conn.close()
 
 if __name__ == "__main__":
     print("Hello dht")
