@@ -1,0 +1,1724 @@
+[
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "shutil",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "shutil",
+        "description": "shutil",
+        "detail": "shutil",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Tuple",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Tuple",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Tuple",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Tuple",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "gensim",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "gensim",
+        "description": "gensim",
+        "detail": "gensim",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "DATA_UBICATION",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "DOCUMENTS_UBICATION",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "DOCUMENTS_UBICATION",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "DOCUMENTS_UBICATION",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "DATA_UBICATION",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "DATA_UBICATION",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "DATA_UBICATION",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "DATA_UBICATION",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "DOCUMENTS_UBICATION",
+        "importPath": "Pre_Processing.Document",
+        "description": "Pre_Processing.Document",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "read_documents",
+        "importPath": "Pre_Processing.Document_Folder_Access",
+        "description": "Pre_Processing.Document_Folder_Access",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document_Folder_Access",
+        "documentation": {}
+    },
+    {
+        "label": "read_documents",
+        "importPath": "Pre_Processing.Document_Folder_Access",
+        "description": "Pre_Processing.Document_Folder_Access",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document_Folder_Access",
+        "documentation": {}
+    },
+    {
+        "label": "clean_document",
+        "importPath": "Pre_Processing.Document_Cleaner",
+        "description": "Pre_Processing.Document_Cleaner",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document_Cleaner",
+        "documentation": {}
+    },
+    {
+        "label": "clean_document",
+        "importPath": "Pre_Processing.Document_Cleaner",
+        "description": "Pre_Processing.Document_Cleaner",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Document_Cleaner",
+        "documentation": {}
+    },
+    {
+        "label": "build_words_id_dictionary",
+        "importPath": "Pre_Processing.Word_Id_Dictionary",
+        "description": "Pre_Processing.Word_Id_Dictionary",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Word_Id_Dictionary",
+        "documentation": {}
+    },
+    {
+        "label": "spacy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "spacy",
+        "description": "spacy",
+        "detail": "spacy",
+        "documentation": {}
+    },
+    {
+        "label": "build_tf_idf_model",
+        "importPath": "Pre_Processing.TF_IDF",
+        "description": "Pre_Processing.TF_IDF",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.TF_IDF",
+        "documentation": {}
+    },
+    {
+        "label": "build_similarity_matrix",
+        "importPath": "Pre_Processing.Similarity_Matrix",
+        "description": "Pre_Processing.Similarity_Matrix",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Similarity_Matrix",
+        "documentation": {}
+    },
+    {
+        "label": "build_doc_term_matrix",
+        "importPath": "Pre_Processing.Doc_Term_Matrix",
+        "description": "Pre_Processing.Doc_Term_Matrix",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Doc_Term_Matrix",
+        "documentation": {}
+    },
+    {
+        "label": "Corpus",
+        "importPath": "Pre_Processing.Corpus",
+        "description": "Pre_Processing.Corpus",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Corpus",
+        "documentation": {}
+    },
+    {
+        "label": "load_all_dates",
+        "importPath": "Pre_Processing.Corpus",
+        "description": "Pre_Processing.Corpus",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Corpus",
+        "documentation": {}
+    },
+    {
+        "label": "save_all_dates",
+        "importPath": "Pre_Processing.Corpus",
+        "description": "Pre_Processing.Corpus",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Corpus",
+        "documentation": {}
+    },
+    {
+        "label": "Corpus",
+        "importPath": "Pre_Processing.Corpus",
+        "description": "Pre_Processing.Corpus",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Corpus",
+        "documentation": {}
+    },
+    {
+        "label": "load_all_dates",
+        "importPath": "Pre_Processing.Corpus",
+        "description": "Pre_Processing.Corpus",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Corpus",
+        "documentation": {}
+    },
+    {
+        "label": "DOCUMENTS_UBICATION",
+        "importPath": "Pre_Processing.Corpus",
+        "description": "Pre_Processing.Corpus",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Corpus",
+        "documentation": {}
+    },
+    {
+        "label": "json",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "json",
+        "description": "json",
+        "detail": "json",
+        "documentation": {}
+    },
+    {
+        "label": "utils",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "utils",
+        "description": "utils",
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
+        "label": "ir_datasets",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "ir_datasets",
+        "description": "ir_datasets",
+        "detail": "ir_datasets",
+        "documentation": {}
+    },
+    {
+        "label": "random",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "random",
+        "description": "random",
+        "detail": "random",
+        "documentation": {}
+    },
+    {
+        "label": "add_random_documents",
+        "importPath": "To_Test.documents",
+        "description": "To_Test.documents",
+        "isExtraImport": true,
+        "detail": "To_Test.documents",
+        "documentation": {}
+    },
+    {
+        "label": "process_documents",
+        "importPath": "Pre_Processing.Processor",
+        "description": "Pre_Processing.Processor",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Processor",
+        "documentation": {}
+    },
+    {
+        "label": "prepare_corpus",
+        "importPath": "Pre_Processing.Processor",
+        "description": "Pre_Processing.Processor",
+        "isExtraImport": true,
+        "detail": "Pre_Processing.Processor",
+        "documentation": {}
+    },
+    {
+        "label": "search",
+        "importPath": "Search.Search",
+        "description": "Search.Search",
+        "isExtraImport": true,
+        "detail": "Search.Search",
+        "documentation": {}
+    },
+    {
+        "label": "streamlit",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "streamlit",
+        "description": "streamlit",
+        "detail": "streamlit",
+        "documentation": {}
+    },
+    {
+        "label": "threading",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "threading",
+        "description": "threading",
+        "detail": "threading",
+        "documentation": {}
+    },
+    {
+        "label": "asyncio",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "asyncio",
+        "description": "asyncio",
+        "detail": "asyncio",
+        "documentation": {}
+    },
+    {
+        "label": "socket",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "socket",
+        "description": "socket",
+        "detail": "socket",
+        "documentation": {}
+    },
+    {
+        "label": "sys",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "sys",
+        "description": "sys",
+        "detail": "sys",
+        "documentation": {}
+    },
+    {
+        "label": "time",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "time",
+        "description": "time",
+        "detail": "time",
+        "documentation": {}
+    },
+    {
+        "label": "logging",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "logging",
+        "description": "logging",
+        "detail": "logging",
+        "documentation": {}
+    },
+    {
+        "label": "hashlib",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "hashlib",
+        "description": "hashlib",
+        "detail": "hashlib",
+        "documentation": {}
+    },
+    {
+        "label": "Pyro5.api",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "Pyro5.api",
+        "description": "Pyro5.api",
+        "detail": "Pyro5.api",
+        "documentation": {}
+    },
+    {
+        "label": "*",
+        "importPath": "registrar_name_server",
+        "description": "registrar_name_server",
+        "isExtraImport": true,
+        "detail": "registrar_name_server",
+        "documentation": {}
+    },
+    {
+        "label": "Pyro5.server",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "Pyro5.server",
+        "description": "Pyro5.server",
+        "detail": "Pyro5.server",
+        "documentation": {}
+    },
+    {
+        "label": "subprocess",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "subprocess",
+        "description": "subprocess",
+        "detail": "subprocess",
+        "documentation": {}
+    },
+    {
+        "label": "traceback",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "traceback",
+        "description": "traceback",
+        "detail": "traceback",
+        "documentation": {}
+    },
+    {
+        "label": "zmq",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "zmq",
+        "description": "zmq",
+        "detail": "zmq",
+        "documentation": {}
+    },
+    {
+        "label": "zmq.asyncio",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "zmq.asyncio",
+        "description": "zmq.asyncio",
+        "detail": "zmq.asyncio",
+        "documentation": {}
+    },
+    {
+        "label": "*",
+        "importPath": "protocol_codes",
+        "description": "protocol_codes",
+        "isExtraImport": true,
+        "detail": "protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "log_message",
+        "importPath": "logguer",
+        "description": "logguer",
+        "isExtraImport": true,
+        "detail": "logguer",
+        "documentation": {}
+    },
+    {
+        "label": "*",
+        "importPath": "logger",
+        "description": "logger",
+        "isExtraImport": true,
+        "detail": "logger",
+        "documentation": {}
+    },
+    {
+        "label": "eliminar_contenido_directorio",
+        "kind": 2,
+        "importPath": "logs.delete_garbage",
+        "description": "logs.delete_garbage",
+        "peekOfCode": "def eliminar_contenido_directorio(ruta)->bool:\n    # Verificar si la ruta es un directorio\n    if os.path.isdir(ruta):\n        # Recorrer todos los elementos dentro del directorio\n        for nombre_archivo in os.listdir(ruta):\n            # Construir la ruta completa al archivo o subdirectorio\n            ruta_completa = os.path.join(ruta, nombre_archivo)\n            # Si es un directorio, llamar recursivamente a la misma función\n            if os.path.isdir(ruta_completa):\n                eliminar_contenido_directorio(ruta_completa)",
+        "detail": "logs.delete_garbage",
+        "documentation": {}
+    },
+    {
+        "label": "Corpus",
+        "kind": 6,
+        "importPath": "src.Pre_Processing.Corpus",
+        "description": "src.Pre_Processing.Corpus",
+        "peekOfCode": "class Corpus:\n    def __init__(self,docs : List[Document], model : gensim.models.TfidfModel, dictionary : gensim.corpora.Dictionary, sim_matrix : gensim.similarities.MatrixSimilarity):\n        self.docs = docs\n        self.model = model\n        self.dictionary = dictionary\n        self.sim_matrix = sim_matrix\n    def add_documents(self, docs : List[Document]):\n        self.dictionary.add_documents([d.representation for d in docs])\ndef load_all_dates() -> Corpus :\n    sim_matrix = gensim.similarities.MatrixSimilarity.load(DATA_UBICATION + \"sim_matrix\")",
+        "detail": "src.Pre_Processing.Corpus",
+        "documentation": {}
+    },
+    {
+        "label": "load_all_dates",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Corpus",
+        "description": "src.Pre_Processing.Corpus",
+        "peekOfCode": "def load_all_dates() -> Corpus :\n    sim_matrix = gensim.similarities.MatrixSimilarity.load(DATA_UBICATION + \"sim_matrix\")\n    dictionary = gensim.corpora.Dictionary.load(DATA_UBICATION + \"word_id_dic\")\n    model = gensim.models.TfidfModel.load(DATA_UBICATION + \"tfidf_model\")\n    docs = read_documents()\n    return Corpus(docs, model, dictionary, sim_matrix)\ndef save_all_dates(corpus : Corpus):\n    corpus.sim_matrix.save(DATA_UBICATION + \"sim_matrix\")\n    corpus.dictionary.save(DATA_UBICATION + \"word_id_dic\")\n    corpus.model.save(DATA_UBICATION + \"tfidf_model\")",
+        "detail": "src.Pre_Processing.Corpus",
+        "documentation": {}
+    },
+    {
+        "label": "save_all_dates",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Corpus",
+        "description": "src.Pre_Processing.Corpus",
+        "peekOfCode": "def save_all_dates(corpus : Corpus):\n    corpus.sim_matrix.save(DATA_UBICATION + \"sim_matrix\")\n    corpus.dictionary.save(DATA_UBICATION + \"word_id_dic\")\n    corpus.model.save(DATA_UBICATION + \"tfidf_model\")",
+        "detail": "src.Pre_Processing.Corpus",
+        "documentation": {}
+    },
+    {
+        "label": "to_BoW",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Doc_Term_Matrix",
+        "description": "src.Pre_Processing.Doc_Term_Matrix",
+        "peekOfCode": "def to_BoW(doc : Document, word_id_dictionary : gensim.corpora.Dictionary):\n    doc.representation = word_id_dictionary.doc2bow(doc.representation)\ndef build_doc_term_matrix(docs : List[Document]):\n    for doc in docs:\n        clean_document(doc)\n    word_id_dictionary = build_words_id_dictionary(docs)\n    for doc in docs:\n        to_BoW(doc,word_id_dictionary)\n    doc_term_matrix = [doc.representation for doc in docs]\n    return word_id_dictionary, doc_term_matrix",
+        "detail": "src.Pre_Processing.Doc_Term_Matrix",
+        "documentation": {}
+    },
+    {
+        "label": "build_doc_term_matrix",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Doc_Term_Matrix",
+        "description": "src.Pre_Processing.Doc_Term_Matrix",
+        "peekOfCode": "def build_doc_term_matrix(docs : List[Document]):\n    for doc in docs:\n        clean_document(doc)\n    word_id_dictionary = build_words_id_dictionary(docs)\n    for doc in docs:\n        to_BoW(doc,word_id_dictionary)\n    doc_term_matrix = [doc.representation for doc in docs]\n    return word_id_dictionary, doc_term_matrix",
+        "detail": "src.Pre_Processing.Doc_Term_Matrix",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "kind": 6,
+        "importPath": "src.Pre_Processing.Document",
+        "description": "src.Pre_Processing.Document",
+        "peekOfCode": "class Document:\n    def __init__(self, title : str, text : str):\n        self.title = title\n        self.text = text\n        self.representation = None",
+        "detail": "src.Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "DOCUMENTS_UBICATION",
+        "kind": 5,
+        "importPath": "src.Pre_Processing.Document",
+        "description": "src.Pre_Processing.Document",
+        "peekOfCode": "DOCUMENTS_UBICATION = \"data/documents/\"\nDATA_UBICATION = \"data/data/\"\nclass Document:\n    def __init__(self, title : str, text : str):\n        self.title = title\n        self.text = text\n        self.representation = None",
+        "detail": "src.Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "DATA_UBICATION",
+        "kind": 5,
+        "importPath": "src.Pre_Processing.Document",
+        "description": "src.Pre_Processing.Document",
+        "peekOfCode": "DATA_UBICATION = \"data/data/\"\nclass Document:\n    def __init__(self, title : str, text : str):\n        self.title = title\n        self.text = text\n        self.representation = None",
+        "detail": "src.Pre_Processing.Document",
+        "documentation": {}
+    },
+    {
+        "label": "clean_document",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Document_Cleaner",
+        "description": "src.Pre_Processing.Document_Cleaner",
+        "peekOfCode": "def clean_document(doc : Document):\n    tokenize_doc(doc)\n    remove_noise(doc)\n    remove_stop_words(doc)\n    morphological_reduce(doc)    \ndef tokenize_doc(doc : Document):\n    doc.representation = [token for token in nlp(doc.text)]\ndef remove_noise(doc : Document):\n    doc.representation = [token for token in doc.representation if token.is_alpha]\ndef remove_stop_words(doc : Document):",
+        "detail": "src.Pre_Processing.Document_Cleaner",
+        "documentation": {}
+    },
+    {
+        "label": "tokenize_doc",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Document_Cleaner",
+        "description": "src.Pre_Processing.Document_Cleaner",
+        "peekOfCode": "def tokenize_doc(doc : Document):\n    doc.representation = [token for token in nlp(doc.text)]\ndef remove_noise(doc : Document):\n    doc.representation = [token for token in doc.representation if token.is_alpha]\ndef remove_stop_words(doc : Document):\n    stop_words = spacy.lang.en.stop_words.STOP_WORDS\n    doc.representation = [token for token in doc.representation if token.text not in stop_words]\ndef morphological_reduce(doc : Document):\n        doc.representation = [token.lemma_ for token in doc.representation]",
+        "detail": "src.Pre_Processing.Document_Cleaner",
+        "documentation": {}
+    },
+    {
+        "label": "remove_noise",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Document_Cleaner",
+        "description": "src.Pre_Processing.Document_Cleaner",
+        "peekOfCode": "def remove_noise(doc : Document):\n    doc.representation = [token for token in doc.representation if token.is_alpha]\ndef remove_stop_words(doc : Document):\n    stop_words = spacy.lang.en.stop_words.STOP_WORDS\n    doc.representation = [token for token in doc.representation if token.text not in stop_words]\ndef morphological_reduce(doc : Document):\n        doc.representation = [token.lemma_ for token in doc.representation]",
+        "detail": "src.Pre_Processing.Document_Cleaner",
+        "documentation": {}
+    },
+    {
+        "label": "remove_stop_words",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Document_Cleaner",
+        "description": "src.Pre_Processing.Document_Cleaner",
+        "peekOfCode": "def remove_stop_words(doc : Document):\n    stop_words = spacy.lang.en.stop_words.STOP_WORDS\n    doc.representation = [token for token in doc.representation if token.text not in stop_words]\ndef morphological_reduce(doc : Document):\n        doc.representation = [token.lemma_ for token in doc.representation]",
+        "detail": "src.Pre_Processing.Document_Cleaner",
+        "documentation": {}
+    },
+    {
+        "label": "morphological_reduce",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Document_Cleaner",
+        "description": "src.Pre_Processing.Document_Cleaner",
+        "peekOfCode": "def morphological_reduce(doc : Document):\n        doc.representation = [token.lemma_ for token in doc.representation]",
+        "detail": "src.Pre_Processing.Document_Cleaner",
+        "documentation": {}
+    },
+    {
+        "label": "nlp",
+        "kind": 5,
+        "importPath": "src.Pre_Processing.Document_Cleaner",
+        "description": "src.Pre_Processing.Document_Cleaner",
+        "peekOfCode": "nlp = spacy.load(\"en_core_web_sm\")\ndef clean_document(doc : Document):\n    tokenize_doc(doc)\n    remove_noise(doc)\n    remove_stop_words(doc)\n    morphological_reduce(doc)    \ndef tokenize_doc(doc : Document):\n    doc.representation = [token for token in nlp(doc.text)]\ndef remove_noise(doc : Document):\n    doc.representation = [token for token in doc.representation if token.is_alpha]",
+        "detail": "src.Pre_Processing.Document_Cleaner",
+        "documentation": {}
+    },
+    {
+        "label": "read_documents",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Document_Folder_Access",
+        "description": "src.Pre_Processing.Document_Folder_Access",
+        "peekOfCode": "def read_documents():\n    docs = []\n    with os.scandir(DOCUMENTS_UBICATION) as files:\n        for file in files:\n            docs.append(read_document(file.name))\n    return docs\ndef read_document(title):\n    with open(DOCUMENTS_UBICATION+title,'r') as file:\n        text = file.read()\n    return Document(title, text)",
+        "detail": "src.Pre_Processing.Document_Folder_Access",
+        "documentation": {}
+    },
+    {
+        "label": "read_document",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Document_Folder_Access",
+        "description": "src.Pre_Processing.Document_Folder_Access",
+        "peekOfCode": "def read_document(title):\n    with open(DOCUMENTS_UBICATION+title,'r') as file:\n        text = file.read()\n    return Document(title, text)",
+        "detail": "src.Pre_Processing.Document_Folder_Access",
+        "documentation": {}
+    },
+    {
+        "label": "prepare_corpus",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Processor",
+        "description": "src.Pre_Processing.Processor",
+        "peekOfCode": "def prepare_corpus():\n    docs = read_documents()\n    save_docs_names(docs)\n    current_titles = [d.title for d in docs]\n    procesed_titles = load_docs_names()\n    is_eq = utils.is_eq(current_titles,procesed_titles)\n    if not is_eq:\n        process_documents(docs)\n        save_docs_names(docs)\n    return load_all_dates()",
+        "detail": "src.Pre_Processing.Processor",
+        "documentation": {}
+    },
+    {
+        "label": "process_documents",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Processor",
+        "description": "src.Pre_Processing.Processor",
+        "peekOfCode": "def process_documents(docs : List[Document]):\n    word_id_dictionary, doc_term_matrix = build_doc_term_matrix(docs)\n    model = build_tf_idf_model(docs)\n    sim_matrix = build_similarity_matrix(model, doc_term_matrix)\n    corpus = Corpus(docs,model,word_id_dictionary,sim_matrix)\n    save_all_dates(corpus)\ndef save_docs_names(docs : List[Document]):\n    with open(DATA_UBICATION + \"docs_names\",'w') as file:\n        json.dump([d.title for d in docs],file)\ndef load_docs_names():",
+        "detail": "src.Pre_Processing.Processor",
+        "documentation": {}
+    },
+    {
+        "label": "save_docs_names",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Processor",
+        "description": "src.Pre_Processing.Processor",
+        "peekOfCode": "def save_docs_names(docs : List[Document]):\n    with open(DATA_UBICATION + \"docs_names\",'w') as file:\n        json.dump([d.title for d in docs],file)\ndef load_docs_names():\n    with open(DATA_UBICATION + \"docs_names\",'r') as file:\n        return json.load(file)",
+        "detail": "src.Pre_Processing.Processor",
+        "documentation": {}
+    },
+    {
+        "label": "load_docs_names",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Processor",
+        "description": "src.Pre_Processing.Processor",
+        "peekOfCode": "def load_docs_names():\n    with open(DATA_UBICATION + \"docs_names\",'r') as file:\n        return json.load(file)",
+        "detail": "src.Pre_Processing.Processor",
+        "documentation": {}
+    },
+    {
+        "label": "build_similarity_matrix",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Similarity_Matrix",
+        "description": "src.Pre_Processing.Similarity_Matrix",
+        "peekOfCode": "def build_similarity_matrix(model : gensim.models.TfidfModel, doc_term_matrix : List[Tuple[int,int]]) -> gensim.similarities.MatrixSimilarity:\n    #sim_matrix = gensim.similarities.MatrixSimilarity(model[doc_term_matrix])\n    sim_matrix = gensim.similarities.MatrixSimilarity(doc_term_matrix)\n    return sim_matrix",
+        "detail": "src.Pre_Processing.Similarity_Matrix",
+        "documentation": {}
+    },
+    {
+        "label": "build_tf_idf_model",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.TF_IDF",
+        "description": "src.Pre_Processing.TF_IDF",
+        "peekOfCode": "def build_tf_idf_model(documents : List[Document]):\n    corpus = [doc.representation for doc in documents]\n    tfidf_model = gensim.models.TfidfModel(corpus, normalize = True)\n    return tfidf_model",
+        "detail": "src.Pre_Processing.TF_IDF",
+        "documentation": {}
+    },
+    {
+        "label": "build_words_id_dictionary",
+        "kind": 2,
+        "importPath": "src.Pre_Processing.Word_Id_Dictionary",
+        "description": "src.Pre_Processing.Word_Id_Dictionary",
+        "peekOfCode": "def build_words_id_dictionary(docs : List[Document]) -> gensim.corpora.Dictionary:\n    words_id_dictionary = gensim.corpora.Dictionary([doc.representation for doc in docs])\n    words_id_dictionary.save(DATA_UBICATION+\"word_id_dic\")\n    return words_id_dictionary",
+        "detail": "src.Pre_Processing.Word_Id_Dictionary",
+        "documentation": {}
+    },
+    {
+        "label": "search",
+        "kind": 2,
+        "importPath": "src.Search.Search",
+        "description": "src.Search.Search",
+        "peekOfCode": "def search(query : str, corpus : Corpus) -> List[Document]:\n    query = Document('query', query)\n    clean_document(query)\n    query_bow = corpus.dictionary.doc2bow(query.representation)\n    #sims = corpus.sim_matrix[corpus.model[query_bow]]\n    sims = corpus.sim_matrix[query_bow]\n    searched = []\n    for index in sorted(enumerate(sims), key=lambda item: -item[1])[:3]:\n        searched.append(corpus.docs[index[0]])\n    return searched",
+        "detail": "src.Search.Search",
+        "documentation": {}
+    },
+    {
+        "label": "get_documents",
+        "kind": 2,
+        "importPath": "src.To_Test.documents",
+        "description": "src.To_Test.documents",
+        "peekOfCode": "def get_documents(dataset_name : str):\n    dataset = ir_datasets.load(dataset_name)\n    return [Document(doc.title, doc.text) for doc in dataset.docs_iter()]\ndef get_random_documents(num_docs = 1,dataset_name = \"cranfield\"):\n    document = get_documents(dataset_name)\n    return random.sample(document,num_docs)\ndef add_document(doc : Document):\n    with open(DOCUMENTS_UBICATION+doc.title,'w') as file:\n        file.write(doc.text)\ndef add_random_documents(num_docs):",
+        "detail": "src.To_Test.documents",
+        "documentation": {}
+    },
+    {
+        "label": "get_random_documents",
+        "kind": 2,
+        "importPath": "src.To_Test.documents",
+        "description": "src.To_Test.documents",
+        "peekOfCode": "def get_random_documents(num_docs = 1,dataset_name = \"cranfield\"):\n    document = get_documents(dataset_name)\n    return random.sample(document,num_docs)\ndef add_document(doc : Document):\n    with open(DOCUMENTS_UBICATION+doc.title,'w') as file:\n        file.write(doc.text)\ndef add_random_documents(num_docs):\n    docs = get_random_documents(num_docs)\n    for d in docs: add_document(d)",
+        "detail": "src.To_Test.documents",
+        "documentation": {}
+    },
+    {
+        "label": "add_document",
+        "kind": 2,
+        "importPath": "src.To_Test.documents",
+        "description": "src.To_Test.documents",
+        "peekOfCode": "def add_document(doc : Document):\n    with open(DOCUMENTS_UBICATION+doc.title,'w') as file:\n        file.write(doc.text)\ndef add_random_documents(num_docs):\n    docs = get_random_documents(num_docs)\n    for d in docs: add_document(d)",
+        "detail": "src.To_Test.documents",
+        "documentation": {}
+    },
+    {
+        "label": "add_random_documents",
+        "kind": 2,
+        "importPath": "src.To_Test.documents",
+        "description": "src.To_Test.documents",
+        "peekOfCode": "def add_random_documents(num_docs):\n    docs = get_random_documents(num_docs)\n    for d in docs: add_document(d)",
+        "detail": "src.To_Test.documents",
+        "documentation": {}
+    },
+    {
+        "label": "home_page",
+        "kind": 2,
+        "importPath": "src.main",
+        "description": "src.main",
+        "peekOfCode": "def home_page():\n    st.title(\"Buscador\")\ndef search_page():\n    query = st.text_input(\"Introduce your query\")\n    if query:\n        for d in search(query,corpus):\n            st.write(d.title)\ndef edit_page():\n    up_file = st.file_uploader(\"Cargar archivo\", type=[\"pdf\",\"txt\",\"csv\"])\n    if up_file is not None:",
+        "detail": "src.main",
+        "documentation": {}
+    },
+    {
+        "label": "search_page",
+        "kind": 2,
+        "importPath": "src.main",
+        "description": "src.main",
+        "peekOfCode": "def search_page():\n    query = st.text_input(\"Introduce your query\")\n    if query:\n        for d in search(query,corpus):\n            st.write(d.title)\ndef edit_page():\n    up_file = st.file_uploader(\"Cargar archivo\", type=[\"pdf\",\"txt\",\"csv\"])\n    if up_file is not None:\n        file_content_bytes = up_file.getvalue()\n        try:",
+        "detail": "src.main",
+        "documentation": {}
+    },
+    {
+        "label": "edit_page",
+        "kind": 2,
+        "importPath": "src.main",
+        "description": "src.main",
+        "peekOfCode": "def edit_page():\n    up_file = st.file_uploader(\"Cargar archivo\", type=[\"pdf\",\"txt\",\"csv\"])\n    if up_file is not None:\n        file_content_bytes = up_file.getvalue()\n        try:\n            file_content = file_content_bytes.decode('utf-8')\n        except UnicodeDecodeError:\n            st.error(\"El archivo seleccionado contiene informacion que no esta expresada en forma de text, imposible abrirlo\")\n            file_content = \"\"\n        ta = st.text_area(up_file.name,value=file_content, height=500,disabled=file_content==\"\")",
+        "detail": "src.main",
+        "documentation": {}
+    },
+    {
+        "label": "save",
+        "kind": 2,
+        "importPath": "src.main",
+        "description": "src.main",
+        "peekOfCode": "def save(name, value):\n    with open(DOCUMENTS_UBICATION + name,mode='wb') as file:\n        file.write(value)\noptions = st.sidebar.selectbox(\"Menu\",[\"Home\", \"Busqueda\", \"Acceso a DB\"])\nif options == \"Home\":\n    home_page()\nelif options == \"Busqueda\":\n    search_page()\nelif options == \"Acceso a DB\":\n    edit_page()",
+        "detail": "src.main",
+        "documentation": {}
+    },
+    {
+        "label": "corpus",
+        "kind": 5,
+        "importPath": "src.main",
+        "description": "src.main",
+        "peekOfCode": "corpus = prepare_corpus()\ndef home_page():\n    st.title(\"Buscador\")\ndef search_page():\n    query = st.text_input(\"Introduce your query\")\n    if query:\n        for d in search(query,corpus):\n            st.write(d.title)\ndef edit_page():\n    up_file = st.file_uploader(\"Cargar archivo\", type=[\"pdf\",\"txt\",\"csv\"])",
+        "detail": "src.main",
+        "documentation": {}
+    },
+    {
+        "label": "options",
+        "kind": 5,
+        "importPath": "src.main",
+        "description": "src.main",
+        "peekOfCode": "options = st.sidebar.selectbox(\"Menu\",[\"Home\", \"Busqueda\", \"Acceso a DB\"])\nif options == \"Home\":\n    home_page()\nelif options == \"Busqueda\":\n    search_page()\nelif options == \"Acceso a DB\":\n    edit_page()",
+        "detail": "src.main",
+        "documentation": {}
+    },
+    {
+        "label": "compare_arrays",
+        "kind": 2,
+        "importPath": "src.utils",
+        "description": "src.utils",
+        "peekOfCode": "def compare_arrays(array1, array2):\n    a1 = set(array1)\n    a2 = set(array2)\n    a1_only = a1.difference(a2)\n    a2_only = a2.difference(a1)\n    return list(a1_only), list(a2_only)\ndef is_eq(array1, array2):\n    a1_only, a2_only = compare_arrays(array1, array2)\n    return (len(a1_only) == 0) and (len(a2_only) == 0)",
+        "detail": "src.utils",
+        "documentation": {}
+    },
+    {
+        "label": "is_eq",
+        "kind": 2,
+        "importPath": "src.utils",
+        "description": "src.utils",
+        "peekOfCode": "def is_eq(array1, array2):\n    a1_only, a2_only = compare_arrays(array1, array2)\n    return (len(a1_only) == 0) and (len(a2_only) == 0)",
+        "detail": "src.utils",
+        "documentation": {}
+    },
+    {
+        "label": "RecursoCompartido",
+        "kind": 6,
+        "importPath": "test.concurrencia_con_hilos.example",
+        "description": "test.concurrencia_con_hilos.example",
+        "peekOfCode": "class RecursoCompartido:\n    def __init__(self):\n        self.recurso = 0\n        self.thread_lock = threading.Lock()\n        self.async_lock = asyncio.Lock()\n    def leer_recurso(self):\n        with self.thread_lock:\n            valor = self.recurso\n            print(f\"[Hilo] Leyendo el recurso: {valor}\")\n            return valor",
+        "detail": "test.concurrencia_con_hilos.example",
+        "documentation": {}
+    },
+    {
+        "label": "lector",
+        "kind": 2,
+        "importPath": "test.concurrencia_con_hilos.example",
+        "description": "test.concurrencia_con_hilos.example",
+        "peekOfCode": "def lector():\n    for _ in range(5):\n        recurso_compartido.leer_recurso()\n        threading.Event().wait(1)\ndef escritor():\n    for i in range(5):\n        recurso_compartido.escribir_recurso(i)\n        threading.Event().wait(1)\n# Funciones asincrónicas\nasync def lector_async():",
+        "detail": "test.concurrencia_con_hilos.example",
+        "documentation": {}
+    },
+    {
+        "label": "escritor",
+        "kind": 2,
+        "importPath": "test.concurrencia_con_hilos.example",
+        "description": "test.concurrencia_con_hilos.example",
+        "peekOfCode": "def escritor():\n    for i in range(5):\n        recurso_compartido.escribir_recurso(i)\n        threading.Event().wait(1)\n# Funciones asincrónicas\nasync def lector_async():\n    for _ in range(5):\n        await recurso_compartido.leer_recurso_async()\n        await asyncio.sleep(1)\nasync def escritor_async():",
+        "detail": "test.concurrencia_con_hilos.example",
+        "documentation": {}
+    },
+    {
+        "label": "recurso_compartido",
+        "kind": 5,
+        "importPath": "test.concurrencia_con_hilos.example",
+        "description": "test.concurrencia_con_hilos.example",
+        "peekOfCode": "recurso_compartido = RecursoCompartido()\n# Funciones de hilo\ndef lector():\n    for _ in range(5):\n        recurso_compartido.leer_recurso()\n        threading.Event().wait(1)\ndef escritor():\n    for i in range(5):\n        recurso_compartido.escribir_recurso(i)\n        threading.Event().wait(1)",
+        "detail": "test.concurrencia_con_hilos.example",
+        "documentation": {}
+    },
+    {
+        "label": "hilo_lector",
+        "kind": 5,
+        "importPath": "test.concurrencia_con_hilos.example",
+        "description": "test.concurrencia_con_hilos.example",
+        "peekOfCode": "hilo_lector = threading.Thread(target=lector)\nhilo_escritor = threading.Thread(target=escritor)\nhilo_lector.start()\nhilo_escritor.start()\n# Ejecución asincrónica\nasync def main():\n    await asyncio.gather(\n        lector_async(),\n        escritor_async()\n    )",
+        "detail": "test.concurrencia_con_hilos.example",
+        "documentation": {}
+    },
+    {
+        "label": "hilo_escritor",
+        "kind": 5,
+        "importPath": "test.concurrencia_con_hilos.example",
+        "description": "test.concurrencia_con_hilos.example",
+        "peekOfCode": "hilo_escritor = threading.Thread(target=escritor)\nhilo_lector.start()\nhilo_escritor.start()\n# Ejecución asincrónica\nasync def main():\n    await asyncio.gather(\n        lector_async(),\n        escritor_async()\n    )\nasyncio.run(main())",
+        "detail": "test.concurrencia_con_hilos.example",
+        "documentation": {}
+    },
+    {
+        "label": "ChordNodeReference",
+        "kind": 6,
+        "importPath": "test.new_chords.chord",
+        "description": "test.new_chords.chord",
+        "peekOfCode": "class ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n    # Internal method to send data to the referenced node\n    def _send_data(self, op: int, data: str = None) -> bytes:\n        try:\n            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:\n                s.connect((self.ip, self.port))",
+        "detail": "test.new_chords.chord",
+        "documentation": {}
+    },
+    {
+        "label": "ChordNode",
+        "kind": 6,
+        "importPath": "test.new_chords.chord",
+        "description": "test.new_chords.chord",
+        "peekOfCode": "class ChordNode():\n    def __init__(self, ip: str, port: int = 8001, m: int = 4):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n        self.ref = ChordNodeReference(self.ip, self.port)\n        self.succ = None\n        self.pred = None\n        self.m = m # Number of bits in the hash/key spac\n        self.finger = [self.ref] * self.m  # Finger table",
+        "detail": "test.new_chords.chord",
+        "documentation": {}
+    },
+    {
+        "label": "getShaRepr",
+        "kind": 2,
+        "importPath": "test.new_chords.chord",
+        "description": "test.new_chords.chord",
+        "peekOfCode": "def getShaRepr(data: str, max_value: int = 16):\n    # Genera el hash SHA-1 y obtén su representación en hexadecimal\n    hash_hex = hashlib.sha1(data.encode()).hexdigest()\n    # Convierte el hash hexadecimal a un entero\n    hash_int = int(hash_hex, 16)\n    # Define un arreglo o lista con los valores del 0 al 16\n    values = list(range(max_value + 1))\n    # Usa el hash como índice para seleccionar un valor del arreglo\n    # Asegúrate de que el índice esté dentro del rango válido\n    index = hash_int % len(values)",
+        "detail": "test.new_chords.chord",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "kind": 5,
+        "importPath": "test.new_chords.chord",
+        "description": "test.new_chords.chord",
+        "peekOfCode": "logger = logging.getLogger(__name__)\n# Operation codes\nFIND_SUCCESSOR = 1\nFIND_PREDECESSOR = 2\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nINSERT_NODE = 6\nREMOVE_NODE = 7\nJOIN = 8",
+        "detail": "test.new_chords.chord",
+        "documentation": {}
+    },
+    {
+        "label": "FIND_SUCCESSOR",
+        "kind": 5,
+        "importPath": "test.new_chords.chord",
+        "description": "test.new_chords.chord",
+        "peekOfCode": "FIND_SUCCESSOR = 1\nFIND_PREDECESSOR = 2\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nINSERT_NODE = 6\nREMOVE_NODE = 7\nJOIN = 8\nELECTION = 9\nELECTION_OK = 10",
+        "detail": "test.new_chords.chord",
+        "documentation": {}
+    },
+    {
+        "label": "FIND_PREDECESSOR",
+        "kind": 5,
+        "importPath": "test.new_chords.chord",
+        "description": "test.new_chords.chord",
+        "peekOfCode": "FIND_PREDECESSOR = 2\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nINSERT_NODE = 6\nREMOVE_NODE = 7\nJOIN = 8\nELECTION = 9\nELECTION_OK = 10\nELECTION_WINNER = 11",
+        "detail": "test.new_chords.chord",
+        "documentation": {}
+    },
+    {
+        "label": "GET_SUCCESSOR",
+        "kind": 5,
+        "importPath": "test.new_chords.chord",
+        "description": "test.new_chords.chord",
+        "peekOfCode": "GET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nINSERT_NODE = 6\nREMOVE_NODE = 7\nJOIN = 8\nELECTION = 9\nELECTION_OK = 10\nELECTION_WINNER = 11\nCHECK_PREDECESSOR = 12",
+        "detail": "test.new_chords.chord",
+        "documentation": {}
+    },
+    {
+        "label": "GET_PREDECESSOR",
+        "kind": 5,
+        "importPath": "test.new_chords.chord",
+        "description": "test.new_chords.chord",
+        "peekOfCode": "GET_PREDECESSOR = 4\nNOTIFY = 5\nINSERT_NODE = 6\nREMOVE_NODE = 7\nJOIN = 8\nELECTION = 9\nELECTION_OK = 10\nELECTION_WINNER = 11\nCHECK_PREDECESSOR = 12\nCLOSEST_PRECEDING_FINGER = 13",
+        "detail": "test.new_chords.chord",
+        "documentation": {}
+    },
+    {
+        "label": "NOTIFY",
+        "kind": 5,
+        "importPath": "test.new_chords.chord",
+        "description": "test.new_chords.chord",
+        "peekOfCode": "NOTIFY = 5\nINSERT_NODE = 6\nREMOVE_NODE = 7\nJOIN = 8\nELECTION = 9\nELECTION_OK = 10\nELECTION_WINNER = 11\nCHECK_PREDECESSOR = 12\nCLOSEST_PRECEDING_FINGER = 13\nSTORE_KEY = 14",
+        "detail": "test.new_chords.chord",
+        "documentation": {}
+    },
+    {
+        "label": "INSERT_NODE",
+        "kind": 5,
+        "importPath": "test.new_chords.chord",
+        "description": "test.new_chords.chord",
+        "peekOfCode": "INSERT_NODE = 6\nREMOVE_NODE = 7\nJOIN = 8\nELECTION = 9\nELECTION_OK = 10\nELECTION_WINNER = 11\nCHECK_PREDECESSOR = 12\nCLOSEST_PRECEDING_FINGER = 13\nSTORE_KEY = 14\nRETRIEVE_KEY = 15",
+        "detail": "test.new_chords.chord",
+        "documentation": {}
+    },
+    {
+        "label": "REMOVE_NODE",
+        "kind": 5,
+        "importPath": "test.new_chords.chord",
+        "description": "test.new_chords.chord",
+        "peekOfCode": "REMOVE_NODE = 7\nJOIN = 8\nELECTION = 9\nELECTION_OK = 10\nELECTION_WINNER = 11\nCHECK_PREDECESSOR = 12\nCLOSEST_PRECEDING_FINGER = 13\nSTORE_KEY = 14\nRETRIEVE_KEY = 15\nSEARCH = 16",
+        "detail": "test.new_chords.chord",
+        "documentation": {}
+    },
+    {
+        "label": "JOIN",
+        "kind": 5,
+        "importPath": "test.new_chords.chord",
+        "description": "test.new_chords.chord",
+        "peekOfCode": "JOIN = 8\nELECTION = 9\nELECTION_OK = 10\nELECTION_WINNER = 11\nCHECK_PREDECESSOR = 12\nCLOSEST_PRECEDING_FINGER = 13\nSTORE_KEY = 14\nRETRIEVE_KEY = 15\nSEARCH = 16\nREQUEST_BROADCAST_QUERY = 17",
+        "detail": "test.new_chords.chord",
+        "documentation": {}
+    },
+    {
+        "label": "ELECTION",
+        "kind": 5,
+        "importPath": "test.new_chords.chord",
+        "description": "test.new_chords.chord",
+        "peekOfCode": "ELECTION = 9\nELECTION_OK = 10\nELECTION_WINNER = 11\nCHECK_PREDECESSOR = 12\nCLOSEST_PRECEDING_FINGER = 13\nSTORE_KEY = 14\nRETRIEVE_KEY = 15\nSEARCH = 16\nREQUEST_BROADCAST_QUERY = 17\n# Configurar el nivel de log",
+        "detail": "test.new_chords.chord",
+        "documentation": {}
+    },
+    {
+        "label": "ELECTION_OK",
+        "kind": 5,
+        "importPath": "test.new_chords.chord",
+        "description": "test.new_chords.chord",
+        "peekOfCode": "ELECTION_OK = 10\nELECTION_WINNER = 11\nCHECK_PREDECESSOR = 12\nCLOSEST_PRECEDING_FINGER = 13\nSTORE_KEY = 14\nRETRIEVE_KEY = 15\nSEARCH = 16\nREQUEST_BROADCAST_QUERY = 17\n# Configurar el nivel de log\nlogging.basicConfig(level=logging.DEBUG,",
+        "detail": "test.new_chords.chord",
+        "documentation": {}
+    },
+    {
+        "label": "ELECTION_WINNER",
+        "kind": 5,
+        "importPath": "test.new_chords.chord",
+        "description": "test.new_chords.chord",
+        "peekOfCode": "ELECTION_WINNER = 11\nCHECK_PREDECESSOR = 12\nCLOSEST_PRECEDING_FINGER = 13\nSTORE_KEY = 14\nRETRIEVE_KEY = 15\nSEARCH = 16\nREQUEST_BROADCAST_QUERY = 17\n# Configurar el nivel de log\nlogging.basicConfig(level=logging.DEBUG,\n                    format='%(asctime)s - %(levelname)s - %(threadName)s - %(message)s')",
+        "detail": "test.new_chords.chord",
+        "documentation": {}
+    },
+    {
+        "label": "CHECK_PREDECESSOR",
+        "kind": 5,
+        "importPath": "test.new_chords.chord",
+        "description": "test.new_chords.chord",
+        "peekOfCode": "CHECK_PREDECESSOR = 12\nCLOSEST_PRECEDING_FINGER = 13\nSTORE_KEY = 14\nRETRIEVE_KEY = 15\nSEARCH = 16\nREQUEST_BROADCAST_QUERY = 17\n# Configurar el nivel de log\nlogging.basicConfig(level=logging.DEBUG,\n                    format='%(asctime)s - %(levelname)s - %(threadName)s - %(message)s')\nlogger = logging.getLogger(__name__)",
+        "detail": "test.new_chords.chord",
+        "documentation": {}
+    },
+    {
+        "label": "CLOSEST_PRECEDING_FINGER",
+        "kind": 5,
+        "importPath": "test.new_chords.chord",
+        "description": "test.new_chords.chord",
+        "peekOfCode": "CLOSEST_PRECEDING_FINGER = 13\nSTORE_KEY = 14\nRETRIEVE_KEY = 15\nSEARCH = 16\nREQUEST_BROADCAST_QUERY = 17\n# Configurar el nivel de log\nlogging.basicConfig(level=logging.DEBUG,\n                    format='%(asctime)s - %(levelname)s - %(threadName)s - %(message)s')\nlogger = logging.getLogger(__name__)\n# # Function to hash a string using SHA-1 and return its integer representation",
+        "detail": "test.new_chords.chord",
+        "documentation": {}
+    },
+    {
+        "label": "STORE_KEY",
+        "kind": 5,
+        "importPath": "test.new_chords.chord",
+        "description": "test.new_chords.chord",
+        "peekOfCode": "STORE_KEY = 14\nRETRIEVE_KEY = 15\nSEARCH = 16\nREQUEST_BROADCAST_QUERY = 17\n# Configurar el nivel de log\nlogging.basicConfig(level=logging.DEBUG,\n                    format='%(asctime)s - %(levelname)s - %(threadName)s - %(message)s')\nlogger = logging.getLogger(__name__)\n# # Function to hash a string using SHA-1 and return its integer representation\n# def getShaRepr(data: str):",
+        "detail": "test.new_chords.chord",
+        "documentation": {}
+    },
+    {
+        "label": "RETRIEVE_KEY",
+        "kind": 5,
+        "importPath": "test.new_chords.chord",
+        "description": "test.new_chords.chord",
+        "peekOfCode": "RETRIEVE_KEY = 15\nSEARCH = 16\nREQUEST_BROADCAST_QUERY = 17\n# Configurar el nivel de log\nlogging.basicConfig(level=logging.DEBUG,\n                    format='%(asctime)s - %(levelname)s - %(threadName)s - %(message)s')\nlogger = logging.getLogger(__name__)\n# # Function to hash a string using SHA-1 and return its integer representation\n# def getShaRepr(data: str):\n#     return int(hashlib.sha1(data.encode()).hexdigest(), 16)",
+        "detail": "test.new_chords.chord",
+        "documentation": {}
+    },
+    {
+        "label": "SEARCH",
+        "kind": 5,
+        "importPath": "test.new_chords.chord",
+        "description": "test.new_chords.chord",
+        "peekOfCode": "SEARCH = 16\nREQUEST_BROADCAST_QUERY = 17\n# Configurar el nivel de log\nlogging.basicConfig(level=logging.DEBUG,\n                    format='%(asctime)s - %(levelname)s - %(threadName)s - %(message)s')\nlogger = logging.getLogger(__name__)\n# # Function to hash a string using SHA-1 and return its integer representation\n# def getShaRepr(data: str):\n#     return int(hashlib.sha1(data.encode()).hexdigest(), 16)\ndef getShaRepr(data: str, max_value: int = 16):",
+        "detail": "test.new_chords.chord",
+        "documentation": {}
+    },
+    {
+        "label": "REQUEST_BROADCAST_QUERY",
+        "kind": 5,
+        "importPath": "test.new_chords.chord",
+        "description": "test.new_chords.chord",
+        "peekOfCode": "REQUEST_BROADCAST_QUERY = 17\n# Configurar el nivel de log\nlogging.basicConfig(level=logging.DEBUG,\n                    format='%(asctime)s - %(levelname)s - %(threadName)s - %(message)s')\nlogger = logging.getLogger(__name__)\n# # Function to hash a string using SHA-1 and return its integer representation\n# def getShaRepr(data: str):\n#     return int(hashlib.sha1(data.encode()).hexdigest(), 16)\ndef getShaRepr(data: str, max_value: int = 16):\n    # Genera el hash SHA-1 y obtén su representación en hexadecimal",
+        "detail": "test.new_chords.chord",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "kind": 5,
+        "importPath": "test.new_chords.chord",
+        "description": "test.new_chords.chord",
+        "peekOfCode": "logger = logging.getLogger(__name__)\n# # Function to hash a string using SHA-1 and return its integer representation\n# def getShaRepr(data: str):\n#     return int(hashlib.sha1(data.encode()).hexdigest(), 16)\ndef getShaRepr(data: str, max_value: int = 16):\n    # Genera el hash SHA-1 y obtén su representación en hexadecimal\n    hash_hex = hashlib.sha1(data.encode()).hexdigest()\n    # Convierte el hash hexadecimal a un entero\n    hash_int = int(hash_hex, 16)\n    # Define un arreglo o lista con los valores del 0 al 16",
+        "detail": "test.new_chords.chord",
+        "documentation": {}
+    },
+    {
+        "label": "ChatRoom",
+        "kind": 6,
+        "importPath": "test.pyro5_DNS.server",
+        "description": "test.pyro5_DNS.server",
+        "peekOfCode": "class ChatRoom:\n    def __init__(self):\n        self.subscribers = []\n        self.other_servers = []\n    # Métodos para la suscripción y desuscripción de clientes\n    def subscribe(self, subscriber):\n        self.subscribers.append(subscriber)\n    def unsubscribe(self, subscriber):\n        self.subscribers.remove(subscriber)\n    # Método para recibir mensajes y retransmitirlos a todos los suscriptores",
+        "detail": "test.pyro5_DNS.server",
+        "documentation": {}
+    },
+    {
+        "label": "ChatServer",
+        "kind": 6,
+        "importPath": "test.pyro5_DNS.server",
+        "description": "test.pyro5_DNS.server",
+        "peekOfCode": "class ChatServer:\n    def __init__(self, host, port):\n        self.rooms = {}\n        self.host = host\n        self.port = port\n    # Método para obtener o crear una sala\n    def get_room(self, room_name):\n        if room_name not in self.rooms:\n            self.rooms[room_name] = ChatRoom()\n        return self.rooms[room_name]",
+        "detail": "test.pyro5_DNS.server",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "test.pyro5_DNS.server",
+        "description": "test.pyro5_DNS.server",
+        "peekOfCode": "def main():\n    import argparse\n    parser = argparse.ArgumentParser(description=\"Start the chat server.\")\n    parser.add_argument(\"host\", help=\"Host IP address\")\n    parser.add_argument(\"-p\", \"--port\", type=int, default=8000, help=\"Port number\")\n    parser.add_argument(\"-r\", \"--room\", default=\"default_room\", help=\"Room name\")\n    parser.add_argument(\"-s\", \"--servers\", nargs='+', default=[], help=\"Other server URIs to connect to\")\n    args = parser.parse_args()\n    chat_server = ChatServer(args.host, args.port)\n    chat_server.start()",
+        "detail": "test.pyro5_DNS.server",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "test.sockets.client.client",
+        "description": "test.sockets.client.client",
+        "peekOfCode": "def main():\n    ns = Pyro5.api.locate_ns()\n    uri1 = ns.lookup(\"ejemplo.objeto1\")\n    #uri2 = ns.lookup(\"ejemplo.objeto2\")\n    objeto1 = Pyro5.api.Proxy(uri1)\n    #objeto2 = Pyro5.api.Proxy(uri2)\n    while True:\n        time.sleep(2)\n        print(objeto1.metodo1(\"Hola desde el cliente\"))\n    #print(objeto2.metodo2(123))",
+        "detail": "test.sockets.client.client",
+        "documentation": {}
+    },
+    {
+        "label": "#ip",
+        "kind": 5,
+        "importPath": "test.sockets.client.client",
+        "description": "test.sockets.client.client",
+        "peekOfCode": "#ip = ip = socket.gethostbyname(socket.gethostname())\n#port=8000\n#with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:\n#            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)\n#            s.bind((ip, port))\n#            s.listen(10)\n#\n#while True:\n#                conn, addr = s.accept()\n#                #log_message(f'new connection from {addr}',func=ChordNode.start_server)",
+        "detail": "test.sockets.client.client",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "test.sockets.client",
+        "description": "test.sockets.client",
+        "peekOfCode": "def main():\n    ns = Pyro5.api.locate_ns()\n    uri1 = ns.lookup(\"ejemplo.objeto1\")\n    uri2 = ns.lookup(\"ejemplo.objeto2\")\n    print(f'La uri es {uri1}')\n    objeto1 = Pyro5.api.Proxy(uri1)\n    objeto2 = Pyro5.api.Proxy(uri2)\n    for i in range(2000):\n        time.sleep(2)\n        print(objeto1.metodo1(f\"Hola desde el cliente\",1))",
+        "detail": "test.sockets.client",
+        "documentation": {}
+    },
+    {
+        "label": "#ip",
+        "kind": 5,
+        "importPath": "test.sockets.client",
+        "description": "test.sockets.client",
+        "peekOfCode": "#ip = ip = socket.gethostbyname(socket.gethostname())\n#port=8000\n#with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:\n#            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)\n#            s.bind((ip, port))\n#            s.listen(10)\n#\n#while True:\n#                conn, addr = s.accept()\n#                #log_message(f'new connection from {addr}',func=ChordNode.start_server)",
+        "detail": "test.sockets.client",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "test.sockets.desresgistrar_name_server",
+        "description": "test.sockets.desresgistrar_name_server",
+        "peekOfCode": "def main():\n    # Conectar al servidor de nombres\n    ns = Pyro5.api.locate_ns(host='127.0.0.1')\n    # Intentar desregistrar el nombre si ya existe\n    try:\n        ns.remove(\"ejemplo.contenedor\")\n        print(\"Nombre 'ejemplo.contenedor' desregistrado exitosamente.\")\n    except Pyro5.errors.NamingError:\n        print(\"El nombre 'ejemplo.contenedor' no estaba registrado.\")\n    # Crear una nueva instancia del contenedor",
+        "detail": "test.sockets.desresgistrar_name_server",
+        "documentation": {}
+    },
+    {
+        "label": "Objeto1",
+        "kind": 6,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "class Objeto1:\n    def __init__(self):\n        self.a = 0\n    def metodo1(self, mensaje,numero):\n        self.a+=numero\n        return f\"Objeto1 dice: {mensaje} numero:{self.a}\"\n@Pyro5.api.expose\nclass Objeto2:\n    def __init__(self,obj=None):\n        self.obj=None",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "Objeto2",
+        "kind": 6,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "class Objeto2:\n    def __init__(self,obj=None):\n        self.obj=None\n    def get_obj_met(self,obje,mensaje,num):\n        return f'Desde el objeto 2 invoco el metodo1 del objeto 1 {obje.metodo1(mensaje,num)}'\n    def metodo2(self, numero):\n        return f\"Objeto2 recibió el número: {numero}\"\n    def start(self):\n        while True:\n            time.sleep(3)",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "register_url",
+        "kind": 2,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "def register_url(a,url,daemon):\n    ns=Pyro5.api.locate_ns()\n    # Registrar los objetos remotos en el servidor de no\n    uri1 = daemon.register(a)\n    ns.register(url, uri1)\n    print(f'Registrada la url {url}')\ndef check_nameserver(a,url,time_:int=4):\n    while True:\n        time.sleep(time_)\n        try:",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "check_nameserver",
+        "kind": 2,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "def check_nameserver(a,url,time_:int=4):\n    while True:\n        time.sleep(time_)\n        try:\n            # Intentar conectar al servidor de nombres\n            ns = Pyro5.api.locate_ns()\n            print(\"Servidor de nombres encontrado en la\" )\n            # Iniciar el daemon\n            daemon = Pyro5.server.Daemon()\n            try:",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "check",
+        "kind": 2,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "def check(a,url,time_=4):\n    while True:\n        time.sleep(time_)\n        try:\n            # Intentar conectar al servidor de nombres\n            ns = Pyro5.api.locate_ns()\n        except Pyro5.errors.NamingError:\n            # Iniciar el daemon\n            #daemon = Pyro5.server.Daemon()\n            # Si no se puede conectar, levantar el servi",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "check_url",
+        "kind": 2,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "def check_url(a,url,time_=4):\n    while True:\n         # Iniciar el daemon\n            time.sleep(time_)\n            daemon = Pyro5.server.Daemon()\n            try:\n                try:\n                        # Intentar conectar al servidor de nombres\n                        ns = Pyro5.api.locate_ns()\n                        print('Acafff')",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "def main():\n    # Función para verificar y levantar el servidor de nombres si no está disponible\n    def verificar_y_levantar_nameserver():\n        try:\n            # Intentar conectar al servidor de nombres\n            ns = Pyro5.api.locate_ns()\n            print(\"Servidor de nombres encontrado en la red.\")\n            return ns\n        except Pyro5.errors.NamingError:\n            # Si no se puede conectar, levantar el servidor de nombres",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "#ip",
+        "kind": 5,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "#ip = ip = socket.gethostbyname(socket.gethostname())\n#port=12345\n#while True:\n#    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:\n#                    s.connect((ip, port))\n#                    s.sendall(f'Enviar'.encode('utf-8'))\n#                   new_data=s.recv(1024)\n#import Pyro5.api\n#import time\n#@Pyro5.api.expose",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "#objeto1",
+        "kind": 5,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "#objeto1 = Objeto1()\n#objeto2 = Objeto2()\n#\n## Iniciar el servidor de nombres de Pyro\n#daemon = Pyro5.server.Daemon()\n#ns = Pyro5.api.locate_ns()\n#\n## Registrar los objetos remotos en el servidor de nombres\n#uri1 = daemon.register(objeto1)\n#",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "#objeto2",
+        "kind": 5,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "#objeto2 = Objeto2()\n#\n## Iniciar el servidor de nombres de Pyro\n#daemon = Pyro5.server.Daemon()\n#ns = Pyro5.api.locate_ns()\n#\n## Registrar los objetos remotos en el servidor de nombres\n#uri1 = daemon.register(objeto1)\n#\n## Intentar desregistrar el nombre si ya existe",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "#daemon",
+        "kind": 5,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "#daemon = Pyro5.server.Daemon()\n#ns = Pyro5.api.locate_ns()\n#\n## Registrar los objetos remotos en el servidor de nombres\n#uri1 = daemon.register(objeto1)\n#\n## Intentar desregistrar el nombre si ya existe\n#try:\n#    ns.remove(\"ejemplo.objeto1\")\n#    print(\"Nombre 'ejemplo.contenedor' desregistrado exitosamente.\")",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "#ns",
+        "kind": 5,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "#ns = Pyro5.api.locate_ns()\n#\n## Registrar los objetos remotos en el servidor de nombres\n#uri1 = daemon.register(objeto1)\n#\n## Intentar desregistrar el nombre si ya existe\n#try:\n#    ns.remove(\"ejemplo.objeto1\")\n#    print(\"Nombre 'ejemplo.contenedor' desregistrado exitosamente.\")\n#except Pyro5.errors.NamingError:",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "#uri1",
+        "kind": 5,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "#uri1 = daemon.register(objeto1)\n#\n## Intentar desregistrar el nombre si ya existe\n#try:\n#    ns.remove(\"ejemplo.objeto1\")\n#    print(\"Nombre 'ejemplo.contenedor' desregistrado exitosamente.\")\n#except Pyro5.errors.NamingError:\n#    print(\"El nombre 'ejemplo.contenedor' no estaba registrado.\")\n#\n#",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "#uri2",
+        "kind": 5,
+        "importPath": "test.sockets.server",
+        "description": "test.sockets.server",
+        "peekOfCode": "#uri2 = daemon.register(objeto2)\n#ns.register(\"ejemplo.objeto2\", uri2)\n#\n#print(f\"Objeto1 URI: {uri1}\")\n#print(f\"Objeto2 URI: {uri2}\")\n#\n## Iniciar el bucle de eventos del servidor\n#print(\"Servidor Pyro5 corriendo...\")\n#daemon.requestLoop()\n#",
+        "detail": "test.sockets.server",
+        "documentation": {}
+    },
+    {
+        "label": "Node",
+        "kind": 6,
+        "importPath": "test.zmq.broadcast.node_broadcast",
+        "description": "test.zmq.broadcast.node_broadcast",
+        "peekOfCode": "class Node:\n    def __init__(self, node_id, ip):\n        self.node_id = node_id\n        self.ip = ip\n        self.nodes_discovered = {}\n        #.context_ = zmq.asyncio.Context()\n        self.context=zmq.asyncio.Context()\n        self.lock = threading.Lock()\n    async def publisher(self):\n        socket = self.context.socket(zmq.PUB)",
+        "detail": "test.zmq.broadcast.node_broadcast",
+        "documentation": {}
+    },
+    {
+        "label": "getShaRepr",
+        "kind": 2,
+        "importPath": "test.zmq.broadcast.node_broadcast",
+        "description": "test.zmq.broadcast.node_broadcast",
+        "peekOfCode": "def getShaRepr(data: str, max_value: int = 16):\n    # Genera el hash SHA-1 y obtén su representación en hexadecimal\n    hash_hex = hashlib.sha1(data.encode()).hexdigest()\n    # Convierte el hash hexadecimal a un entero\n    hash_int = int(hash_hex, 16)\n    # Define un arreglo o lista con los valores del 0 al 16\n    values = list(range(max_value + 1))\n    # Usa el hash como índice para seleccionar un valor del arreglo\n    # Asegúrate de que el índice esté dentro del rango válido\n    index = hash_int % len(values)",
+        "detail": "test.zmq.broadcast.node_broadcast",
+        "documentation": {}
+    },
+    {
+        "label": "broadcast_client",
+        "kind": 2,
+        "importPath": "test.zmq.client",
+        "description": "test.zmq.client",
+        "peekOfCode": "def broadcast_client():\n    client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)\n    client_socket.bind(('', 12345))  # Escucha en todas las interfaces en el puerto 12345\n    client_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)\n    while True:\n        message, address = client_socket.recvfrom(1024)\n        print(f\"Mensaje recibido desde {address}: {message.decode()}\")\nif __name__ == \"__main__\":\n    broadcast_client()\n#import asyncio",
+        "detail": "test.zmq.client",
+        "documentation": {}
+    },
+    {
+        "label": "broadcast_server",
+        "kind": 2,
+        "importPath": "test.zmq.server",
+        "description": "test.zmq.server",
+        "peekOfCode": "def broadcast_server():\n    server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)\n    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)\n    broadcast_address = ('<broadcast>', 12345)  # Puerto 12345, broadcast en toda la red\n    while True:\n        message = 'Hola desde el servidor'\n        server_socket.sendto(message.encode(), broadcast_address)\n        print(f\"Mensaje enviado: {message}\")\n        time.sleep(2)\ndef broadcast_client():",
+        "detail": "test.zmq.server",
+        "documentation": {}
+    },
+    {
+        "label": "broadcast_client",
+        "kind": 2,
+        "importPath": "test.zmq.server",
+        "description": "test.zmq.server",
+        "peekOfCode": "def broadcast_client():\n    client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)\n    client_socket.bind(('', 12345))  # Escucha en todas las interfaces en el puerto 12345\n    client_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)\n    while True:\n        message, address = client_socket.recvfrom(1024)\n        print(f\"Mensaje recibido desde {address}: {message.decode()}\")\n        if address[0]!=socket.gethostbyname(socket.gethostname()):\n            print('Se recibio desde otro nodo')\ndef main():",
+        "detail": "test.zmq.server",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "test.zmq.server",
+        "description": "test.zmq.server",
+        "peekOfCode": "def main():\n    threading.Thread(target=broadcast_server)\n    threading.Thread(target=broadcast_client)\nif __name__ == \"__main__\":\n    broadcast_client()\n#import asyncio\n#import zmq.asyncio as asynczmq\n#import zmq\n## Importar Sender desde tu archivo utils\n#from utils import Sender",
+        "detail": "test.zmq.server",
+        "documentation": {}
+    },
+    {
+        "label": "Sender",
+        "kind": 6,
+        "importPath": "test.zmq.utils",
+        "description": "test.zmq.utils",
+        "peekOfCode": "class Sender:\n    def __init__(self,a,b):\n        self.a=a\n        self.b=b",
+        "detail": "test.zmq.utils",
+        "documentation": {}
+    },
+    {
+        "label": "ChordNodeReference",
+        "kind": 6,
+        "importPath": "test.chord_replication",
+        "description": "test.chord_replication",
+        "peekOfCode": "class ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n    # Internal method to send data to the referenced node\n    def _send_data(self, op: int, data: str = None) -> bytes:\n        try:\n            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:\n                s.connect((self.ip, self.port))",
+        "detail": "test.chord_replication",
+        "documentation": {}
+    },
+    {
+        "label": "ChordNode",
+        "kind": 6,
+        "importPath": "test.chord_replication",
+        "description": "test.chord_replication",
+        "peekOfCode": "class ChordNode:\n    def __init__(self, ip: str, port: int = 8001, m: int = 160):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n        self.ref = ChordNodeReference(self.ip, self.port)\n        self.succ = self.ref  # Initial successor is itself\n        self.pred = None  # Initially no predecessor\n        self.m = m  # Number of bits in the hash/key space\n        self.finger = [self.ref] * self.m  # Finger table",
+        "detail": "test.chord_replication",
+        "documentation": {}
+    },
+    {
+        "label": "getShaRepr",
+        "kind": 2,
+        "importPath": "test.chord_replication",
+        "description": "test.chord_replication",
+        "peekOfCode": "def getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n    # Internal method to send data to the referenced node\n    def _send_data(self, op: int, data: str = None) -> bytes:",
+        "detail": "test.chord_replication",
+        "documentation": {}
+    },
+    {
+        "label": "FIND_SUCCESSOR",
+        "kind": 5,
+        "importPath": "test.chord_replication",
+        "description": "test.chord_replication",
+        "peekOfCode": "FIND_SUCCESSOR = 1\nFIND_PREDECESSOR = 2\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation",
+        "detail": "test.chord_replication",
+        "documentation": {}
+    },
+    {
+        "label": "FIND_PREDECESSOR",
+        "kind": 5,
+        "importPath": "test.chord_replication",
+        "description": "test.chord_replication",
+        "peekOfCode": "FIND_PREDECESSOR = 2\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):",
+        "detail": "test.chord_replication",
+        "documentation": {}
+    },
+    {
+        "label": "GET_SUCCESSOR",
+        "kind": 5,
+        "importPath": "test.chord_replication",
+        "description": "test.chord_replication",
+        "peekOfCode": "GET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)",
+        "detail": "test.chord_replication",
+        "documentation": {}
+    },
+    {
+        "label": "GET_PREDECESSOR",
+        "kind": 5,
+        "importPath": "test.chord_replication",
+        "description": "test.chord_replication",
+        "peekOfCode": "GET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node",
+        "detail": "test.chord_replication",
+        "documentation": {}
+    },
+    {
+        "label": "NOTIFY",
+        "kind": 5,
+        "importPath": "test.chord_replication",
+        "description": "test.chord_replication",
+        "peekOfCode": "NOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:",
+        "detail": "test.chord_replication",
+        "documentation": {}
+    },
+    {
+        "label": "CHECK_PREDECESSOR",
+        "kind": 5,
+        "importPath": "test.chord_replication",
+        "description": "test.chord_replication",
+        "peekOfCode": "CHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):",
+        "detail": "test.chord_replication",
+        "documentation": {}
+    },
+    {
+        "label": "CLOSEST_PRECEDING_FINGER",
+        "kind": 5,
+        "importPath": "test.chord_replication",
+        "description": "test.chord_replication",
+        "peekOfCode": "CLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)",
+        "detail": "test.chord_replication",
+        "documentation": {}
+    },
+    {
+        "label": "STORE_KEY",
+        "kind": 5,
+        "importPath": "test.chord_replication",
+        "description": "test.chord_replication",
+        "peekOfCode": "STORE_KEY = 8\nRETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip",
+        "detail": "test.chord_replication",
+        "documentation": {}
+    },
+    {
+        "label": "RETRIEVE_KEY",
+        "kind": 5,
+        "importPath": "test.chord_replication",
+        "description": "test.chord_replication",
+        "peekOfCode": "RETRIEVE_KEY = 9\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port",
+        "detail": "test.chord_replication",
+        "documentation": {}
+    },
+    {
+        "label": "some_function",
+        "kind": 2,
+        "importPath": "test.example_logger",
+        "description": "test.example_logger",
+        "peekOfCode": "def some_function():\n    app_logger.info('Esta es una información de log')\n    try:\n        # Código que podría lanzar una excepción\n        result = 10 / 0\n    except Exception as e:\n        app_logger.error('Se produjo una excepción', exc_info=True)\nif __name__ == \"__main__\":\n    app_logger.info('Inicio de la aplicación')\n    some_function()",
+        "detail": "test.example_logger",
+        "documentation": {}
+    },
+    {
+        "label": "JSONFormatter",
+        "kind": 6,
+        "importPath": "test.logger",
+        "description": "test.logger",
+        "peekOfCode": "class JSONFormatter(logging.Formatter):\n    def format(self, record):\n        log_record = {\n            'timestamp': self.formatTime(record, self.datefmt),\n            'level': record.levelname,\n            'message': record.getMessage(),\n            'name': record.name,\n            'filename': record.filename,\n            'funcName': record.funcName,\n            'lineno': record.lineno,",
+        "detail": "test.logger",
+        "documentation": {}
+    },
+    {
+        "label": "setup_logger",
+        "kind": 2,
+        "importPath": "test.logger",
+        "description": "test.logger",
+        "peekOfCode": "def setup_logger(name, log_file=None, level=logging.INFO, to_console=False):\n    handlers = []\n    if log_file:\n        file_handler = logging.FileHandler(log_file)\n        file_handler.setFormatter(JSONFormatter())\n        handlers.append(file_handler)\n    if to_console:\n        console_handler = logging.StreamHandler()\n        console_handler.setFormatter(JSONFormatter())\n        handlers.append(console_handler)",
+        "detail": "test.logger",
+        "documentation": {}
+    },
+    {
+        "label": "app_logger",
+        "kind": 5,
+        "importPath": "test.logger",
+        "description": "test.logger",
+        "peekOfCode": "app_logger = setup_logger('app_logger', 'app_log.json', to_console=True)",
+        "detail": "test.logger",
+        "documentation": {}
+    },
+    {
+        "label": "ChordNodeReference",
+        "kind": 6,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "class ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n    # Internal method to send data to the referenced node\n    def _send_data(self, op: int, data: str = None) -> bytes:\n        #print(f'mandando la data con op{op} - y data {data}')\n        try:\n            context = zmq.Context()",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "ChordNode",
+        "kind": 6,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "class ChordNode:\n    def __init__(self, ip: str, port: int = 8001, m: int = 160): #m=160\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n        self.ref:ChordNodeReference = ChordNodeReference(self.ip, self.port)\n        self.succ:ChordNodeReference = self.ref  # Initial successor is itself\n        self.pred:ChordNodeReference = None  # Initially no predecessor\n        self.m = m  # Number of bits in the hash/key space\n        self.finger = [self.ref] * self.m  # Finger table",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "getShaRepr",
+        "kind": 2,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "def getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n    # Internal method to send data to the referenced node\n    def _send_data(self, op: int, data: str = None) -> bytes:",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "FIND_SUCCESSOR",
+        "kind": 5,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "FIND_SUCCESSOR = 1\nFIND_PREDECESSOR = 2\nFIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo \"0 \" por lo cual el nodo de mayor rango de la red debe buscarlo\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "FIND_PREDECESSOR",
+        "kind": 5,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "FIND_PREDECESSOR = 2\nFIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo \"0 \" por lo cual el nodo de mayor rango de la red debe buscarlo\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nUPDATE_KEY = 11",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "GET_SUCCESSOR",
+        "kind": 5,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "GET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nUPDATE_KEY = 11\nDELETE_KEY = 12\n# Function to hash a string using SHA-1 and return its integer representation",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "GET_PREDECESSOR",
+        "kind": 5,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "GET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nUPDATE_KEY = 11\nDELETE_KEY = 12\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "NOTIFY",
+        "kind": 5,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "NOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nUPDATE_KEY = 11\nDELETE_KEY = 12\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "CHECK_PREDECESSOR",
+        "kind": 5,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "CHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nUPDATE_KEY = 11\nDELETE_KEY = 12\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "CLOSEST_PRECEDING_FINGER",
+        "kind": 5,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "CLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nUPDATE_KEY = 11\nDELETE_KEY = 12\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "STORE_KEY",
+        "kind": 5,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "STORE_KEY = 8\nRETRIEVE_KEY = 9\nUPDATE_KEY = 11\nDELETE_KEY = 12\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "RETRIEVE_KEY",
+        "kind": 5,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "RETRIEVE_KEY = 9\nUPDATE_KEY = 11\nDELETE_KEY = 12\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "UPDATE_KEY",
+        "kind": 5,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "UPDATE_KEY = 11\nDELETE_KEY = 12\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    },
+    {
+        "label": "DELETE_KEY",
+        "kind": 5,
+        "importPath": "test.new_chrod",
+        "description": "test.new_chrod",
+        "peekOfCode": "DELETE_KEY = 12\n# Function to hash a string using SHA-1 and return its integer representation\ndef getShaRepr(data: str):\n    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n# Class to reference a Chord node\nclass ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port",
+        "detail": "test.new_chrod",
+        "documentation": {}
+    }
+]
