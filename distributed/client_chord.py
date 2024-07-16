@@ -19,7 +19,7 @@ def send_data( op:int,ip:str,port:int=8001, data:str=''):
                 return data_format
         except Exception as e:
            print(f'Ocurrio el problema {e}')
-           #traceback.print_exc()
+           traceback.print_exc()
            
 import time    
    
@@ -32,4 +32,4 @@ while True:
             break
        except:
            print("Nada")
-           #traceback.print_exc()
+           traceback.print_exc()

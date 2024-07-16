@@ -174,7 +174,7 @@ class ChordNode:
         self.index_in_fingers:dict[int,set[int]]={} # Diccionario que a cada id le asigna que indices ocupa en la finger table
         self.next = 0  # Finger table index to fix next
         self.data = {}  # Dictionary to store key-value pairs
-
+        self.fingers_ok:bool=False  # Dice si los fingers estan ok o no
         self._key_range=(-1,self.ip) # the key_range [a,b) if a =-1 because no have predecesor
         self.cache:dict[int,str]={} #diccionario con la cache de todos los nodos de la red
         self._broadcast_lock:threading.Lock = threading.Lock()
@@ -187,6 +187,7 @@ class ChordNode:
         threading.Thread(target=self.show,daemon=True).start() # Start funcion que se esta printeando todo el tipo cada n segundos
         threading.Thread(target=self._send_broadcast,daemon=True,args=(JOIN,self.ref,)).start() # Enviar broadcast cuando no tengo sucesor
         threading.Thread(target=self._recive_broadcastt,daemon=True).start() # Recibir continuamente broadcast
+        threading.Thread(target=self.stabilize_finger,daemon=True).start()
         #threading.Thread(target=self.search_test,daemon=True).start()
 
     @property
@@ -317,9 +318,9 @@ class ChordNode:
         Returns:
             ChordNodeReference: _description_
         """
-        if id==7:log_message(f'Me estan llamando para ver quien es el dieño de {id}',func=self.find_succ)
+        if id==9:log_message(f'Me estan llamando para ver quien es el dieño de {id}',func=self.find_succ)
         node = self.find_pred(id)  # Find predecessor of id
-        if id==7:log_message(f'El nodo dueño del id 7 es {node.id}',func=self.find_succ)
+        if id==9:log_message(f'El nodo dueño del id 9 es {node.id}',func=self.find_succ)
         if node.id!= self.id:
             return node.succ
         else:
@@ -401,6 +402,33 @@ class ChordNode:
             self.succ = self.ref
             self.pred = None
         # Si no puedo le respondo por mis ips
+    
+    
+    def stabilize_finger(self,time_=5):
+        """Comprueba si los fingers estan estables
+
+        Args:
+            time_ (int, optional): _description_. Defaults to 5.
+        """
+        while True:
+            time.sleep(time_)
+            try:
+                log_message(f'Chequeando estabilidad de los fingues',func=self.stabilize_finger)
+                antes=self.fingers_ok
+                succ_id=self.succ.id
+                succ_check=(succ_id==self.find_succ(succ_id).id)
+                check_pred=True
+                if self.pred:
+                    pred_id=self.pred.id
+                    check_pred=(pred_id==self.find_succ(pred_id).id)
+                my_check=self.id==(self.find_succ(self.id).id)
+                self.fingers_ok=(succ_check and check_pred and my_check)
+                
+                if antes!=self.fingers_ok:log_message(f' Los finges ahora estan en {self.fingers_ok} antes estaban {antes}',func=self.stabilize_finger)
+                
+            except Exception as e:
+                log_message(f'Error chequeando que los finguers estan bien {e}',func=self.stabilize_finger)
+            
 
     # Stabilize method to periodically verify and update the successor and predecessor
     def stabilize(self):
@@ -576,15 +604,25 @@ class ChordNode:
 
     def store_key(self,key:int,value)->ChordNodeReference:
         log_message(f'Me an llamado a guardar la llave {key}, con el value {value} de tipo {type(value)}',func=self.store_key)
+        #node=self.find_succ(key)
+        #log_message(f'El nodo que propone es {node.id}',func=self.store_key)
+        #if node.id==self.id:
+        #    self.data.setdefault(key,value)
+        #    log_message(f'He guardado la data con llave {key} y valor {value }',func=self.store_key)
+        #    return self.ref
+        #else:
+        #    log_message(f'Mande al nodo {node.id} a guardar la key {key } con data {value}',func=self.store_key)
+        #    return  node.store_key(key,value)
         
         if self._inbetween(key,self.pred.id,self.id):
             self.data.setdefault(key,value)
             log_message(f'He guardado la data con llave {key} y valor {value }',func=self.store_key)
             return self.ref
         
-        #if self.succ.id!=self.id and self.pred is None:
-        #    log_message(f'Anillo inestable',func=self.store_key)
-        #    raise Exception('Anillo Inestable')
+        if self.succ.id!=self.id and self.pred is None:
+            log_message(f'Anillo inestable',func=self.store_key)
+            raise Exception('Anillo Inestable')
+        
         if self.succ.id==self.id and self.pred is None: 
             self.data.setdefault(key,value)
             log_message(f'He guardado la data con llave {key} y valor {value }',func=self.store_key)
@@ -596,16 +634,10 @@ class ChordNode:
             
     def client_store_key(self,key:int,value):
         node=self.store_key(key,value)
+        log_message(f'El nodo encargado de guardar la llace {key } es {node.id}',func=self.client_store_key)
         return (node.id,key)
        
-        #node=self.find_pred(key).succ
-        #if node.id==self.id:
-        #    self.data.setdefault(key,value)
-        #    log_message(f'He guardado la data con llave {key} y valor {value }',func=self.store_key)
-        #    return self.ref
-        #else:
-        #    log_message(f'Mande al nodo {node.id} a guardar la key {key } con data {value}',func=self.store_key)
-        #    return  node.store_key(key,value)
+        
 #
     def server_handle(self,conn,addr):
         #log_message(f'new connection from {addr}',func=ChordNode.start_server)
@@ -669,7 +701,7 @@ class ChordNode:
                          value=[1]
                          log_message(f'Ha llegado una peticion de un cliente de meter una llave y valor key{key} valor {value}',func=self.server_handle)     
                          data_resp=self.client_store_key(key,value) 
-
+                         log_message(f'La respues al cliente de guardar la llava {key} y el value {value} es {data_resp} de tipo {type(data_resp)}',func=self.server_handle)
                     if data_resp:
                         
                     
