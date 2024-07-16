@@ -1,5 +1,32 @@
 [
     {
+        "label": "logging",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "logging",
+        "description": "logging",
+        "detail": "logging",
+        "documentation": {}
+    },
+    {
+        "label": "json",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "json",
+        "description": "json",
+        "detail": "json",
+        "documentation": {}
+    },
+    {
+        "label": "time",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "time",
+        "description": "time",
+        "detail": "time",
+        "documentation": {}
+    },
+    {
         "label": "os",
         "kind": 6,
         "isExtraImport": true,
@@ -9,12 +36,190 @@
         "documentation": {}
     },
     {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "inspect",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "inspect",
+        "description": "inspect",
+        "detail": "inspect",
+        "documentation": {}
+    },
+    {
+        "label": "traceback",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "traceback",
+        "description": "traceback",
+        "detail": "traceback",
+        "documentation": {}
+    },
+    {
+        "label": "hashlib",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "hashlib",
+        "description": "hashlib",
+        "detail": "hashlib",
+        "documentation": {}
+    },
+    {
+        "label": "socket",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "socket",
+        "description": "socket",
+        "detail": "socket",
+        "documentation": {}
+    },
+    {
+        "label": "multiprocessing",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "multiprocessing",
+        "description": "multiprocessing",
+        "detail": "multiprocessing",
+        "documentation": {}
+    },
+    {
+        "label": "threading",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "threading",
+        "description": "threading",
+        "detail": "threading",
+        "documentation": {}
+    },
+    {
+        "label": "sys",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "sys",
+        "description": "sys",
+        "detail": "sys",
+        "documentation": {}
+    },
+    {
+        "label": "*",
+        "importPath": "helper.protocol_codes",
+        "description": "helper.protocol_codes",
+        "isExtraImport": true,
+        "detail": "helper.protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "log_message",
+        "importPath": "helper.logguer",
+        "description": "helper.logguer",
+        "isExtraImport": true,
+        "detail": "helper.logguer",
+        "documentation": {}
+    },
+    {
+        "label": "ThreadPoolExecutor",
+        "importPath": "concurrent.futures",
+        "description": "concurrent.futures",
+        "isExtraImport": true,
+        "detail": "concurrent.futures",
+        "documentation": {}
+    },
+    {
+        "label": "TimeoutError",
+        "importPath": "concurrent.futures",
+        "description": "concurrent.futures",
+        "isExtraImport": true,
+        "detail": "concurrent.futures",
+        "documentation": {}
+    },
+    {
+        "label": "zmq",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "zmq",
+        "description": "zmq",
+        "detail": "zmq",
+        "documentation": {}
+    },
+    {
+        "label": "asyncio",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "asyncio",
+        "description": "asyncio",
+        "detail": "asyncio",
+        "documentation": {}
+    },
+    {
+        "label": "zmq.asyncio",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "zmq.asyncio",
+        "description": "zmq.asyncio",
+        "detail": "zmq.asyncio",
+        "documentation": {}
+    },
+    {
+        "label": "Context",
+        "importPath": "zmq.asyncio",
+        "description": "zmq.asyncio",
+        "isExtraImport": true,
+        "detail": "zmq.asyncio",
+        "documentation": {}
+    },
+    {
+        "label": "Poller",
+        "importPath": "zmq.asyncio",
+        "description": "zmq.asyncio",
+        "isExtraImport": true,
+        "detail": "zmq.asyncio",
+        "documentation": {}
+    },
+    {
         "label": "shutil",
         "kind": 6,
         "isExtraImport": true,
         "importPath": "shutil",
         "description": "shutil",
         "detail": "shutil",
+        "documentation": {}
+    },
+    {
+        "label": "*",
+        "importPath": "protocol_codes",
+        "description": "protocol_codes",
+        "isExtraImport": true,
+        "detail": "protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "*",
+        "importPath": "protocol_codes",
+        "description": "protocol_codes",
+        "isExtraImport": true,
+        "detail": "protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "log_message",
+        "importPath": "logguer",
+        "description": "logguer",
+        "isExtraImport": true,
+        "detail": "logguer",
+        "documentation": {}
+    },
+    {
+        "label": "log_message",
+        "importPath": "logguer",
+        "description": "logguer",
+        "isExtraImport": true,
+        "detail": "logguer",
         "documentation": {}
     },
     {
@@ -124,14 +329,6 @@
     },
     {
         "label": "DATA_UBICATION",
-        "importPath": "Pre_Processing.Document",
-        "description": "Pre_Processing.Document",
-        "isExtraImport": true,
-        "detail": "Pre_Processing.Document",
-        "documentation": {}
-    },
-    {
-        "label": "DOCUMENTS_UBICATION",
         "importPath": "Pre_Processing.Document",
         "description": "Pre_Processing.Document",
         "isExtraImport": true,
@@ -372,23 +569,6 @@
         "documentation": {}
     },
     {
-        "label": "DOCUMENTS_UBICATION",
-        "importPath": "Pre_Processing.Corpus",
-        "description": "Pre_Processing.Corpus",
-        "isExtraImport": true,
-        "detail": "Pre_Processing.Corpus",
-        "documentation": {}
-    },
-    {
-        "label": "json",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "json",
-        "description": "json",
-        "detail": "json",
-        "documentation": {}
-    },
-    {
         "label": "utils",
         "kind": 6,
         "isExtraImport": true,
@@ -457,69 +637,6 @@
         "documentation": {}
     },
     {
-        "label": "threading",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "threading",
-        "description": "threading",
-        "detail": "threading",
-        "documentation": {}
-    },
-    {
-        "label": "asyncio",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "asyncio",
-        "description": "asyncio",
-        "detail": "asyncio",
-        "documentation": {}
-    },
-    {
-        "label": "socket",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "socket",
-        "description": "socket",
-        "detail": "socket",
-        "documentation": {}
-    },
-    {
-        "label": "sys",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "sys",
-        "description": "sys",
-        "detail": "sys",
-        "documentation": {}
-    },
-    {
-        "label": "time",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "time",
-        "description": "time",
-        "detail": "time",
-        "documentation": {}
-    },
-    {
-        "label": "logging",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "logging",
-        "description": "logging",
-        "detail": "logging",
-        "documentation": {}
-    },
-    {
-        "label": "hashlib",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "hashlib",
-        "description": "hashlib",
-        "detail": "hashlib",
-        "documentation": {}
-    },
-    {
         "label": "Pyro5.api",
         "kind": 6,
         "isExtraImport": true,
@@ -555,54 +672,461 @@
         "documentation": {}
     },
     {
-        "label": "traceback",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "traceback",
-        "description": "traceback",
-        "detail": "traceback",
-        "documentation": {}
-    },
-    {
-        "label": "zmq",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "zmq",
-        "description": "zmq",
-        "detail": "zmq",
-        "documentation": {}
-    },
-    {
-        "label": "zmq.asyncio",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "zmq.asyncio",
-        "description": "zmq.asyncio",
-        "detail": "zmq.asyncio",
-        "documentation": {}
-    },
-    {
-        "label": "*",
-        "importPath": "protocol_codes",
-        "description": "protocol_codes",
-        "isExtraImport": true,
-        "detail": "protocol_codes",
-        "documentation": {}
-    },
-    {
-        "label": "log_message",
-        "importPath": "logguer",
-        "description": "logguer",
-        "isExtraImport": true,
-        "detail": "logguer",
-        "documentation": {}
-    },
-    {
         "label": "*",
         "importPath": "logger",
         "description": "logger",
         "isExtraImport": true,
         "detail": "logger",
+        "documentation": {}
+    },
+    {
+        "label": "serialize_logs",
+        "kind": 2,
+        "importPath": "distributed.helper.logguer",
+        "description": "distributed.helper.logguer",
+        "peekOfCode": "def serialize_logs(logs_json, filename=\"logs_container.json\"):\n    full_path = os.path.join(logs_dir, filename)\n    with open(full_path, 'w') as f:\n        json.dump(logs_json, f, indent=4)\n# Crea una función para registrar mensajes con información adicional\ndef log_message(message, level=\"INFO\", extra_data={}, func=None):\n    \"\"\"\n    Registra un mensaje de log con información adicional.\n    Si se proporciona 'func', se usa como nombre de la función.\n    Si no, se detecta automáticamente.",
+        "detail": "distributed.helper.logguer",
+        "documentation": {}
+    },
+    {
+        "label": "log_message",
+        "kind": 2,
+        "importPath": "distributed.helper.logguer",
+        "description": "distributed.helper.logguer",
+        "peekOfCode": "def log_message(message, level=\"INFO\", extra_data={}, func=None):\n    \"\"\"\n    Registra un mensaje de log con información adicional.\n    Si se proporciona 'func', se usa como nombre de la función.\n    Si no, se detecta automáticamente.\n    \"\"\"\n    # Obtiene información sobre el llamador\n    caller_frame = inspect.currentframe().f_back\n    caller_line = caller_frame.f_lineno\n    if func is None:",
+        "detail": "distributed.helper.logguer",
+        "documentation": {}
+    },
+    {
+        "label": "logs_dir",
+        "kind": 5,
+        "importPath": "distributed.helper.logguer",
+        "description": "distributed.helper.logguer",
+        "peekOfCode": "logs_dir = \"app/logs\"\nif not os.path.exists(logs_dir):\n    os.makedirs(logs_dir)\n# Configura el manejador de archivos\nlog_file_name = f\"my_logs_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt\"\nlog_file_path = os.path.join(logs_dir, log_file_name)\nfile_handler = logging.FileHandler(log_file_path)\nformatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(lineno)d - %(custom_funcName)s - %(message)s')\nfile_handler.setFormatter(formatter)\n# Configura el manejador de consola",
+        "detail": "distributed.helper.logguer",
+        "documentation": {}
+    },
+    {
+        "label": "log_file_name",
+        "kind": 5,
+        "importPath": "distributed.helper.logguer",
+        "description": "distributed.helper.logguer",
+        "peekOfCode": "log_file_name = f\"my_logs_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt\"\nlog_file_path = os.path.join(logs_dir, log_file_name)\nfile_handler = logging.FileHandler(log_file_path)\nformatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(lineno)d - %(custom_funcName)s - %(message)s')\nfile_handler.setFormatter(formatter)\n# Configura el manejador de consola\nconsole_handler = logging.StreamHandler()\nconsole_handler.setFormatter(formatter)\n# Configura el logger raíz\nlogging.basicConfig(handlers=[file_handler, console_handler], level=logging.DEBUG)",
+        "detail": "distributed.helper.logguer",
+        "documentation": {}
+    },
+    {
+        "label": "log_file_path",
+        "kind": 5,
+        "importPath": "distributed.helper.logguer",
+        "description": "distributed.helper.logguer",
+        "peekOfCode": "log_file_path = os.path.join(logs_dir, log_file_name)\nfile_handler = logging.FileHandler(log_file_path)\nformatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(lineno)d - %(custom_funcName)s - %(message)s')\nfile_handler.setFormatter(formatter)\n# Configura el manejador de consola\nconsole_handler = logging.StreamHandler()\nconsole_handler.setFormatter(formatter)\n# Configura el logger raíz\nlogging.basicConfig(handlers=[file_handler, console_handler], level=logging.DEBUG)\n# Define un diccionario para almacenar los logs en JSON",
+        "detail": "distributed.helper.logguer",
+        "documentation": {}
+    },
+    {
+        "label": "file_handler",
+        "kind": 5,
+        "importPath": "distributed.helper.logguer",
+        "description": "distributed.helper.logguer",
+        "peekOfCode": "file_handler = logging.FileHandler(log_file_path)\nformatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(lineno)d - %(custom_funcName)s - %(message)s')\nfile_handler.setFormatter(formatter)\n# Configura el manejador de consola\nconsole_handler = logging.StreamHandler()\nconsole_handler.setFormatter(formatter)\n# Configura el logger raíz\nlogging.basicConfig(handlers=[file_handler, console_handler], level=logging.DEBUG)\n# Define un diccionario para almacenar los logs en JSON\nlogs_json = {}",
+        "detail": "distributed.helper.logguer",
+        "documentation": {}
+    },
+    {
+        "label": "formatter",
+        "kind": 5,
+        "importPath": "distributed.helper.logguer",
+        "description": "distributed.helper.logguer",
+        "peekOfCode": "formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(lineno)d - %(custom_funcName)s - %(message)s')\nfile_handler.setFormatter(formatter)\n# Configura el manejador de consola\nconsole_handler = logging.StreamHandler()\nconsole_handler.setFormatter(formatter)\n# Configura el logger raíz\nlogging.basicConfig(handlers=[file_handler, console_handler], level=logging.DEBUG)\n# Define un diccionario para almacenar los logs en JSON\nlogs_json = {}\n# Función para serializar los logs en JSON",
+        "detail": "distributed.helper.logguer",
+        "documentation": {}
+    },
+    {
+        "label": "console_handler",
+        "kind": 5,
+        "importPath": "distributed.helper.logguer",
+        "description": "distributed.helper.logguer",
+        "peekOfCode": "console_handler = logging.StreamHandler()\nconsole_handler.setFormatter(formatter)\n# Configura el logger raíz\nlogging.basicConfig(handlers=[file_handler, console_handler], level=logging.DEBUG)\n# Define un diccionario para almacenar los logs en JSON\nlogs_json = {}\n# Función para serializar los logs en JSON\ndef serialize_logs(logs_json, filename=\"logs_container.json\"):\n    full_path = os.path.join(logs_dir, filename)\n    with open(full_path, 'w') as f:",
+        "detail": "distributed.helper.logguer",
+        "documentation": {}
+    },
+    {
+        "label": "logs_json",
+        "kind": 5,
+        "importPath": "distributed.helper.logguer",
+        "description": "distributed.helper.logguer",
+        "peekOfCode": "logs_json = {}\n# Función para serializar los logs en JSON\ndef serialize_logs(logs_json, filename=\"logs_container.json\"):\n    full_path = os.path.join(logs_dir, filename)\n    with open(full_path, 'w') as f:\n        json.dump(logs_json, f, indent=4)\n# Crea una función para registrar mensajes con información adicional\ndef log_message(message, level=\"INFO\", extra_data={}, func=None):\n    \"\"\"\n    Registra un mensaje de log con información adicional.",
+        "detail": "distributed.helper.logguer",
+        "documentation": {}
+    },
+    {
+        "label": "FIND_SUCCESSOR",
+        "kind": 5,
+        "importPath": "distributed.helper.protocol_codes",
+        "description": "distributed.helper.protocol_codes",
+        "peekOfCode": "FIND_SUCCESSOR = 1\nFIND_PREDECESSOR = 2\n#FIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo \"0 \" por lo cual el nodo de mayor rango de la red debe buscarlo\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9",
+        "detail": "distributed.helper.protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "FIND_PREDECESSOR",
+        "kind": 5,
+        "importPath": "distributed.helper.protocol_codes",
+        "description": "distributed.helper.protocol_codes",
+        "peekOfCode": "FIND_PREDECESSOR = 2\n#FIND_SUCCESSOR_WITHOUT_PREDECESSOR=10 # Busca el nodo que tiene sucesor y no predecesor el cual es el nodo \"0 \" por lo cual el nodo de mayor rango de la red debe buscarlo\nGET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nJOIN = 10",
+        "detail": "distributed.helper.protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "GET_SUCCESSOR",
+        "kind": 5,
+        "importPath": "distributed.helper.protocol_codes",
+        "description": "distributed.helper.protocol_codes",
+        "peekOfCode": "GET_SUCCESSOR = 3\nGET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nJOIN = 10",
+        "detail": "distributed.helper.protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "GET_PREDECESSOR",
+        "kind": 5,
+        "importPath": "distributed.helper.protocol_codes",
+        "description": "distributed.helper.protocol_codes",
+        "peekOfCode": "GET_PREDECESSOR = 4\nNOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nJOIN = 10",
+        "detail": "distributed.helper.protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "NOTIFY",
+        "kind": 5,
+        "importPath": "distributed.helper.protocol_codes",
+        "description": "distributed.helper.protocol_codes",
+        "peekOfCode": "NOTIFY = 5\nCHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nJOIN = 10",
+        "detail": "distributed.helper.protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "CHECK_PREDECESSOR",
+        "kind": 5,
+        "importPath": "distributed.helper.protocol_codes",
+        "description": "distributed.helper.protocol_codes",
+        "peekOfCode": "CHECK_PREDECESSOR = 6\nCLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nJOIN = 10",
+        "detail": "distributed.helper.protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "CLOSEST_PRECEDING_FINGER",
+        "kind": 5,
+        "importPath": "distributed.helper.protocol_codes",
+        "description": "distributed.helper.protocol_codes",
+        "peekOfCode": "CLOSEST_PRECEDING_FINGER = 7\nSTORE_KEY = 8\nRETRIEVE_KEY = 9\nJOIN = 10",
+        "detail": "distributed.helper.protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "STORE_KEY",
+        "kind": 5,
+        "importPath": "distributed.helper.protocol_codes",
+        "description": "distributed.helper.protocol_codes",
+        "peekOfCode": "STORE_KEY = 8\nRETRIEVE_KEY = 9\nJOIN = 10",
+        "detail": "distributed.helper.protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "RETRIEVE_KEY",
+        "kind": 5,
+        "importPath": "distributed.helper.protocol_codes",
+        "description": "distributed.helper.protocol_codes",
+        "peekOfCode": "RETRIEVE_KEY = 9\nJOIN = 10",
+        "detail": "distributed.helper.protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "JOIN",
+        "kind": 5,
+        "importPath": "distributed.helper.protocol_codes",
+        "description": "distributed.helper.protocol_codes",
+        "peekOfCode": "JOIN = 10",
+        "detail": "distributed.helper.protocol_codes",
+        "documentation": {}
+    },
+    {
+        "label": "BlockchainNode",
+        "kind": 6,
+        "importPath": "distributed.helper.selection_lider_by_proof_of_work",
+        "description": "distributed.helper.selection_lider_by_proof_of_work",
+        "peekOfCode": "class BlockchainNode:\n    def __init__(self, id, port):\n        self.id = id\n        self.port = int(port)\n        self.chain = []\n        self.create_genesis_block()\n        self.p = None\n    def create_genesis_block(self):\n        genesis_block = {\n            'index': 0,",
+        "detail": "distributed.helper.selection_lider_by_proof_of_work",
+        "documentation": {}
+    },
+    {
+        "label": "make_pow",
+        "kind": 2,
+        "importPath": "distributed.helper.selection_lider_by_proof_of_work",
+        "description": "distributed.helper.selection_lider_by_proof_of_work",
+        "peekOfCode": "def make_pow(node):\n    while True:\n        new_block = node.create_new_block('Some transaction data')\n        node.broadcast_block(new_block)\nif __name__ == '__main__':\n    node = BlockchainNode(ID, PUB_PORT)\n    node.start()",
+        "detail": "distributed.helper.selection_lider_by_proof_of_work",
+        "documentation": {}
+    },
+    {
+        "label": "HOST",
+        "kind": 5,
+        "importPath": "distributed.helper.selection_lider_by_proof_of_work",
+        "description": "distributed.helper.selection_lider_by_proof_of_work",
+        "peekOfCode": "HOST = '0.0.0.0'\nPUB_PORT = '8002'\nID = str(socket.gethostbyname(socket.gethostname()))\nDIFFICULTY = 6\nprint(f\"Running on {ID}\")\nclass BlockchainNode:\n    def __init__(self, id, port):\n        self.id = id\n        self.port = int(port)\n        self.chain = []",
+        "detail": "distributed.helper.selection_lider_by_proof_of_work",
+        "documentation": {}
+    },
+    {
+        "label": "PUB_PORT",
+        "kind": 5,
+        "importPath": "distributed.helper.selection_lider_by_proof_of_work",
+        "description": "distributed.helper.selection_lider_by_proof_of_work",
+        "peekOfCode": "PUB_PORT = '8002'\nID = str(socket.gethostbyname(socket.gethostname()))\nDIFFICULTY = 6\nprint(f\"Running on {ID}\")\nclass BlockchainNode:\n    def __init__(self, id, port):\n        self.id = id\n        self.port = int(port)\n        self.chain = []\n        self.create_genesis_block()",
+        "detail": "distributed.helper.selection_lider_by_proof_of_work",
+        "documentation": {}
+    },
+    {
+        "label": "ID",
+        "kind": 5,
+        "importPath": "distributed.helper.selection_lider_by_proof_of_work",
+        "description": "distributed.helper.selection_lider_by_proof_of_work",
+        "peekOfCode": "ID = str(socket.gethostbyname(socket.gethostname()))\nDIFFICULTY = 6\nprint(f\"Running on {ID}\")\nclass BlockchainNode:\n    def __init__(self, id, port):\n        self.id = id\n        self.port = int(port)\n        self.chain = []\n        self.create_genesis_block()\n        self.p = None",
+        "detail": "distributed.helper.selection_lider_by_proof_of_work",
+        "documentation": {}
+    },
+    {
+        "label": "DIFFICULTY",
+        "kind": 5,
+        "importPath": "distributed.helper.selection_lider_by_proof_of_work",
+        "description": "distributed.helper.selection_lider_by_proof_of_work",
+        "peekOfCode": "DIFFICULTY = 6\nprint(f\"Running on {ID}\")\nclass BlockchainNode:\n    def __init__(self, id, port):\n        self.id = id\n        self.port = int(port)\n        self.chain = []\n        self.create_genesis_block()\n        self.p = None\n    def create_genesis_block(self):",
+        "detail": "distributed.helper.selection_lider_by_proof_of_work",
+        "documentation": {}
+    },
+    {
+        "label": "vector_compare",
+        "kind": 2,
+        "importPath": "distributed.helper.vectorial_lamport",
+        "description": "distributed.helper.vectorial_lamport",
+        "peekOfCode": "def vector_compare(vector1,vector2):\n    vector = [max(value) for value in zip(vector1,vector2)]\n    return vector\nP = {1:{}, 2:{}, 3:{}} # Inititalized an empty dictionary having 3 process\ninc = 0\nn1 = int(input(\"Enter the no. of events in Process 1 : \"))\ne1 = [i for i in range(1, n1 + 1)]\nP[1] = {key: [inc + key, 0, 0] for key in e1}\nprint(P[1])\nprint(\"\\n\")",
+        "detail": "distributed.helper.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "P",
+        "kind": 5,
+        "importPath": "distributed.helper.vectorial_lamport",
+        "description": "distributed.helper.vectorial_lamport",
+        "peekOfCode": "P = {1:{}, 2:{}, 3:{}} # Inititalized an empty dictionary having 3 process\ninc = 0\nn1 = int(input(\"Enter the no. of events in Process 1 : \"))\ne1 = [i for i in range(1, n1 + 1)]\nP[1] = {key: [inc + key, 0, 0] for key in e1}\nprint(P[1])\nprint(\"\\n\")\nn2 = int(input(\"Enter the no. of events in Process 2 : \"))\ne2 = [i for i in range(1, n2 + 1)]\nP[2] = {key: [0, inc + key, 0] for key in e2}",
+        "detail": "distributed.helper.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "inc",
+        "kind": 5,
+        "importPath": "distributed.helper.vectorial_lamport",
+        "description": "distributed.helper.vectorial_lamport",
+        "peekOfCode": "inc = 0\nn1 = int(input(\"Enter the no. of events in Process 1 : \"))\ne1 = [i for i in range(1, n1 + 1)]\nP[1] = {key: [inc + key, 0, 0] for key in e1}\nprint(P[1])\nprint(\"\\n\")\nn2 = int(input(\"Enter the no. of events in Process 2 : \"))\ne2 = [i for i in range(1, n2 + 1)]\nP[2] = {key: [0, inc + key, 0] for key in e2}\nprint(P[2])",
+        "detail": "distributed.helper.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "n1",
+        "kind": 5,
+        "importPath": "distributed.helper.vectorial_lamport",
+        "description": "distributed.helper.vectorial_lamport",
+        "peekOfCode": "n1 = int(input(\"Enter the no. of events in Process 1 : \"))\ne1 = [i for i in range(1, n1 + 1)]\nP[1] = {key: [inc + key, 0, 0] for key in e1}\nprint(P[1])\nprint(\"\\n\")\nn2 = int(input(\"Enter the no. of events in Process 2 : \"))\ne2 = [i for i in range(1, n2 + 1)]\nP[2] = {key: [0, inc + key, 0] for key in e2}\nprint(P[2])\nprint(\"\\n\")",
+        "detail": "distributed.helper.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "e1",
+        "kind": 5,
+        "importPath": "distributed.helper.vectorial_lamport",
+        "description": "distributed.helper.vectorial_lamport",
+        "peekOfCode": "e1 = [i for i in range(1, n1 + 1)]\nP[1] = {key: [inc + key, 0, 0] for key in e1}\nprint(P[1])\nprint(\"\\n\")\nn2 = int(input(\"Enter the no. of events in Process 2 : \"))\ne2 = [i for i in range(1, n2 + 1)]\nP[2] = {key: [0, inc + key, 0] for key in e2}\nprint(P[2])\nprint(\"\\n\")\nn3 = int(input(\"Enter the no. of events in Process 3 : \"))",
+        "detail": "distributed.helper.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "P[1]",
+        "kind": 5,
+        "importPath": "distributed.helper.vectorial_lamport",
+        "description": "distributed.helper.vectorial_lamport",
+        "peekOfCode": "P[1] = {key: [inc + key, 0, 0] for key in e1}\nprint(P[1])\nprint(\"\\n\")\nn2 = int(input(\"Enter the no. of events in Process 2 : \"))\ne2 = [i for i in range(1, n2 + 1)]\nP[2] = {key: [0, inc + key, 0] for key in e2}\nprint(P[2])\nprint(\"\\n\")\nn3 = int(input(\"Enter the no. of events in Process 3 : \"))\ne3 = [i for i in range(1, n3 + 1)]",
+        "detail": "distributed.helper.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "n2",
+        "kind": 5,
+        "importPath": "distributed.helper.vectorial_lamport",
+        "description": "distributed.helper.vectorial_lamport",
+        "peekOfCode": "n2 = int(input(\"Enter the no. of events in Process 2 : \"))\ne2 = [i for i in range(1, n2 + 1)]\nP[2] = {key: [0, inc + key, 0] for key in e2}\nprint(P[2])\nprint(\"\\n\")\nn3 = int(input(\"Enter the no. of events in Process 3 : \"))\ne3 = [i for i in range(1, n3 + 1)]\nP[3] = {key: [0, 0, inc + key] for key in e3}\nprint(P[3])\nprint(\"\\n\")",
+        "detail": "distributed.helper.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "e2",
+        "kind": 5,
+        "importPath": "distributed.helper.vectorial_lamport",
+        "description": "distributed.helper.vectorial_lamport",
+        "peekOfCode": "e2 = [i for i in range(1, n2 + 1)]\nP[2] = {key: [0, inc + key, 0] for key in e2}\nprint(P[2])\nprint(\"\\n\")\nn3 = int(input(\"Enter the no. of events in Process 3 : \"))\ne3 = [i for i in range(1, n3 + 1)]\nP[3] = {key: [0, 0, inc + key] for key in e3}\nprint(P[3])\nprint(\"\\n\")\ncomm = int(input(\"Enter the no of communication lines : \"))",
+        "detail": "distributed.helper.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "P[2]",
+        "kind": 5,
+        "importPath": "distributed.helper.vectorial_lamport",
+        "description": "distributed.helper.vectorial_lamport",
+        "peekOfCode": "P[2] = {key: [0, inc + key, 0] for key in e2}\nprint(P[2])\nprint(\"\\n\")\nn3 = int(input(\"Enter the no. of events in Process 3 : \"))\ne3 = [i for i in range(1, n3 + 1)]\nP[3] = {key: [0, 0, inc + key] for key in e3}\nprint(P[3])\nprint(\"\\n\")\ncomm = int(input(\"Enter the no of communication lines : \"))\nprint(\"\\n\")",
+        "detail": "distributed.helper.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "n3",
+        "kind": 5,
+        "importPath": "distributed.helper.vectorial_lamport",
+        "description": "distributed.helper.vectorial_lamport",
+        "peekOfCode": "n3 = int(input(\"Enter the no. of events in Process 3 : \"))\ne3 = [i for i in range(1, n3 + 1)]\nP[3] = {key: [0, 0, inc + key] for key in e3}\nprint(P[3])\nprint(\"\\n\")\ncomm = int(input(\"Enter the no of communication lines : \"))\nprint(\"\\n\")\nwhile inc < comm:\n    sent = int(input(\"Enter the sending process number : \"))\n    recv = int(input(\"Enter the receiving process number : \"))",
+        "detail": "distributed.helper.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "e3",
+        "kind": 5,
+        "importPath": "distributed.helper.vectorial_lamport",
+        "description": "distributed.helper.vectorial_lamport",
+        "peekOfCode": "e3 = [i for i in range(1, n3 + 1)]\nP[3] = {key: [0, 0, inc + key] for key in e3}\nprint(P[3])\nprint(\"\\n\")\ncomm = int(input(\"Enter the no of communication lines : \"))\nprint(\"\\n\")\nwhile inc < comm:\n    sent = int(input(\"Enter the sending process number : \"))\n    recv = int(input(\"Enter the receiving process number : \"))\n    sent_event_no = int(input(\"Enter the sending event number : \"))",
+        "detail": "distributed.helper.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "P[3]",
+        "kind": 5,
+        "importPath": "distributed.helper.vectorial_lamport",
+        "description": "distributed.helper.vectorial_lamport",
+        "peekOfCode": "P[3] = {key: [0, 0, inc + key] for key in e3}\nprint(P[3])\nprint(\"\\n\")\ncomm = int(input(\"Enter the no of communication lines : \"))\nprint(\"\\n\")\nwhile inc < comm:\n    sent = int(input(\"Enter the sending process number : \"))\n    recv = int(input(\"Enter the receiving process number : \"))\n    sent_event_no = int(input(\"Enter the sending event number : \"))\n    recv_event_no = int(input(\"Enter the receiving event number : \"))",
+        "detail": "distributed.helper.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "comm",
+        "kind": 5,
+        "importPath": "distributed.helper.vectorial_lamport",
+        "description": "distributed.helper.vectorial_lamport",
+        "peekOfCode": "comm = int(input(\"Enter the no of communication lines : \"))\nprint(\"\\n\")\nwhile inc < comm:\n    sent = int(input(\"Enter the sending process number : \"))\n    recv = int(input(\"Enter the receiving process number : \"))\n    sent_event_no = int(input(\"Enter the sending event number : \"))\n    recv_event_no = int(input(\"Enter the receiving event number : \"))\n    if sent <= 3 and recv <= 3:\n        print (\"P{} --> P{}\".format(sent,recv))\n        new_vector = vector_compare(P[sent][sent_event_no],P[recv][recv_event_no])",
+        "detail": "distributed.helper.vectorial_lamport",
+        "documentation": {}
+    },
+    {
+        "label": "ChordNodeReference",
+        "kind": 6,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "class ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n    # Internal method to send data to the referenced node\n    #def _send_data(self, op: int, data: str = None) -> bytes:\n    #    #print(f'mandando la data con op{op} - y data {data}')\n    #    #log_message(f'mandando la data con op{op} - y data {data}',func=ChordNodeReference._send_data)\n    #    try:",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "ChordNode",
+        "kind": 6,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "class ChordNode:\n    def __init__(self, ip: str, port: int = 8001, m: int = 160): #m=160\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n        self.ref:ChordNodeReference = ChordNodeReference(self.ip, self.port)\n        self.succ:ChordNodeReference = self.ref  # Initial successor is itself\n        self.pred:ChordNodeReference = None  # Initially no predecessor\n        self.m = m  # Number of bits in the hash/key space\n        self.finger = [self.ref] * self.m  # Finger table",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "getShaRepr",
+        "kind": 2,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "def getShaRepr(data: str, max_value: int = 16):\n    # Genera el hash SHA-1 y obtén su representación en hexadecimal\n    hash_hex = hashlib.sha1(data.encode()).hexdigest()\n    # Convierte el hash hexadecimal a un entero\n    hash_int = int(hash_hex, 16)\n    # Define un arreglo o lista con los valores del 0 al 16\n    values = list(range(max_value + 1))\n    # Usa el hash como índice para seleccionar un valor del arreglo\n    # Asegúrate de que el índice esté dentro del rango válido\n    index = hash_int % len(values)",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "#logger",
+        "kind": 5,
+        "importPath": "distributed.chord",
+        "description": "distributed.chord",
+        "peekOfCode": "#logger = logging.getLogger(__name__)\n# Function to hash a string using SHA-1 and return its integer representation\n#def getShaRepr(data: str):\n#    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n#\ndef getShaRepr(data: str, max_value: int = 16):\n    # Genera el hash SHA-1 y obtén su representación en hexadecimal\n    hash_hex = hashlib.sha1(data.encode()).hexdigest()\n    # Convierte el hash hexadecimal a un entero\n    hash_int = int(hash_hex, 16)",
+        "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "getShaRepr",
+        "kind": 2,
+        "importPath": "distributed.utils",
+        "description": "distributed.utils",
+        "peekOfCode": "def getShaRepr(data: str, max_value: int = 16):\n    # Genera el hash SHA-1 y obtén su representación en hexadecimal\n    hash_hex = hashlib.sha1(data.encode()).hexdigest()\n    # Convierte el hash hexadecimal a un entero\n    hash_int = int(hash_hex, 16)\n    # Define un arreglo o lista con los valores del 0 al 16\n    values = list(range(max_value + 1))\n    # Usa el hash como índice para seleccionar un valor del arreglo\n    # Asegúrate de que el índice esté dentro del rango válido\n    index = hash_int % len(values)",
+        "detail": "distributed.utils",
+        "documentation": {}
+    },
+    {
+        "label": "tarea_en_fondo",
+        "kind": 2,
+        "importPath": "examples.Ejemplo hilo demonio",
+        "description": "examples.Ejemplo hilo demonio",
+        "peekOfCode": "def tarea_en_fondo():\n    print(\"Hilo demonio iniciado\")\n    time.sleep(6)  # Este hilo dormiría durante 10 segundos\n    print(\"Hilo demonio despertando\")\n# Crear un hilo demonio\nhilo_demonio = threading.Thread(target=tarea_en_fondo)\nhilo_demonio.daemon = True  # Marcar el hilo como demonio\nhilo_demonio.start()\n# Ejecutar algo en el hilo principal\nprint(\"Ejecutando algo en el hilo principal\")",
+        "detail": "examples.Ejemplo hilo demonio",
+        "documentation": {}
+    },
+    {
+        "label": "hilo_demonio",
+        "kind": 5,
+        "importPath": "examples.Ejemplo hilo demonio",
+        "description": "examples.Ejemplo hilo demonio",
+        "peekOfCode": "hilo_demonio = threading.Thread(target=tarea_en_fondo)\nhilo_demonio.daemon = True  # Marcar el hilo como demonio\nhilo_demonio.start()\n# Ejecutar algo en el hilo principal\nprint(\"Ejecutando algo en el hilo principal\")\ntime.sleep(5)  # Hacer que el hilo principal duerma durante 5 segundos\nprint(\"Programa principal terminando\")",
+        "detail": "examples.Ejemplo hilo demonio",
+        "documentation": {}
+    },
+    {
+        "label": "hilo_demonio.daemon",
+        "kind": 5,
+        "importPath": "examples.Ejemplo hilo demonio",
+        "description": "examples.Ejemplo hilo demonio",
+        "peekOfCode": "hilo_demonio.daemon = True  # Marcar el hilo como demonio\nhilo_demonio.start()\n# Ejecutar algo en el hilo principal\nprint(\"Ejecutando algo en el hilo principal\")\ntime.sleep(5)  # Hacer que el hilo principal duerma durante 5 segundos\nprint(\"Programa principal terminando\")",
+        "detail": "examples.Ejemplo hilo demonio",
+        "documentation": {}
+    },
+    {
+        "label": "url",
+        "kind": 5,
+        "importPath": "examples.corrutines",
+        "description": "examples.corrutines",
+        "peekOfCode": "url = 'tcp://127.0.0.1:5555'\nctx = Context.instance()\nasync def ping() -> None:\n    \"\"\"print dots to indicate idleness\"\"\"\n    while True:\n        await asyncio.sleep(0.5)\n        print('.')\nasync def receiver() -> None:\n    \"\"\"receive messages with polling\"\"\"\n    pull = ctx.socket(zmq.PULL)",
+        "detail": "examples.corrutines",
+        "documentation": {}
+    },
+    {
+        "label": "ctx",
+        "kind": 5,
+        "importPath": "examples.corrutines",
+        "description": "examples.corrutines",
+        "peekOfCode": "ctx = Context.instance()\nasync def ping() -> None:\n    \"\"\"print dots to indicate idleness\"\"\"\n    while True:\n        await asyncio.sleep(0.5)\n        print('.')\nasync def receiver() -> None:\n    \"\"\"receive messages with polling\"\"\"\n    pull = ctx.socket(zmq.PULL)\n    pull.connect(url)",
+        "detail": "examples.corrutines",
+        "documentation": {}
+    },
+    {
+        "label": "publisher",
+        "kind": 2,
+        "importPath": "examples.ffff",
+        "description": "examples.ffff",
+        "peekOfCode": "def publisher():\n    context = zmq.Context()\n    socket = context.socket(zmq.PUB)\n    socket.bind(\"tcp://*:5555\")\n    while True:\n        message = \"Nodo descubierto\"\n        socket.send_string(message)\n        print(f\"Mensaje enviado: {message}\")\n        time.sleep(1)\ndef subscriber():",
+        "detail": "examples.ffff",
+        "documentation": {}
+    },
+    {
+        "label": "subscriber",
+        "kind": 2,
+        "importPath": "examples.ffff",
+        "description": "examples.ffff",
+        "peekOfCode": "def subscriber():\n    context = zmq.Context()\n    socket = context.socket(zmq.SUB)\n    socket.connect(\"tcp://localhost:5555\")\n    socket.setsockopt_string(zmq.SUBSCRIBE, \"\")\n    while True:\n        message = socket.recv_string()\n        print(f\"Mensaje recibido: {message}\")\nif __name__ == \"__main__\":\n    pub_thread = threading.Thread(target=publisher)",
+        "detail": "examples.ffff",
         "documentation": {}
     },
     {
@@ -612,6 +1136,42 @@
         "description": "logs.delete_garbage",
         "peekOfCode": "def eliminar_contenido_directorio(ruta)->bool:\n    # Verificar si la ruta es un directorio\n    if os.path.isdir(ruta):\n        # Recorrer todos los elementos dentro del directorio\n        for nombre_archivo in os.listdir(ruta):\n            # Construir la ruta completa al archivo o subdirectorio\n            ruta_completa = os.path.join(ruta, nombre_archivo)\n            # Si es un directorio, llamar recursivamente a la misma función\n            if os.path.isdir(ruta_completa):\n                eliminar_contenido_directorio(ruta_completa)",
         "detail": "logs.delete_garbage",
+        "documentation": {}
+    },
+    {
+        "label": "ChordNodeReference",
+        "kind": 6,
+        "importPath": "old.chord",
+        "description": "old.chord",
+        "peekOfCode": "class ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n    # Internal method to send data to the referenced node\n    def _send_data(self, op: int, data: str = None) -> bytes:\n        #print(f'mandando la data con op{op} - y data {data}')\n        log_message(f'mandando la data con op{op} - y data {data}',func=ChordNodeReference._send_data)\n        try:",
+        "detail": "old.chord",
+        "documentation": {}
+    },
+    {
+        "label": "ChordNode",
+        "kind": 6,
+        "importPath": "old.chord",
+        "description": "old.chord",
+        "peekOfCode": "class ChordNode:\n    def __init__(self, ip: str, port: int = 8001, m: int = 160): #m=160\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n        self.ref:ChordNodeReference = ChordNodeReference(self.ip, self.port)\n        self.succ:ChordNodeReference = self.ref  # Initial successor is itself\n        self.pred:ChordNodeReference = None  # Initially no predecessor\n        self.m = m  # Number of bits in the hash/key space\n        self.finger = [self.ref] * self.m  # Finger table",
+        "detail": "old.chord",
+        "documentation": {}
+    },
+    {
+        "label": "getShaRepr",
+        "kind": 2,
+        "importPath": "old.chord",
+        "description": "old.chord",
+        "peekOfCode": "def getShaRepr(data: str, max_value: int = 16):\n    # Genera el hash SHA-1 y obtén su representación en hexadecimal\n    hash_hex = hashlib.sha1(data.encode()).hexdigest()\n    # Convierte el hash hexadecimal a un entero\n    hash_int = int(hash_hex, 16)\n    # Define un arreglo o lista con los valores del 0 al 16\n    values = list(range(max_value + 1))\n    # Usa el hash como índice para seleccionar un valor del arreglo\n    # Asegúrate de que el índice esté dentro del rango válido\n    index = hash_int % len(values)",
+        "detail": "old.chord",
+        "documentation": {}
+    },
+    {
+        "label": "#logger",
+        "kind": 5,
+        "importPath": "old.chord",
+        "description": "old.chord",
+        "peekOfCode": "#logger = logging.getLogger(__name__)\n# Function to hash a string using SHA-1 and return its integer representation\n#def getShaRepr(data: str):\n#    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n#\ndef getShaRepr(data: str, max_value: int = 16):\n    # Genera el hash SHA-1 y obtén su representación en hexadecimal\n    hash_hex = hashlib.sha1(data.encode()).hexdigest()\n    # Convierte el hash hexadecimal a un entero\n    hash_int = int(hash_hex, 16)",
+        "detail": "old.chord",
         "documentation": {}
     },
     {
@@ -867,56 +1427,20 @@
         "documentation": {}
     },
     {
-        "label": "home_page",
-        "kind": 2,
-        "importPath": "src.main",
-        "description": "src.main",
-        "peekOfCode": "def home_page():\n    st.title(\"Buscador\")\ndef search_page():\n    query = st.text_input(\"Introduce your query\")\n    if query:\n        for d in search(query,corpus):\n            st.write(d.title)\ndef edit_page():\n    up_file = st.file_uploader(\"Cargar archivo\", type=[\"pdf\",\"txt\",\"csv\"])\n    if up_file is not None:",
-        "detail": "src.main",
-        "documentation": {}
-    },
-    {
-        "label": "search_page",
-        "kind": 2,
-        "importPath": "src.main",
-        "description": "src.main",
-        "peekOfCode": "def search_page():\n    query = st.text_input(\"Introduce your query\")\n    if query:\n        for d in search(query,corpus):\n            st.write(d.title)\ndef edit_page():\n    up_file = st.file_uploader(\"Cargar archivo\", type=[\"pdf\",\"txt\",\"csv\"])\n    if up_file is not None:\n        file_content_bytes = up_file.getvalue()\n        try:",
-        "detail": "src.main",
-        "documentation": {}
-    },
-    {
-        "label": "edit_page",
-        "kind": 2,
-        "importPath": "src.main",
-        "description": "src.main",
-        "peekOfCode": "def edit_page():\n    up_file = st.file_uploader(\"Cargar archivo\", type=[\"pdf\",\"txt\",\"csv\"])\n    if up_file is not None:\n        file_content_bytes = up_file.getvalue()\n        try:\n            file_content = file_content_bytes.decode('utf-8')\n        except UnicodeDecodeError:\n            st.error(\"El archivo seleccionado contiene informacion que no esta expresada en forma de text, imposible abrirlo\")\n            file_content = \"\"\n        ta = st.text_area(up_file.name,value=file_content, height=500,disabled=file_content==\"\")",
-        "detail": "src.main",
-        "documentation": {}
-    },
-    {
-        "label": "save",
-        "kind": 2,
-        "importPath": "src.main",
-        "description": "src.main",
-        "peekOfCode": "def save(name, value):\n    with open(DOCUMENTS_UBICATION + name,mode='wb') as file:\n        file.write(value)\noptions = st.sidebar.selectbox(\"Menu\",[\"Home\", \"Busqueda\", \"Acceso a DB\"])\nif options == \"Home\":\n    home_page()\nelif options == \"Busqueda\":\n    search_page()\nelif options == \"Acceso a DB\":\n    edit_page()",
-        "detail": "src.main",
-        "documentation": {}
-    },
-    {
         "label": "corpus",
         "kind": 5,
         "importPath": "src.main",
         "description": "src.main",
-        "peekOfCode": "corpus = prepare_corpus()\ndef home_page():\n    st.title(\"Buscador\")\ndef search_page():\n    query = st.text_input(\"Introduce your query\")\n    if query:\n        for d in search(query,corpus):\n            st.write(d.title)\ndef edit_page():\n    up_file = st.file_uploader(\"Cargar archivo\", type=[\"pdf\",\"txt\",\"csv\"])",
+        "peekOfCode": "corpus = prepare_corpus()\nquery = st.text_input(\"Introduce your query\")\nif query:\n    for d in search(query,corpus):\n        st.write(d.title)",
         "detail": "src.main",
         "documentation": {}
     },
     {
-        "label": "options",
+        "label": "query",
         "kind": 5,
         "importPath": "src.main",
         "description": "src.main",
-        "peekOfCode": "options = st.sidebar.selectbox(\"Menu\",[\"Home\", \"Busqueda\", \"Acceso a DB\"])\nif options == \"Home\":\n    home_page()\nelif options == \"Busqueda\":\n    search_page()\nelif options == \"Acceso a DB\":\n    edit_page()",
+        "peekOfCode": "query = st.text_input(\"Introduce your query\")\nif query:\n    for d in search(query,corpus):\n        st.write(d.title)",
         "detail": "src.main",
         "documentation": {}
     },
