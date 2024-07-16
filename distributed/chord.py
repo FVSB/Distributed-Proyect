@@ -9,7 +9,7 @@ from helper.protocol_codes import *
 from helper.logguer import log_message
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 import zmq
-
+import pickle
 #logger = logging.getLogger(__name__)
 
 # Function to hash a string using SHA-1 and return its integer representation
@@ -33,7 +33,7 @@ def getShaRepr(data: str, max_value: int = 16):
     
     # Devuelve el valor seleccionado
     return values[index]    
-
+import asyncio
 # Class to reference a Chord node
 class ChordNodeReference:
     def __init__(self, ip: str, port: int = 8001):
@@ -41,13 +41,15 @@ class ChordNodeReference:
         self.ip = ip
         self.port = port
 
-    # Internal method to send data to the referenced node
+   
+     #Internal method to send data to the referenced node
     #def _send_data(self, op: int, data: str = None) -> bytes:
     #    #print(f'mandando la data con op{op} - y data {data}')
     #    #log_message(f'mandando la data con op{op} - y data {data}',func=ChordNodeReference._send_data)
     #    try:
     #        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     #            s.connect((self.ip, self.port))
+    #            s.settimeout(3)# Decir que a lo sumo espera 3 segundos
     #            s.sendall(f'{op},{data}'.encode('utf-8'))
     #            new_data=s.recv(1024)
     #            # print(f'Se recibioo de data envada con opcion {op} {str(new_data)}')
@@ -59,49 +61,77 @@ class ChordNodeReference:
     #        #logger.info()
     #        traceback.print_exc()
     #        return b''
-    
-    def _send_data(self, op:int, data:str=' ')->'ChordNodeReference':
+    def _send_data(self, op:int, data:str='')->'ChordNodeReference':
         if isinstance(data,ChordNodeReference):
-            data={'id':data.id,'ip':data.ip}
+            data={'op':op,'id':data.id,'ip':data.ip}
         if not (isinstance(data,tuple) or isinstance(data,dict) or isinstance(data,str)):
             log_message(f'El data {data} es de tipo {type(data)}',func=self._send_data)
         data =data if data is not None else '' 
         #log_message(f'Typo de op {type(op)}  tipo de data{type(data)}')
-        context = zmq.Context()
-        socket = context.socket(zmq.REQ)
-        socket.connect(f"tcp://{self.ip}:{self.port}")
+        data=(op,data)
+        # Serializar el objeto
+        data = pickle.dumps(data)
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.connect((self.ip, self.port))
+                s.settimeout(3)# Decir que a lo sumo espera 3 segundos
+                s.sendall(data)
+                new_data=s.recv(1024)
+                #log_message(f'La data es {new_data}',func=self._send_data)
+                data_format=pickle.loads(new_data)#Al tipo de dato de python
+                #log_message(f'A llegado un objeto {data_format} de tipo {type(data_format)}',func=self._send_data)
+                return data_format
+        except Exception as e:
+            #print(f"ERROR sending data: {e} al nodo con id {self.id} e ip {self.ip}")
+            log_message(f"ERROR sending data: {e} al nodo con id {self.id} e ip {self.ip},Error:{str(traceback.format_exc())}",level='ERROR')
+            #logger.info()
+            traceback.print_exc()
+            return b''
         
-         # Establecer tiempo máximo de espera (en milisegundos)
-         # Establecer el timeout de emisión en 5 segundos
-        socket.setsockopt(zmq.SNDTIMEO, 50)
-        timeout = 50  # 5000ms = 5 segundos
-        socket.setsockopt(zmq.RCVTIMEO, timeout)
         
-        
-
-
-        
-            # Enviar datos al servidor
-        socket.send_pyobj((op,data))
-
-            # Esperar la respuesta del servidor
-        new_data = socket.recv_pyobj()
-
-            # Puedes descomentar estas líneas si deseas imprimir o registrar la respuesta
-            # print(f'Se recibió de data enviada con opción {op}: {new_data.decode()}')
-            # log_message(f'Se recibió de data enviada con opción {op}: {new_data.decode()}', func=self._send_data)
-
-        socket.close()
-        context.term()
-        return new_data
-        
-       
-            ##print(f"ERROR sending data: {e} al nodo con id {self.id} e ip {self.ip}")
-            #log_message(f"ERROR sending data: {e} al nodo con id {self.id} e ip {self.ip},Error:{str(traceback.format_exc())}",level='ERROR')
-            ##logger.info()
-            #traceback.print_exc()
-            #raise Exception('Se paro la trasnmision')
-        #finally:
+    
+    #def _send_data(self, op:int, data:str=' ')->'ChordNodeReference':
+    #    if isinstance(data,ChordNodeReference):
+    #        data={'id':data.id,'ip':data.ip}
+    #    if not (isinstance(data,tuple) or isinstance(data,dict) or isinstance(data,str)):
+    #        log_message(f'El data {data} es de tipo {type(data)}',func=self._send_data)
+    #    data =data if data is not None else '' 
+    #    #log_message(f'Typo de op {type(op)}  tipo de data{type(data)}')
+    #    context = zmq.Context()
+    #    socket = context.socket(zmq.REQ)
+    #    socket.connect(f"tcp://{self.ip}:{self.port}")
+    #    
+    #     # Establecer tiempo máximo de espera (en milisegundos)
+    #     # Establecer el timeout de emisión en 5 segundos
+    #    socket.setsockopt(zmq.SNDTIMEO, 50)
+    #    timeout = 50  # 5000ms = 5 segundos
+    #    socket.setsockopt(zmq.RCVTIMEO, timeout)
+    #    
+    #    
+#
+#
+    #    
+    #        # Enviar datos al servidor
+    #    socket.send_pyobj((op,data))
+#
+    #        # Esperar la respuesta del servidor
+    #    new_data = socket.recv_pyobj()
+#
+    #        # Puedes descomentar estas líneas si deseas imprimir o registrar la respuesta
+    #        # print(f'Se recibió de data enviada con opción {op}: {new_data.decode()}')
+    #        # log_message(f'Se recibió de data enviada con opción {op}: {new_data.decode()}', func=self._send_data)
+#
+    #    socket.close()
+    #    context.term()
+    #    return new_data
+    #    
+    #   
+    #        ##print(f"ERROR sending data: {e} al nodo con id {self.id} e ip {self.ip}")
+    #        #log_message(f"ERROR sending data: {e} al nodo con id {self.id} e ip {self.ip},Error:{str(traceback.format_exc())}",level='ERROR')
+    #        ##logger.info()
+    #        #traceback.print_exc()
+    #        #raise Exception('Se paro la trasnmision')
+    #    #finally:
           
     
     def find_successor(self, id: int) -> 'ChordNodeReference':
@@ -601,76 +631,90 @@ class ChordNode:
     
     def start_server(self):
     
-        context = zmq.Context()
-        socket = context.socket(zmq.REP)
-        socket.bind(f"tcp://{self.ip}:{self.port}")
-        while True:
-            try:
-                message = socket.recv_pyobj()
-                data = message
-                option = int(data[0])
-                #log_message(f'LLego un mensaje con opcion {option}',func=self.start_server)
-                a=data[1]
-                if isinstance(a,dict):
-                    data=(data[0],ChordNodeReference(a['ip']))
+        #context = zmq.Context()
+        #socket = context.socket(zmq.REP)
+        #socket.bind(f"tcp://{self.ip}:{self.port}")
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            s.bind((self.ip, self.port))
+            s.listen(10)
+           
+            while True:
+                try:
+                    conn, addr = s.accept()
+                   #log_message(f'new connection from {addr}',func=ChordNode.start_server)
 
-                data_resp = None
+                    data = conn.recv(1024)
+                    data=pickle.loads(data)
+                    option = int(data[0])
+                    #message = socket.recv_pyobj()
+                    #data = message
+                    #option = int(data[0])
+                    #log_message(f'LLego un mensaje con opcion {option}',func=self.start_server)
+                    a=data[1]
+                    if isinstance(a,dict):
+                        data=(data[0],ChordNodeReference(a['ip']))
 
-                if option == FIND_SUCCESSOR:
-                    id = int(data[1])
-                    data_resp = self.find_succ(id)
-                elif option == FIND_PREDECESSOR:
+                    data_resp = None
 
-                    id = int(data[1])
-                    #log_message(f'Me llego una peticion de buscar el predecesor de {id}',func=ChordNode.start_server)
-                   # log_message(f'Me llego una peticion de buscar el predecesor de {id}',func=self.start_server)
-                    data_resp = self.find_pred(id)
-                elif option == GET_SUCCESSOR:
-                    data_resp = self.succ if self.succ else self.ref
-                elif option == GET_PREDECESSOR:
-                    data_resp = self.pred if self.pred else self.ref
-                elif option == NOTIFY:
-                  
-                    #log_message(f'Llego una notificacion del ip:{ip}',func=ChordNode.start_server)
+                    if option == FIND_SUCCESSOR:
+                        id = int(data[1])
+                        data_resp = self.find_succ(id)
+                    elif option == FIND_PREDECESSOR:
                     
-                    node:ChordNodeReference=data[1]
-                    #log_message(f'LLegado al notify {node}',func=self.start_server)
-                    id=node.id
-                    ip=node.ip
-                    #log_message(f'Llego una notificacion del ip:{ip}',func=self.start_server)
-                    self.notify(ChordNodeReference(ip, self.port))
-                elif option == CHECK_PREDECESSOR:
+                        id = int(data[1])
+                        #log_message(f'Me llego una peticion de buscar el predecesor de {id}',func=ChordNode.start_server)
+                       # log_message(f'Me llego una peticion de buscar el predecesor de {id}',func=self.start_server)
+                        data_resp = self.find_pred(id)
+                    elif option == GET_SUCCESSOR:
+                        data_resp = self.succ if self.succ else self.ref
+                    elif option == GET_PREDECESSOR:
+                        data_resp = self.pred if self.pred else self.ref
+                    elif option == NOTIFY:
+                    
+                        #log_message(f'Llego una notificacion del ip:{ip}',func=ChordNode.start_server)
 
-                    data_resp=self.ref
-                    data_resp = self.ref
-                elif option == CLOSEST_PRECEDING_FINGER:
-                    id = int(data[1])
-                    data_resp = self.closest_preceding_finger(id)
-                elif option == JOIN:
-                    ip = data[2]
-                    #log_message(f'Recibido la peticion de JOIN desde ip {ip} con id: {getShaRepr(ip)} ')
-                    self.join(ChordNodeReference(ip, self.port))
+                        node:ChordNodeReference=data[1]
+                        #log_message(f'LLegado al notify {node}',func=self.start_server)
+                        id=node.id
+                        ip=node.ip
+                        #log_message(f'Llego una notificacion del ip:{ip}',func=self.start_server)
+                        self.notify(ChordNodeReference(ip, self.port))
+                    elif option == CHECK_PREDECESSOR:
+                    
+                        data_resp=self.ref
+                        data_resp = self.ref
+                    elif option == CLOSEST_PRECEDING_FINGER:
+                        id = int(data[1])
+                        data_resp = self.closest_preceding_finger(id)
+                    elif option == JOIN:
+                        ip = data[2]
+                        #log_message(f'Recibido la peticion de JOIN desde ip {ip} con id: {getShaRepr(ip)} ')
+                        self.join(ChordNodeReference(ip, self.port))
 
 
-                    node:ChordNodeReference=data[1]
-                    ip = node.ip
-                    #log_message(f'Recibido la peticion de JOIN desde ip {ip} con id: {getShaRepr(ip)} ',func=self.start_server)
-                    self.join(node)
-                elif option == STORE_KEY:
-                     response=self.store_key()
+                        node:ChordNodeReference=data[1]
+                        ip = node.ip
+                        #log_message(f'Recibido la peticion de JOIN desde ip {ip} con id: {getShaRepr(ip)} ',func=self.start_server)
+                        self.join(node)
+                    elif option == STORE_KEY:
+                         response=self.store_key()
 
-                if data_resp:
+                    if data_resp:
+                    
+                    
+                        response = pickle.dumps(data_resp)
+                        conn.sendall(response)
+                        #socket.send(response)
+                    else:
+                        #socket.send(pickle.dumps(' '))
+                        conn.sendall(pickle.dumps(' '))
+                    conn.close()
+                except Exception as e:
+                    log_message(f'Error en start server {traceback.format_exc()}',func=self.start_server)
 
-                 
-                    response = data_resp
-                    socket.send_pyobj(response)
-                else:
-                    socket.send_pyobj('')
-            except Exception as e:
-                log_message(f'Error en start server',func=self.start_server)
-
-        socket.close()
-        context.term()
+        #socket.close()
+        #context.term()
 
             
     # Start server method to handle incoming requests

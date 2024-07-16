@@ -148,12 +148,38 @@
         "documentation": {}
     },
     {
+        "label": "pickle",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pickle",
+        "description": "pickle",
+        "detail": "pickle",
+        "documentation": {}
+    },
+    {
         "label": "asyncio",
         "kind": 6,
         "isExtraImport": true,
         "importPath": "asyncio",
         "description": "asyncio",
         "detail": "asyncio",
+        "documentation": {}
+    },
+    {
+        "label": "requests",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "requests",
+        "description": "requests",
+        "detail": "requests",
+        "documentation": {}
+    },
+    {
+        "label": "Flask",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
         "documentation": {}
     },
     {
@@ -1026,7 +1052,7 @@
         "kind": 6,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "class ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n    # Internal method to send data to the referenced node\n    #def _send_data(self, op: int, data: str = None) -> bytes:\n    #    #print(f'mandando la data con op{op} - y data {data}')\n    #    #log_message(f'mandando la data con op{op} - y data {data}',func=ChordNodeReference._send_data)\n    #    try:",
+        "peekOfCode": "class ChordNodeReference:\n    def __init__(self, ip: str, port: int = 8001):\n        self.id = getShaRepr(ip)\n        self.ip = ip\n        self.port = port\n     #Internal method to send data to the referenced node\n    #def _send_data(self, op: int, data: str = None) -> bytes:\n    #    #print(f'mandando la data con op{op} - y data {data}')\n    #    #log_message(f'mandando la data con op{op} - y data {data}',func=ChordNodeReference._send_data)\n    #    try:",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -1055,6 +1081,42 @@
         "description": "distributed.chord",
         "peekOfCode": "#logger = logging.getLogger(__name__)\n# Function to hash a string using SHA-1 and return its integer representation\n#def getShaRepr(data: str):\n#    return int(hashlib.sha1(data.encode()).hexdigest(), 16)\n#\ndef getShaRepr(data: str, max_value: int = 16):\n    # Genera el hash SHA-1 y obtén su representación en hexadecimal\n    hash_hex = hashlib.sha1(data.encode()).hexdigest()\n    # Convierte el hash hexadecimal a un entero\n    hash_int = int(hash_hex, 16)",
         "detail": "distributed.chord",
+        "documentation": {}
+    },
+    {
+        "label": "url",
+        "kind": 5,
+        "importPath": "distributed.client_flask",
+        "description": "distributed.client_flask",
+        "peekOfCode": "url = 'http://172.17.0.5:5000/'\n# Hacer una solicitud GET a la aplicación Flask\nresponse = requests.get(url)\n# Imprimir la respuesta\nprint(response.text)",
+        "detail": "distributed.client_flask",
+        "documentation": {}
+    },
+    {
+        "label": "response",
+        "kind": 5,
+        "importPath": "distributed.client_flask",
+        "description": "distributed.client_flask",
+        "peekOfCode": "response = requests.get(url)\n# Imprimir la respuesta\nprint(response.text)",
+        "detail": "distributed.client_flask",
+        "documentation": {}
+    },
+    {
+        "label": "index",
+        "kind": 2,
+        "importPath": "distributed.flack",
+        "description": "distributed.flack",
+        "peekOfCode": "def index():\n    return 'Hola, este es mi servidor Flask!'\nif __name__ == '__main__':\n    ip = socket.gethostbyname(socket.gethostname())\n    app.run(host=ip, port=5000)",
+        "detail": "distributed.flack",
+        "documentation": {}
+    },
+    {
+        "label": "app",
+        "kind": 5,
+        "importPath": "distributed.flack",
+        "description": "distributed.flack",
+        "peekOfCode": "app = Flask(__name__)\n@app.route('/')\ndef index():\n    return 'Hola, este es mi servidor Flask!'\nif __name__ == '__main__':\n    ip = socket.gethostbyname(socket.gethostname())\n    app.run(host=ip, port=5000)",
+        "detail": "distributed.flack",
         "documentation": {}
     },
     {
