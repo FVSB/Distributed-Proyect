@@ -16,7 +16,7 @@ import copy
 
 
 
-def get_remote_objet(url:str):
+def get_remote_objet(url:str,proxy=None):
     """Devuelve el objeto remoto dada una url
         Puede lanzar excep si no la url se desconecto
     Args:
@@ -24,7 +24,9 @@ def get_remote_objet(url:str):
     """
     ns = Pyro5.api.locate_ns()
     uri = ns.lookup(url)
-    return  Pyro5.api.Proxy(uri)
+    if proxy is None:
+        return  Pyro5.api.Proxy(uri)
+    return proxy(uri)
     
 def getShaRepr(data: str, max_value: int = 16):
     # Genera el hash SHA-1 y obtén su representación en hexadecimal
@@ -263,6 +265,9 @@ class ChordNode:
                         #Añadir los nombres 
                         temp.append(url)
                         temp_nodes.append(node)
+                        # Mandar a pedir el nodo
+                        #ss=get_remote_objet('7.chord')
+                        #log_message(f'El nodo {ss.id} tiene de sucesor {ss.succid}',func=self.update_all_chord_url)
                     
                     sorted_urls=sorted(temp, key=lambda x: int(x.split('.')[0]), reverse=True) # Ahora actualizo los nombres de url
                     sorted_nodes=sorted(temp_nodes, key=lambda x: x.id, reverse=True) # Ahora actualizo los nombres de los nodos
@@ -306,6 +311,12 @@ class ChordNode:
         threading.Thread(target=self.update_all_chord_url,daemon=True).start()#Actualiza todas las urls disponibles en el NameServer
         threading.Thread(target=self.show,daemon=True).start() # Start funcion que se esta printeando todo el tipo cada n segundos
         threading.Thread(target=self._send_broadcast,daemon=True).start()
+        #threading.Thread(target=self.notify_to_my_succ,daemon=True).start()
+    
+    @property
+    def succid(self):
+        return self.succ.id
+    
     
     
     @property
@@ -382,17 +393,19 @@ class ChordNode:
         print(f'ENtro en print')
         """Printea quien soy yo"""
         while True:
-            log_message('-'*20,level='INFO')
-            log_message(f'Mi predecesor es {self.pred.id if self.pred else None} con ip {self.pred.ip if self.pred else None} ',level='INFO')
-            log_message(f'Yo soy id:{self.id},con ip:{self.ip} ',level='INFO')
-            if self.succ.id == self.id:
-                if self.succ.ip !=self.ip:
-                    log_message('El sucesor tiene igual ID pero no tiene igual ip',level='INFO')
-                log_message(f'Todavia no tengo sucesor',level='INFO'),
-            else:
-                log_message(f'Mi sucesor es {self.succ.id if self.succ else None} con ip {self.succ.ip  if self.succ else None}',level='INFO')
-            log_message('*'*20,level='INFO')
-            
+            try:
+                log_message('-'*20,level='INFO')
+                log_message(f'Mi predecesor es {self.pred.id if self.pred else None} con ip {self.pred.ip if self.pred else None} ',level='INFO')
+                log_message(f'Yo soy id:{self.id},con ip:{self.ip} ',level='INFO')
+                if self.succ.id == self.id:
+                    if self.succ.ip !=self.ip:
+                        log_message('El sucesor tiene igual ID pero no tiene igual ip',level='INFO')
+                    log_message(f'Todavia no tengo sucesor',level='INFO'),
+                else:
+                    log_message(f'Mi sucesor es {self.succ.id if self.succ else None} con ip {self.succ.ip  if self.succ else None}',level='INFO')
+                log_message('*'*20,level='INFO')
+            except Exception as e:
+                log_message(f'Error en show {e} {traceback.format_exc()}',self.show())    
             
             time.sleep(3) # Se presenta cada 10 segundos
     
@@ -405,9 +418,32 @@ class ChordNode:
         copy_ref=objects_to_send(self.ref,self.daemon)
         return copy_ref
     
+    def notify_to_my_succ(self):
+        while True:
+            try:
+                
+                proxy=Pyro5.api.Proxy
+                if self.succ.id!=self.id:
+                    url=self.succ.url
+                    log_message(f'La url del sucesor es {url}',func=self.notify_to_my_succ)
+                    ns = Pyro5.api.locate_ns()
+                    uri = ns.lookup(url)
+                    node=Pyro5.api.Proxy(uri)  #get_remote_objet(self.succ.url,proxy)
+                    log_message(f'Se tiene al nodo con el id {node.id}',func=self.notify_to_my_succ)
+                    ip=self.ip
+                    res=node.tt(ip)
+                    log_message(f'respondio el nodo {node.id} con {res}',func=self.notify_to_my_succ)
+            except Exception as e:
+                log_message(f'Error en notyfy my succ {e}, {traceback.format_exc()}',func=self.notify_to_my_succ)
+            time.sleep(3)
+            
+    #def tt(self,a):
+    #    return f'{str(self.id)}+{a}'
+    
     def _send_broadcast(self) -> bytes:
        # Enviar broadcast cada vez que sienta que mi sucesor no existe
         daemon= Pyro5.server.Daemon(self.ip)# Crear un nuevo demonio para este hilo
+        proxy=Pyro5.api.Proxy
         while True:
             log_message(f'Tratando de hacer broadcast',func=self._send_broadcast)
         #Enviar Broadcast por todas la urls menores que yo
@@ -429,11 +465,11 @@ class ChordNode:
                                        log_message(f'El nodo con id {node_ref.id} no fue aceptado como succesor ',func=self._send_broadcast)
                                        continue # Continuo hasta que uno me acepta
                                    log_message(f'Decirle al nodo {node_ref.id} que me haga su predecesor',func=self._send_broadcast)
-                                   to_ask_node=get_remote_objet(node_ref.url)# Nodo a preguntar si le cuadra ser mi sucesor
+                                   to_ask_node:ChordNode=get_remote_objet(node_ref.url,proxy)# Nodo a preguntar si le cuadra ser mi sucesor
                                    log_message(f'Recuperado el objeto remoto con id {to_ask_node.id} ',func=self._send_broadcast)
                                    my_ref_to_send=objects_to_send(self.ref,daemon)# REferencia mia para enviar al nodo
                                    
-                                   resp=to_ask_node.notify(my_ref_to_send)# Verifico si puedo hacerlo mi predecesor
+                                   resp=to_ask_node.tt(my_ref_to_send)# Verifico si puedo hacerlo mi predecesor
                                    log_message(f'Se le envio al nodo {node_ref.id} que yo sea su predecesor y obtuve de respuesta {resp}',func=self._send_broadcast)  
                                      
                                    
@@ -444,15 +480,21 @@ class ChordNode:
             time.sleep(3)
             
      # Notify method to INFOrm the node about another node
-    def notify(self, node: 'ChordNodeReference')->bool:
+    def tt(self,ip:str)->bool:
         """ Notify method to INFOrm the node about another node"""
-        log_message(f'El nodo {node.id} quiere que lo haga mi predecesor',func=self.notify )
+        
+        node=ChordNodeReference(ip)
+        log_message(f'El nodo {node.id} quiere que lo haga mi predecesor',func=self.tt)
         if node.id == self.id:
+            log_message(f'Le dije que no al mnodo {node.id}',func=self.tt)
             return False
+           
         if not self.pred or self._inbetween(node.id, self.pred.id, self.id):
+            log_message(f'Le dije que no al mnodo {node.id}',func=self.tt)
             self.pred = node
             return True
         else:
+            log_message(f'Le dije que no al mnodo {node.id}',func=self.tt)
             return False
             # Enviar mensaje que de no puede y le paso al que tengo como como predecesor de ese id
     

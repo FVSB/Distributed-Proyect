@@ -10,7 +10,7 @@ class Receiver:
         print(f"String recibido: {string}")
         return "OK"
 
-subprocess.Popen(["python","-m","Pyro5.nameserver",'--host','0.0.0.0'])
+#subprocess.Popen(["python","-m","Pyro5.nameserver",'--host','0.0.0.0'])
 print('Creado server ')
 daemon = Pyro5.server.Daemon(host="0.0.0.0")
 ns = Pyro5.api.locate_ns()

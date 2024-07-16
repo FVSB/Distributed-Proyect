@@ -189,6 +189,15 @@
         "documentation": {}
     },
     {
+        "label": "Pyro5.nameserver",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "Pyro5.nameserver",
+        "description": "Pyro5.nameserver",
+        "detail": "Pyro5.nameserver",
+        "documentation": {}
+    },
+    {
         "label": "log_message",
         "importPath": "helper.logguer",
         "description": "helper.logguer",
@@ -1134,6 +1143,69 @@
         "documentation": {}
     },
     {
+        "label": "uri",
+        "kind": 5,
+        "importPath": "distributed.pyroConcurrencia.client",
+        "description": "distributed.pyroConcurrencia.client",
+        "peekOfCode": "uri = \"PYRO:obj_abc123@localhost:50001\"\nproxy = Pyro5.Proxy(uri)\n# Realizar un aumento\nresultado = proxy.aumentar_variable()\nprint(f\"Resultado del aumento en Cliente 1: {resultado}\")",
+        "detail": "distributed.pyroConcurrencia.client",
+        "documentation": {}
+    },
+    {
+        "label": "proxy",
+        "kind": 5,
+        "importPath": "distributed.pyroConcurrencia.client",
+        "description": "distributed.pyroConcurrencia.client",
+        "peekOfCode": "proxy = Pyro5.Proxy(uri)\n# Realizar un aumento\nresultado = proxy.aumentar_variable()\nprint(f\"Resultado del aumento en Cliente 1: {resultado}\")",
+        "detail": "distributed.pyroConcurrencia.client",
+        "documentation": {}
+    },
+    {
+        "label": "resultado",
+        "kind": 5,
+        "importPath": "distributed.pyroConcurrencia.client",
+        "description": "distributed.pyroConcurrencia.client",
+        "peekOfCode": "resultado = proxy.aumentar_variable()\nprint(f\"Resultado del aumento en Cliente 1: {resultado}\")",
+        "detail": "distributed.pyroConcurrencia.client",
+        "documentation": {}
+    },
+    {
+        "label": "MiObjetoRemoto",
+        "kind": 6,
+        "importPath": "distributed.pyroConcurrencia.server",
+        "description": "distributed.pyroConcurrencia.server",
+        "peekOfCode": "class MiObjetoRemoto:\n    def decir_hola(self, nombre):\n        return f\"Hola, {nombre}!\"\n# Inicia el servidor de nombres de Pyro5\nns = Pyro5.nameserver.start_ns()\n# Crear un demonio Pyro\ndemonio = Pyro5.server.Daemon()\n# Registrar el objeto remoto con el nombre \"mi_objeto\"\nuri = demonio.register(MiObjetoRemoto, \"mi_objeto\")\n# Registrar el objeto en el servidor de nombres",
+        "detail": "distributed.pyroConcurrencia.server",
+        "documentation": {}
+    },
+    {
+        "label": "ns",
+        "kind": 5,
+        "importPath": "distributed.pyroConcurrencia.server",
+        "description": "distributed.pyroConcurrencia.server",
+        "peekOfCode": "ns = Pyro5.nameserver.start_ns()\n# Crear un demonio Pyro\ndemonio = Pyro5.server.Daemon()\n# Registrar el objeto remoto con el nombre \"mi_objeto\"\nuri = demonio.register(MiObjetoRemoto, \"mi_objeto\")\n# Registrar el objeto en el servidor de nombres\nns.register(\"mi_objeto\", uri)\n# Imprimir la URI para que el cliente pueda conectarse\nprint(\"El URI del objeto remoto es:\", uri)\n# Iniciar el demonio",
+        "detail": "distributed.pyroConcurrencia.server",
+        "documentation": {}
+    },
+    {
+        "label": "demonio",
+        "kind": 5,
+        "importPath": "distributed.pyroConcurrencia.server",
+        "description": "distributed.pyroConcurrencia.server",
+        "peekOfCode": "demonio = Pyro5.server.Daemon()\n# Registrar el objeto remoto con el nombre \"mi_objeto\"\nuri = demonio.register(MiObjetoRemoto, \"mi_objeto\")\n# Registrar el objeto en el servidor de nombres\nns.register(\"mi_objeto\", uri)\n# Imprimir la URI para que el cliente pueda conectarse\nprint(\"El URI del objeto remoto es:\", uri)\n# Iniciar el demonio\nprint(\"Esperando conexiones...\")\ndemonio.requestLoop()",
+        "detail": "distributed.pyroConcurrencia.server",
+        "documentation": {}
+    },
+    {
+        "label": "uri",
+        "kind": 5,
+        "importPath": "distributed.pyroConcurrencia.server",
+        "description": "distributed.pyroConcurrencia.server",
+        "peekOfCode": "uri = demonio.register(MiObjetoRemoto, \"mi_objeto\")\n# Registrar el objeto en el servidor de nombres\nns.register(\"mi_objeto\", uri)\n# Imprimir la URI para que el cliente pueda conectarse\nprint(\"El URI del objeto remoto es:\", uri)\n# Iniciar el demonio\nprint(\"Esperando conexiones...\")\ndemonio.requestLoop()",
+        "detail": "distributed.pyroConcurrencia.server",
+        "documentation": {}
+    },
+    {
         "label": "ChordNodeReference",
         "kind": 6,
         "importPath": "distributed.chord",
@@ -1156,7 +1228,7 @@
         "kind": 2,
         "importPath": "distributed.chord",
         "description": "distributed.chord",
-        "peekOfCode": "def get_remote_objet(url:str):\n    \"\"\"Devuelve el objeto remoto dada una url\n        Puede lanzar excep si no la url se desconecto\n    Args:\n        url (str): _description_\n    \"\"\"\n    ns = Pyro5.api.locate_ns()\n    uri = ns.lookup(url)\n    return  Pyro5.api.Proxy(uri)\ndef getShaRepr(data: str, max_value: int = 16):",
+        "peekOfCode": "def get_remote_objet(url:str,proxy=None):\n    \"\"\"Devuelve el objeto remoto dada una url\n        Puede lanzar excep si no la url se desconecto\n    Args:\n        url (str): _description_\n    \"\"\"\n    ns = Pyro5.api.locate_ns()\n    uri = ns.lookup(url)\n    if proxy is None:\n        return  Pyro5.api.Proxy(uri)",
         "detail": "distributed.chord",
         "documentation": {}
     },
@@ -1291,7 +1363,7 @@
         "kind": 6,
         "importPath": "distributed.receptor",
         "description": "distributed.receptor",
-        "peekOfCode": "class Receiver:\n    def __init__(self):\n        self.received_strings = []\n    def receive_string(self, string):\n        self.received_strings.append(string)\n        print(f\"String recibido: {string}\")\n        return \"OK\"\nsubprocess.Popen([\"python\",\"-m\",\"Pyro5.nameserver\",'--host','0.0.0.0'])\nprint('Creado server ')\ndaemon = Pyro5.server.Daemon(host=\"0.0.0.0\")",
+        "peekOfCode": "class Receiver:\n    def __init__(self):\n        self.received_strings = []\n    def receive_string(self, string):\n        self.received_strings.append(string)\n        print(f\"String recibido: {string}\")\n        return \"OK\"\n#subprocess.Popen([\"python\",\"-m\",\"Pyro5.nameserver\",'--host','0.0.0.0'])\nprint('Creado server ')\ndaemon = Pyro5.server.Daemon(host=\"0.0.0.0\")",
         "detail": "distributed.receptor",
         "documentation": {}
     },
