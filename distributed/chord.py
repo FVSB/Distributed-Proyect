@@ -59,9 +59,12 @@ class ChordNodeReference:
     #        traceback.print_exc()
     #        return b''
     
-    def _send_data(self, op:int, data:str=None)->'ChordNodeReference':
+    def _send_data(self, op:int, data:str=' ')->'ChordNodeReference':
         if isinstance(data,ChordNodeReference):
             data={'id':data.id,'ip':data.ip}
+        if not (isinstance(data,tuple) or isinstance(data,dict) or isinstance(data,str)):
+            log_message(f'El data {data} es de tipo {type(data)}',func=self._send_data)
+        data =data if data is not None else '' 
         #log_message(f'Typo de op {type(op)}  tipo de data{type(data)}')
         context = zmq.Context()
         socket = context.socket(zmq.REQ)
@@ -144,7 +147,7 @@ class ChordNodeReference:
 
     # Method to find the closest preceding finger of a given id
     def closest_preceding_finger(self, id: int) -> 'ChordNodeReference':
-        response = self._send_data(CLOSEST_PRECEDING_FINGER, str(id))
+        response = self._send_data(CLOSEST_PRECEDING_FINGER, id)
         return response
 
     # Method to store a key-value pair in the current node
@@ -190,7 +193,7 @@ class ChordNode:
         threading.Thread(target=self.show,daemon=True).start() # Start funcion que se esta printeando todo el tipo cada n segundos
         threading.Thread(target=self._send_broadcast,daemon=True,args=(JOIN,self.ref,)).start() # Enviar broadcast cuando no tengo sucesor
         threading.Thread(target=self._recive_broadcastt,daemon=True).start() # Recibir continuamente broadcast
-        threading.Thread(target=self.search_test,daemon=True).start()
+        #threading.Thread(target=self.search_test,daemon=True).start()
 
     @property
     def key_range(self):
@@ -579,15 +582,10 @@ class ChordNode:
             return self.ref
         else:
             return  node.store_key(key,value)
-        
-        
-    def start_server(self):
-        context = zmq.Context()
-        socket = context.socket(zmq.REP)
-        socket.bind(f"tcp://{self.ip}:{self.port}")
-        while True:
-            try:
-                message = socket.recv_pyobj()
+    
+    def handle_request(self,socket,message):
+        try:
+                
                 data = message
                 option = int(data[0])
                 #log_message(f'LLego un mensaje con opcion {option}',func=self.start_server)
@@ -636,8 +634,21 @@ class ChordNode:
                     socket.send_pyobj(response)
                 else:
                     socket.send_pyobj('')
+        except Exception as e:
+                log_message(f'Error en start server {e}  {traceback.format_exc()}',func=self.start_server)   
+        
+    def start_server(self):
+        context = zmq.Context()
+        socket = context.socket(zmq.REP)
+        socket.bind(f"tcp://{self.ip}:{self.port}")
+        while True:
+            try:
+                message = socket.recv_pyobj()
+                threading.Thread(target=self.handle_request,args=(socket,message,)).start()
             except Exception as e:
-                log_message(f'Error en start server {e}  {traceback.format_exc()}',func=self.start_server)
+                log_message(f'Error en start server {e}  {traceback.format_exc()}', func=self.start_server)
+                
+            
             
         socket.close()
         context.term()
