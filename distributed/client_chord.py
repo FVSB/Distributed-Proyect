@@ -24,12 +24,13 @@ def send_data( op:int,ip:str,port:int=8001, data:str=''):
 import time    
    
 while True:
-       time.sleep(10) 
-       try:       
-            a=send_data(STORE_KEY_CLIENT,'172.17.0.4',data=(9,"La data a guardar"))
+       
+        try:       
+            a=send_data(STORE_KEY_CLIENT,'172.17.0.4',data=(800000000000000000,"La data a guardar"))
             if a is None : continue
             print(a)
             break
-       except:
+        except:
            print("Nada")
            traceback.print_exc()
+        time.sleep(10) 

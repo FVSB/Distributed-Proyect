@@ -85,22 +85,29 @@ class ChordNodeReference:
     def find_successor(self, id: int) -> 'ChordNodeReference':
         """ Method to find the successor of a given id"""
         response=-1
-        try:
-            response = self._send_data(FIND_SUCCESSOR, id)
-            response.port=self.port
-            return response
-        except Exception as e:
-            log_message(f'Hubo un error en find_successor con response {response} de tipo {type(response)} con Error:{e}',func=self.find_successor)
-
+        #try:
+        #    response = self._send_data(FIND_SUCCESSOR, id)
+        #    response.port=self.port
+        #    return response
+        #except Exception as e:
+        #    log_message(f'Hubo un error en find_successor con response {response} de tipo {type(response)} con Error:{e}',func=self.find_successor)
+        response=self._send_data(FIND_SUCCESSOR, id)
+        return response
+    
     # Method to find the predecessor of a given id
     def find_predecessor(self, id: int) -> 'ChordNodeReference':
-        try:
-            response = self._send_data(FIND_PREDECESSOR, id)
-            return response
-        except Exception as e:
-            log_message(f'Hubo un error en find_successor con response {response} de tipo {type(response)} con Error:{e}',func=self.find_predecessor)
+        #try:
+        #    response = self._send_data(FIND_PREDECESSOR, id)
+        #    return response
+        #except Exception as e:
+        #    log_message(f'Hubo un error en find_successor con response {response} de tipo {type(response)} con Error:{e}',func=self.find_predecessor)
             
-
+        response=self._send_data(FIND_PREDECESSOR,id)
+        return response
+    
+    def find_key_owner(self,id:int)->'ChordNodeReference':
+        response=self._send_data(FIND_KEY_OWNER,id)
+        return response            
     
     # Property to get the successor of the current node
     @property
@@ -153,6 +160,7 @@ class ChordNodeReference:
         response = self._send_data(RETRIEVE_KEY, key)
         return response
 
+    
     def __str__(self) -> str:
         return f'ChordNodeReference:{self.id},{self.ip},{self.port}'
 
@@ -188,7 +196,7 @@ class ChordNode:
         threading.Thread(target=self._send_broadcast,daemon=True,args=(JOIN,self.ref,)).start() # Enviar broadcast cuando no tengo sucesor
         threading.Thread(target=self._recive_broadcastt,daemon=True).start() # Recibir continuamente broadcast
         threading.Thread(target=self.stabilize_finger,daemon=True).start()
-        #threading.Thread(target=self.search_test,daemon=True).start()
+        threading.Thread(target=self.search_test,daemon=True).start()
 
     @property
     def key_range(self):
@@ -205,12 +213,16 @@ class ChordNode:
                 try:
                     time.sleep(3)
                     log_message('%'*20,level='INFO')
+                    #with ThreadPoolExecutor(max_workers=3) as executor:
+                    #    for i in range(0,20):
+                    #        future=executor.submit(self.find_succ,i) # Meterlo en el pool de hilos
+                    #        node=future.result(timeout=10)
+                    #        
+                    #        log_message(f'El nodo que le pertenece el id {i} es el nodo con id {node.id}')
                     for i in range(0,20):
-                        with ThreadPoolExecutor() as executor:
-                            future=executor.submit(self.find_succ,i) # Meterlo en el pool de hilos
-                            node=future.result(timeout=10)
-                            
-                            log_message(f'El nodo que le pertenece el id {i} es el nodo con id {node.id}')
+                        node=self.find_succ(i)
+                        log_message(f'El nodo que le pertenece el id {i} es el nodo con id {node.id}')
+                        
                     log_message('+'*20,level='INFO')
                 except Exception as e:
                     log_message(f'Error buscando informacion {e}',self.search_test)
@@ -601,42 +613,106 @@ class ChordNode:
                 self.pred=None # Hago mi predecesor en None
                 
             time.sleep(5)
+            
+    def find_key_owner(self,key:int)->ChordNodeReference:
+        """ Localiza al dueño de una llave
 
-    def store_key(self,key:int,value)->ChordNodeReference:
-        log_message(f'Me an llamado a guardar la llave {key}, con el value {value} de tipo {type(value)}',func=self.store_key)
-        #node=self.find_succ(key)
-        #log_message(f'El nodo que propone es {node.id}',func=self.store_key)
-        #if node.id==self.id:
-        #    self.data.setdefault(key,value)
-        #    log_message(f'He guardado la data con llave {key} y valor {value }',func=self.store_key)
-        #    return self.ref
-        #else:
-        #    log_message(f'Mande al nodo {node.id} a guardar la key {key } con data {value}',func=self.store_key)
-        #    return  node.store_key(key,value)
+        Args:
+            key (int): _description_
+
+        Returns:
+            ChordNodeReference: _description_
+        """
+        log_message(f'Me han llamado para buscar el nodo dueño de la llave {key}',func=self.store_key)
         
-        if self._inbetween(key,self.pred.id,self.id):
-            self.data.setdefault(key,value)
-            log_message(f'He guardado la data con llave {key} y valor {value }',func=self.store_key)
+        if   (self.succ.id==self.id and self.pred is None) or self._inbetween(key,self.pred.id,self.id):# Si está entre mi predecesor y yo me devuelvo
+            # Si esta entre yo y mi sucesor o si soy el unico nodo en la red
+            log_message(f'Yo soy el dueño de la llave {key}',func=self.store_key)
             return self.ref
+    
         
         if self.succ.id!=self.id and self.pred is None:
             log_message(f'Anillo inestable',func=self.store_key)
             raise Exception('Anillo Inestable')
         
-        if self.succ.id==self.id and self.pred is None: 
-            self.data.setdefault(key,value)
-            log_message(f'He guardado la data con llave {key} y valor {value }',func=self.store_key)
-            return self.ref
-            
+        
+        log_message(f'Enviando a mi sucesor a que se encargue de la llave {key}',func=self.store_key)
+        return self.succ.find_key_owner(key)
+        
+        
+        
+
+    def store_key(self,key:int,value)->ChordNodeReference:
+        log_message(f'Me han llamado a guardar la llave {key}, con el value {value} de tipo {type(value)}',func=self.store_key)
        
-        log_message(f'Enviando a mi sucesor a que se encargue de la llave {key} y valor {value}',func=self.store_key)
-        return self.succ.store_key(key,value)
+        # El que esta aca abajo comentado es el bueno
+        #if self._inbetween(key,self.pred.id,self.id):
+        #    self.data.setdefault(key,value)
+        #    log_message(f'He guardado la data con llave {key} y valor {value }',func=self.store_key)
+        #    return self.ref
+        #
+        #if self.succ.id!=self.id and self.pred is None:
+        #    log_message(f'Anillo inestable',func=self.store_key)
+        #    raise Exception('Anillo Inestable')
+        #
+        #if self.succ.id==self.id and self.pred is None: 
+        #    self.data.setdefault(key,value)
+        #    log_message(f'He guardado la data con llave {key} y valor {value }',func=self.store_key)
+        #    return self.ref
+        node_to_store=self.find_key_owner(key)# Buscar quien debe tener la llave
+        if self.id==node_to_store.id: # Yo debo guardar la llave
+            self.data.setdefault(key,value)
+            return self.ref
+        
+        
+       
+        log_message(f'Enviando al nodo {node_to_store.id} la llave {key} y valor {value} para que la guarden',func=self.store_key)
+        return node_to_store.store_key(key,value)
             
-    def client_store_key(self,key:int,value):
+    def retrieve_key(self,key:int)->tuple[ChordNodeReference,int,object]:
+        """Intenta devuelve la llave si el nodo la contiene None si no está
+
+        Args:
+            key (int): _description_
+
+        Returns:
+            tuple[ChordNodeReference,int,object]: _description_
+        """
+        node_to_retrieve=self.find_key_owner(key)
+        if self.id==node_to_retrieve:# Entonces debo Hacer retrieve yo
+            value=self.data.get(key,None)# Si no esta la llave que devuelva None
+            return (self.ref,key,value)
+        return node_to_retrieve.retrieve_key(key)
+    
+    def client_store_key(self,key:int,value)->tuple[int,int]:
+        """Es paraa que el cliente temporal de chord meta una llave
+
+        Args:
+            key (int): _description_
+            value (_type_): _description_
+
+        Returns:
+            tuple(int,int): (id nodo que lo guardo , llave guardada)
+        """
         node=self.store_key(key,value)
         log_message(f'El nodo encargado de guardar la llace {key } es {node.id}',func=self.client_store_key)
         return (node.id,key)
-       
+    
+    def client_retrieve_key(self,key:int):
+        """_summary_
+
+        Args:
+            key (int): _description_
+            
+        Returns:
+            tuple(int,int,obj): Id nodo que la tenia, llave a buscar, valor guardado
+        """
+        log_message(f'El cliente ha mandado a tomar lo que guarda la llave {key}',func=self.client_retrieve_key)
+        node,key,value=self.retrieve_key(key)
+        log_message(f'El nodo que tenia la llave:{key}, tiene id:{node.id}, el valor es {value} de tipo{type(value)}',func=self.client_retrieve_key)
+        return (node.id,key,value)        
+        
+    
         
 #
     def server_handle(self,conn,addr):
@@ -702,6 +778,18 @@ class ChordNode:
                          log_message(f'Ha llegado una peticion de un cliente de meter una llave y valor key{key} valor {value}',func=self.server_handle)     
                          data_resp=self.client_store_key(key,value) 
                          log_message(f'La respues al cliente de guardar la llava {key} y el value {value} es {data_resp} de tipo {type(data_resp)}',func=self.server_handle)
+                    elif option==RETRIEVE_KEY_CLIENT:
+                        key=int(a)
+                        log_message(f'A llegado desde un cliente la peticion de tomar el valor que guarda la llave {key}',func=self.server_handle)
+                        data_resp=self.client_retrieve_key(key)
+                        node_id,key_to_search,value=data_resp
+                        log_message(f'El nodo con id {node_id}, guardaba el valor {value} de tipo {type(value)} de la llave {key_to_search}',func=self.server_handle)
+                    
+                    elif option==FIND_KEY_OWNER:#Buscando a quien le toca esa id
+                         log_message(f'Ha llegado una peticion de saber si yo debo ser el dueño de esa llave {a}, {type(a)}',func=self.server_handle)
+                         data_resp=self.find_key_owner(a)#Busca el nodo que puede tener esa llave ojo no significa que la tenga
+                         log_message(f'El que debe tener la llave {a}, {type(a)} es {data_resp.id} de tipo {type(data_resp)}',func=self.server_handle)
+                    
                     if data_resp:
                         
                     
