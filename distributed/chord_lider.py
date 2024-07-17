@@ -153,6 +153,7 @@ class Lider(ChordNode):
                         log_message(f'Yo soy el lider por tanto mando a confirmar',func=self.check_election_valid)
                         self._send_broadcast(op=ELECTION_WINNER,data=self.leader) #Soy el ganador 
                         log_message(f'Enviado el mensaje de soy el lider',func=self.check_election_valid)
+                        #Esperar y pedirle a mi predecesor que me rellene una lista con los nodos que tiene 
                                       
             except Exception as e:
                 log_message(f'Error chequeando si hay eleccion {e} \n {traceback.format_exc()}',func=self.check_election_valid)
@@ -199,7 +200,7 @@ class Lider(ChordNode):
             self.leader=node_propose # Actualizo mi lider
             log_message(f'Mi nuevo lider es {self.leader.id}',func=self.Election_handler)
 
-
+    
 
 if __name__ == "__main__":
     print("Hello from Lider node")

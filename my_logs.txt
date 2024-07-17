@@ -1,3 +1,0 @@
-2024-07-12 17:54:56,452 - INFO - logguer.py - 38 - Este es un mensaje de información.
-2024-07-12 17:54:56,453 - WARNING - logguer.py - 38 - Este es un mensaje de advertencia.
-2024-07-12 17:54:56,453 - ERROR - logguer.py - 38 - Este es un mensaje de error.
