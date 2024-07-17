@@ -523,7 +523,7 @@ class ChordNode:
         for index in lis_to_change:
             temp= self.finger[index]
             if temp.id!=id_node:
-               raise Exception(f'Para poder quitar de la finger table tiene que coincidir el que esta en la table {temp.id} en el index {index} con {old.id}')
+               raise Exception(f'Para poder quitar de la finger table tiene que coincidir el que esta en la table {temp.id} en el index {index} con {new_node.id}')
             self.finger[index]=new_node
                             # ELiminar la llave del diccionario
         del self.index_in_fingers[id_node]
