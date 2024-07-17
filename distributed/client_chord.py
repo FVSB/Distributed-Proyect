@@ -6,6 +6,7 @@ def send_data( op:int,ip:str,port:int=8001, data:str=''):
         #log_message(f'Typo de op {type(op)}  tipo de data{type(data)}')
         data=(op,data)
         # Serializar el objeto
+        #print(f':a data es {data}')
         data = pickle.dumps(data)
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -26,7 +27,8 @@ import time
 while True:
        
         try:       
-            a=send_data(STORE_KEY_CLIENT,'172.17.0.4',data=(800000000000000000,"La data a guardar"))
+            #a=send_data(STORE_KEY_CLIENT,'172.17.0.3',data=(800000000000000000,"La data a guardar"))
+            a=send_data(RETRIEVE_KEY_CLIENT,'172.17.0.3',data=8)
             if a is None : continue
             print(a)
             break

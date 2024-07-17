@@ -196,7 +196,7 @@ class ChordNode:
         threading.Thread(target=self._send_broadcast,daemon=True,args=(JOIN,self.ref,)).start() # Enviar broadcast cuando no tengo sucesor
         threading.Thread(target=self._recive_broadcastt,daemon=True).start() # Recibir continuamente broadcast
         threading.Thread(target=self.stabilize_finger,daemon=True).start()
-        threading.Thread(target=self.search_test,daemon=True).start()
+        #threading.Thread(target=self.search_test,daemon=True).start()
 
     @property
     def key_range(self):
@@ -623,20 +623,20 @@ class ChordNode:
         Returns:
             ChordNodeReference: _description_
         """
-        log_message(f'Me han llamado para buscar el nodo dueño de la llave {key}',func=self.store_key)
+        log_message(f'Me han llamado para buscar el nodo dueño de la llave {key}',func=self.find_key_owner)
         
         if   (self.succ.id==self.id and self.pred is None) or self._inbetween(key,self.pred.id,self.id):# Si está entre mi predecesor y yo me devuelvo
             # Si esta entre yo y mi sucesor o si soy el unico nodo en la red
-            log_message(f'Yo soy el dueño de la llave {key}',func=self.store_key)
+            log_message(f'Yo soy el dueño de la llave {key}',func=self.find_key_owner)
             return self.ref
     
         
         if self.succ.id!=self.id and self.pred is None:
-            log_message(f'Anillo inestable',func=self.store_key)
+            log_message(f'Anillo inestable',func=self.find_key_owner)
             raise Exception('Anillo Inestable')
         
         
-        log_message(f'Enviando a mi sucesor a que se encargue de la llave {key}',func=self.store_key)
+        log_message(f'Enviando a mi sucesor a que se encargue de la llave {key}',func=self.find_key_owner)
         return self.succ.find_key_owner(key)
         
         
@@ -645,20 +645,7 @@ class ChordNode:
     def store_key(self,key:int,value)->ChordNodeReference:
         log_message(f'Me han llamado a guardar la llave {key}, con el value {value} de tipo {type(value)}',func=self.store_key)
        
-        # El que esta aca abajo comentado es el bueno
-        #if self._inbetween(key,self.pred.id,self.id):
-        #    self.data.setdefault(key,value)
-        #    log_message(f'He guardado la data con llave {key} y valor {value }',func=self.store_key)
-        #    return self.ref
-        #
-        #if self.succ.id!=self.id and self.pred is None:
-        #    log_message(f'Anillo inestable',func=self.store_key)
-        #    raise Exception('Anillo Inestable')
-        #
-        #if self.succ.id==self.id and self.pred is None: 
-        #    self.data.setdefault(key,value)
-        #    log_message(f'He guardado la data con llave {key} y valor {value }',func=self.store_key)
-        #    return self.ref
+       
         node_to_store=self.find_key_owner(key)# Buscar quien debe tener la llave
         if self.id==node_to_store.id: # Yo debo guardar la llave
             self.data.setdefault(key,value)
@@ -678,10 +665,15 @@ class ChordNode:
         Returns:
             tuple[ChordNodeReference,int,object]: _description_
         """
+        log_message(f'Se ha mandado a buscar el valor de la llave {key}',func=self.retrieve_key)
         node_to_retrieve=self.find_key_owner(key)
-        if self.id==node_to_retrieve:# Entonces debo Hacer retrieve yo
+        log_message(f'El nodo que le pertenece esa llave {key} es {node_to_retrieve.id}',func=self.retrieve_key)
+        if self.id==node_to_retrieve.id:# Entonces debo Hacer retrieve yo
+            log_message(f'Yo soy el dueño de la llave {key}',func=self.retrieve_key)
             value=self.data.get(key,None)# Si no esta la llave que devuelva None
-            return (self.ref,key,value)
+            response=(self.ref,key,value)
+            log_message(f'Como resultado del retrieval de la key {key} es {response}',func=self.retrieve_key)
+            return response
         return node_to_retrieve.retrieve_key(key)
     
     def client_store_key(self,key:int,value)->tuple[int,int]:
@@ -774,7 +766,7 @@ class ChordNode:
                          log_message(f'El nodo que guardo la llave es {data_resp.id}',func=self.server_handle)
                     elif option ==STORE_KEY_CLIENT:
                          key=a[0]
-                         value=[1]
+                         value=a[1]
                          log_message(f'Ha llegado una peticion de un cliente de meter una llave y valor key{key} valor {value}',func=self.server_handle)     
                          data_resp=self.client_store_key(key,value) 
                          log_message(f'La respues al cliente de guardar la llava {key} y el value {value} es {data_resp} de tipo {type(data_resp)}',func=self.server_handle)
@@ -803,7 +795,7 @@ class ChordNode:
                         #socket.send(pickle.dumps(' '))
                         response=pickle.dumps('Errrorrrrrr ')
                        
-                        log_message(f'El len de la respuesta a enviar es de {len(response) } que era un Enviando el string error ',func=self.server_handle)
+                        log_message(f'El len de la respuesta a enviar es de {len(response) } que era un Enviando el string error  buscando la opcion {option}',func=self.server_handle)
                         
                         conn.sendall(response)
                     conn.close()
