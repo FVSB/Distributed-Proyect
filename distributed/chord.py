@@ -47,8 +47,8 @@ class ChordNodeReference:
     def _send_data(self, op:int, data:str='')->'ChordNodeReference':
         if isinstance(data,ChordNodeReference):
             data={'op':op,'id':data.id,'ip':data.ip}
-        if not (isinstance(data,tuple) or isinstance(data,dict) or isinstance(data,str)):
-            log_message(f'El data {data} es de tipo {type(data)}',func=self._send_data)
+        #if not (isinstance(data,tuple) or isinstance(data,dict) or isinstance(data,str)):
+        #    log_message(f'El data {data} es de tipo {type(data)}',func=self._send_data)
         data =data if data is not None else '' 
         #log_message(f'Typo de op {type(op)}  tipo de data{type(data)}')
         data=(op,data)
@@ -65,8 +65,8 @@ class ChordNodeReference:
                     log_message(f'Se quiso enviar al nodo {self.ip } una peticion de tipo {op} y el len de new_data es {len(new_data)}',func=self._send_data)
                 data_format=pickle.loads(new_data)#Al tipo de dato de python
                
-                if not isinstance(data_format,ChordNodeReference):
-                    log_message(f'La respuesta recibida del nodo {self.id} es {data_format} de tipo {type(data_format)}',func=self._send_data)
+                #if not isinstance(data_format,ChordNodeReference):
+                #    log_message(f'La respuesta recibida del nodo {self.id} es {data_format} de tipo {type(data_format)}',func=self._send_data)
                
                
                 #log_message(f'A llegado un objeto {data_format} de tipo {type(data_format)}',func=self._send_data)
@@ -170,6 +170,21 @@ class ChordNodeReference:
 
 # Class representing a Chord node
 class ChordNode:
+    def start_threads(self):
+        """Levanta los hilos
+        """
+         # Start background threads for stabilization, fixing fingers, and checking predecessor
+        threading.Thread(target=self.stabilize, daemon=True).start()  # Start stabilize thread
+        threading.Thread(target=self.fix_fingers, daemon=True).start()  # Start fix fingers thread
+        threading.Thread(target=self.check_predecessor, daemon=True).start()  # Start check predecessor thread
+        threading.Thread(target=self.start_server, daemon=True).start()  # Start server thread
+        threading.Thread(target=self.show,daemon=True).start() # Start funcion que se esta printeando todo el tipo cada n segundos
+        threading.Thread(target=self._search_successor,daemon=True,args=(JOIN,self.ref,)).start() # Enviar broadcast cuando no tengo sucesor
+        threading.Thread(target=self._recive_broadcastt,daemon=True).start() # Recibir continuamente broadcast
+        threading.Thread(target=self.stabilize_finger,daemon=True).start()
+        #threading.Thread(target=self.search_test,daemon=True).start()
+    
+    
     def __init__(self, ip: str, port: int = 8001, m: int = 160): #m=160
         self.id = getShaRepr(ip)
         self.ip = ip
@@ -185,18 +200,10 @@ class ChordNode:
         self.fingers_ok:bool=False  # Dice si los fingers estan ok o no
         self._key_range=(-1,self.ip) # the key_range [a,b) if a =-1 because no have predecesor
         self.cache:dict[int,str]={} #diccionario con la cache de todos los nodos de la red
-        self._broadcast_lock:threading.Lock = threading.Lock()
-        self.Is_Search_Succ_:bool=False #
-        # Start background threads for stabilization, fixing fingers, and checking predecessor
-        threading.Thread(target=self.stabilize, daemon=True).start()  # Start stabilize thread
-        threading.Thread(target=self.fix_fingers, daemon=True).start()  # Start fix fingers thread
-        threading.Thread(target=self.check_predecessor, daemon=True).start()  # Start check predecessor thread
-        threading.Thread(target=self.start_server, daemon=True).start()  # Start server thread
-        threading.Thread(target=self.show,daemon=True).start() # Start funcion que se esta printeando todo el tipo cada n segundos
-        threading.Thread(target=self._search_successor,daemon=True,args=(JOIN,self.ref,)).start() # Enviar broadcast cuando no tengo sucesor
-        threading.Thread(target=self._recive_broadcastt,daemon=True).start() # Recibir continuamente broadcast
-        threading.Thread(target=self.stabilize_finger,daemon=True).start()
-        #threading.Thread(target=self.search_test,daemon=True).start()
+        self._broadcast_lock:threading.RLock = threading.RLock() # Lock para saber si puedo o no cambiar el valor de is succ
+        #self.Is_Search_Succ_:bool=False #
+        
+        #self.start_threads()
 
     @property
     def key_range(self):
@@ -206,16 +213,16 @@ class ChordNode:
         """
         return self._key_range
     
-    @property
-    def Is_Search_Succ(self):
-        with self._broadcast_lock:
-            return self.Is_Search_Succ_
-    @Is_Search_Succ.setter
-    def Is_Search_Succ(self,value):
-        if not isinstance(value,bool):
-            raise Exception(f'Value debe ser bool no de tipo {type(value)} con valor {value}')
-        with self._broadcast_lock:
-            self.Is_Search_Succ_ = value
+    #@property
+    #def Is_Search_Succ(self):
+    #    with self._broadcast_lock:
+    #        return self.Is_Search_Succ_
+    #@Is_Search_Succ.setter
+    #def Is_Search_Succ(self,value):
+    #    if not isinstance(value,bool):
+    #        raise Exception(f'Value debe ser bool no de tipo {type(value)} con valor {value}')
+    #    with self._broadcast_lock:
+    #        self.Is_Search_Succ_ = value
     
     def search_test(self):
        
@@ -238,7 +245,7 @@ class ChordNode:
                     log_message(f'Error buscando informacion {e}',self.search_test)
         
             
-    def show(self):
+    def show(self,time_:int=3):
         """
         Show my ip and id and mi predecessor and succesors ips and ids
         """
@@ -257,9 +264,9 @@ class ChordNode:
             log_message('*'*20,level='INFO')
             
             
-            time.sleep(3) # Se presenta cada 10 segundos
+            time.sleep(time_) # Se presenta cada 10 segundos
             
-    def _search_successor(self, op: int, data: str = None) -> bytes:
+    def _search_successor(self, op: int, data: str = None,time_=5) -> bytes:
         """Busca un sucesor si no tengo o si mi pred es None
 
         Args:
@@ -279,26 +286,36 @@ class ChordNode:
                     try:
                         self._send_broadcast(op,data)
                         log_message(f'Enviado el broadcas para buscar succ',func=self._search_successor)
-                        self.Is_Search_Succ=True
-                        log_message(f'Se actualizo el Is_Search_Succ ahora es {self.Is_Search_Succ}',func=self._search_successor)
+                        #self.Is_Search_Succ=True
+                        
                     except Exception as e:
                         log_message(f'Ocurrio un problema enviando el broadcast: {e}',level='ERROR',func=self._search_successor)
-            time.sleep(3)
+            time.sleep(time_)
             
             
-    def _send_broadcast(self,op:int,data:ChordNodeReference):
-        log_message(f'Voy a enviar un broadcast con op {op} y data {data}',func=self._send_broadcast)
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        to_send=pickle.dumps((op,data))# Serializar el objeto para poder enviarlo 
-        #s.sendto(f'{op}-{str(data)}'.encode(), (str(socket.INADDR_BROADCAST), self.port))
-        s.sendto(to_send,(str(socket.INADDR_BROADCAST), self.port)) # ENviar el broadcast
-        log_message(f'Enviado el broadcast',func=self._search_successor) 
-        s.close()
-        log_message(f'Acabo de enviar un broadcast con op: {op} y data {data}',func=self._send_broadcast)
+    def _send_broadcast(self,op:int,data:ChordNodeReference,time_=1):
+        with self._broadcast_lock:
+            log_message(f'Voy a enviar un broadcast con op {op} y data {data}',func=self._send_broadcast)
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+            to_send=pickle.dumps((op,data))# Serializar el objeto para poder enviarlo 
+            #s.sendto(f'{op}-{str(data)}'.encode(), (str(socket.INADDR_BROADCAST), self.port))
+            s.sendto(to_send,(str(socket.INADDR_BROADCAST), self.port)) # ENviar el broadcast
+            log_message(f'Enviado el broadcast',func=self._search_successor) 
+            s.close()
+            time.sleep(time_)
+            log_message(f'Acabo de enviar un broadcast con op: {op} y data {data}',func=self._send_broadcast)
        
+    def broadcast_handle(self,op:int,message:tuple[int,ChordNodeReference],address:str):
+          op,node=message
+          if int(op)==JOIN:
+                            log_message(f'El mensaje recibido al broadcast era para join desde el ip {address} de tipo {type(address)}')
+                            #self.join(ChordNodeReference(address[0],self.port))
+                            self.join(node)
+    
     def _recive_broadcastt(self):
         try:
+            #with self._broadcast_lock:
             client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             client_socket.bind(('', self.port))  # Escucha en todas las interfaces en el puerto 8001
             client_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
@@ -314,7 +331,7 @@ class ChordNode:
                     log_message('Esperando Broadcast',func=self._recive_broadcastt)
                     message, address = client_socket.recvfrom(1024)
                     log_message(f'El tipo de lo recibido en broadcast es {type(message)} ,  {type(address)}')
-                    message=pickle.loads(message)
+                    message:tuple[int,ChordNodeReference]=pickle.loads(message)
                     log_message(f'El tipo de lo recibido deserializado en broadcast es {type(message)} ,  {type(address)}')
                     log_message(f"Mensaje recibido desde {address}: {message}",func=self._recive_broadcastt)
                     if address[0]!=socket.gethostbyname(socket.gethostname()):
@@ -325,10 +342,12 @@ class ChordNode:
                         op,node=message
                         op=int(op)
                         log_message(f'LLego la respuesta con opcion {op} de tipo {type(op)}')
-                        if int(op)==JOIN:
-                            log_message(f'El mensaje recibido al broadcast era para join desde el ip {address[0]} de tipo {type(address[0])}')
-                            #self.join(ChordNodeReference(address[0],self.port))
-                            self.join(node)
+                        log_message(f'LLamando al handle para que tramite esto {op}',func=self._recive_broadcastt)
+                        self.broadcast_handle(op,message,address[0])
+                        #if int(op)==JOIN:
+                        #    log_message(f'El mensaje recibido al broadcast era para join desde el ip {address[0]} de tipo {type(address[0])}')
+                        #    #self.join(ChordNodeReference(address[0],self.port))
+                        #    self.join(node)
                     time.sleep(3)
                 except:
                     log_message(f'Error en el while True del recv broadcast Error: {traceback.format_exc()}',self._recive_broadcastt)
@@ -363,9 +382,9 @@ class ChordNode:
         Returns:
             ChordNodeReference: _description_
         """
-        if id==9:log_message(f'Me estan llamando para ver quien es el dieño de {id}',func=self.find_succ)
+       # if id==9:log_message(f'Me estan llamando para ver quien es el dieño de {id}',func=self.find_succ)
         node = self.find_pred(id)  # Find predecessor of id
-        if id==9:log_message(f'El nodo dueño del id 9 es {node.id}',func=self.find_succ)
+       # if id==9:log_message(f'El nodo dueño del id 9 es {node.id}',func=self.find_succ)
         if node.id!= self.id:
             return node.succ
         else:
@@ -541,7 +560,8 @@ class ChordNode:
         else:
             pass # Enviar mensaje que de no puede y le paso al que tengo como como predecesor de ese id
     def _delete_from_all_ocurrencies(self,id_node:int,new_node:ChordNodeReference):
-        """_summary_
+        """Dado un id de un nodo a eliminar de la finger table y otro nodo para remplazar
+            Se actualiza la finger table
 
         Args:
             id_node (int): ID del nodo a eliminar
@@ -551,6 +571,9 @@ class ChordNode:
             Exception: _description_
         """
         log_message(f'La finger table antes {self.finger}',func=self._delete_from_all_ocurrencies)
+        if id_node not in self.index_in_fingers:
+            log_message(f'El nodo de id {id_node} no esta en el diccionario de fingers con su posicion{self.index_in_fingers} ',func=self._delete_from_all_ocurrencies)
+            return
         lis_to_change=self.index_in_fingers[id_node] # cambiar pir mi todas las  apararicones d ela finger table
         log_message(f'La lista de ocurrencias es {lis_to_change}',func=self._delete_from_all_ocurrencies)
         for index in lis_to_change:
@@ -743,20 +766,12 @@ class ChordNode:
         return (node.id,key,value)        
         
     
+
+    
+    
+    def handle_request(self,data,option,a):
         
-#
-    def server_handle(self,conn,addr):
-        #log_message(f'new connection from {addr}',func=ChordNode.start_server)
-
-                    data = conn.recv(1024)
-                    data=pickle.loads(data)
-                    option = int(data[0])
-                    a=data[1]
-                    if isinstance(a,dict):
-                        data=(data[0],ChordNodeReference(a['ip']))
-
-                    data_resp = None
-
+                    data_resp=None
                     if option == FIND_SUCCESSOR:
                         id = int(data[1])
                         data_resp = self.find_succ(id)
@@ -834,15 +849,28 @@ class ChordNode:
                         if len(response)<1 or len(response)>1020:
                             log_message(f'El len de la respuesta a enviar es de {len(response) } que era un {data_resp.id}',func=self.server_handle)
                         
-                        conn.sendall(response)
+                        #conn.sendall(response)
                         #socket.send(response)
                     else:
                         #socket.send(pickle.dumps(' '))
                         response=pickle.dumps('Errrorrrrrr ')
                        
                         log_message(f'El len de la respuesta a enviar es de {len(response) } que era un Enviando el string error  buscando la opcion {option}',func=self.server_handle)
-                        
-                        conn.sendall(response)
+                    return response
+    def server_handle(self,conn,addr):
+        #log_message(f'new connection from {addr}',func=ChordNode.start_server)
+
+                    data = conn.recv(1024)
+                    data=pickle.loads(data)
+                    option = int(data[0])
+                    a=data[1]
+                    if isinstance(a,dict):
+                        data=(data[0],ChordNodeReference(a['ip']))
+
+                    data_resp = None
+                    response=self.handle_request(data,option,a)
+
+                    conn.sendall(response)
                     conn.close()
     def start_server(self):
     
@@ -874,7 +902,7 @@ if __name__ == "__main__":
     #time.sleep(10)
     ip = socket.gethostbyname(socket.gethostname())
     node = ChordNode(ip,m=3)
-
+    node.start_threads()#INiciar el nodo
     if len(sys.argv) >= 2:
         other_ip = sys.argv[1]
         #node.join(ChordNodeReference(other_ip, node.port))
