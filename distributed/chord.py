@@ -193,7 +193,7 @@ class ChordNode:
         threading.Thread(target=self.check_predecessor, daemon=True).start()  # Start check predecessor thread
         threading.Thread(target=self.start_server, daemon=True).start()  # Start server thread
         threading.Thread(target=self.show,daemon=True).start() # Start funcion que se esta printeando todo el tipo cada n segundos
-        threading.Thread(target=self._send_broadcast,daemon=True,args=(JOIN,self.ref,)).start() # Enviar broadcast cuando no tengo sucesor
+        threading.Thread(target=self._search_successor,daemon=True,args=(JOIN,self.ref,)).start() # Enviar broadcast cuando no tengo sucesor
         threading.Thread(target=self._recive_broadcastt,daemon=True).start() # Recibir continuamente broadcast
         threading.Thread(target=self.stabilize_finger,daemon=True).start()
         #threading.Thread(target=self.search_test,daemon=True).start()
@@ -249,24 +249,39 @@ class ChordNode:
             
             time.sleep(3) # Se presenta cada 10 segundos
             
-    def _send_broadcast(self, op: int, data: str = None) -> bytes:
+    def _search_successor(self, op: int, data: str = None) -> bytes:
+        """Busca un sucesor si no tengo o si mi pred es None
+
+        Args:
+            op (int): _description_
+            data (str, optional): _description_. Defaults to None.
+
+        Returns:
+            bytes: _description_
+        """
        # Enviar broadcast cada vez que sienta que mi sucesor no existe
         while True:
-            log_message(f'Tratando de hacer broadcast',func=self._send_broadcast)
+            log_message(f'Tratando de hacer broadcast',func=self._search_successor)
         #Enviar broadcast para descubrir mi nuevo sucesor 
             if self.succ.id==self.id or (self.succ.id!=self.id and self.pred is None) :
                 #with self._broadcast_lock:
-                    log_message(f'Voy a enviar un broadcast para buscar un sucesor ',func=self._send_broadcast)
+                    log_message(f'Voy a enviar un broadcast para buscar un sucesor ',func=self._search_successor)
                     try:
-                        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                        s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-                        s.sendto(f'{op}-{str(data)}'.encode(), (str(socket.INADDR_BROADCAST), self.port))
-                        log_message(f'Enviado el broadcast',func=self._send_broadcast) 
-                        s.close()
+                        self._send_broadcast(op,data)
                          
                     except Exception as e:
-                        log_message(f'Ocurrio un problema enviando el broadcast: {e}',level='ERROR',func=self._send_broadcast)
+                        log_message(f'Ocurrio un problema enviando el broadcast: {e}',level='ERROR',func=self._search_successor)
             time.sleep(3)
+            
+            
+    def _send_broadcast(self,op:int,data:ChordNodeReference):
+        log_message(f'Voy a enviar un broadcast con op {op} y data {data}',func=self._send_broadcast)
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        s.sendto(f'{op}-{str(data)}'.encode(), (str(socket.INADDR_BROADCAST), self.port))
+        log_message(f'Enviado el broadcast',func=self._search_successor) 
+        s.close()
+        log_message(f'Acabo de enviar un broadcast con op: {op} y data {data}',func=self._send_broadcast)
        
     def _recive_broadcastt(self):
         try:
