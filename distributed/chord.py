@@ -57,7 +57,7 @@ class ChordNodeReference:
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.connect((self.ip, self.port))
-                s.settimeout(20)# Decir que a lo sumo espera 3 segundos
+                s.settimeout(20)# Decir que a lo sumo espera 20 segundos
                 s.sendall(data)
                 new_data=s.recv(1024)
                 #log_message(f'La data es {new_data}',func=self._send_data)
@@ -186,7 +186,7 @@ class ChordNode:
         self._key_range=(-1,self.ip) # the key_range [a,b) if a =-1 because no have predecesor
         self.cache:dict[int,str]={} #diccionario con la cache de todos los nodos de la red
         self._broadcast_lock:threading.Lock = threading.Lock()
-
+        self.Is_Search_Succ_:bool=False #
         # Start background threads for stabilization, fixing fingers, and checking predecessor
         threading.Thread(target=self.stabilize, daemon=True).start()  # Start stabilize thread
         threading.Thread(target=self.fix_fingers, daemon=True).start()  # Start fix fingers thread
@@ -206,6 +206,16 @@ class ChordNode:
         """
         return self._key_range
     
+    @property
+    def Is_Search_Succ(self):
+        with self._broadcast_lock:
+            return self.Is_Search_Succ_
+    @Is_Search_Succ.setter
+    def Is_Search_Succ(self,value):
+        if not isinstance(value,bool):
+            raise Exception(f'Value debe ser bool no de tipo {type(value)} con valor {value}')
+        with self._broadcast_lock:
+            self.Is_Search_Succ_ = value
     
     def search_test(self):
        
@@ -268,7 +278,9 @@ class ChordNode:
                     log_message(f'Voy a enviar un broadcast para buscar un sucesor ',func=self._search_successor)
                     try:
                         self._send_broadcast(op,data)
-                         
+                        log_message(f'Enviado el broadcas para buscar succ',func=self._search_successor)
+                        self.Is_Search_Succ=True
+                        log_message(f'Se actualizo el Is_Search_Succ ahora es {self.Is_Search_Succ}',func=self._search_successor)
                     except Exception as e:
                         log_message(f'Ocurrio un problema enviando el broadcast: {e}',level='ERROR',func=self._search_successor)
             time.sleep(3)
@@ -278,7 +290,9 @@ class ChordNode:
         log_message(f'Voy a enviar un broadcast con op {op} y data {data}',func=self._send_broadcast)
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        s.sendto(f'{op}-{str(data)}'.encode(), (str(socket.INADDR_BROADCAST), self.port))
+        to_send=pickle.dumps((op,data))# Serializar el objeto para poder enviarlo 
+        #s.sendto(f'{op}-{str(data)}'.encode(), (str(socket.INADDR_BROADCAST), self.port))
+        s.sendto(to_send,(str(socket.INADDR_BROADCAST), self.port)) # ENviar el broadcast
         log_message(f'Enviado el broadcast',func=self._search_successor) 
         s.close()
         log_message(f'Acabo de enviar un broadcast con op: {op} y data {data}',func=self._send_broadcast)
@@ -300,17 +314,21 @@ class ChordNode:
                     log_message('Esperando Broadcast',func=self._recive_broadcastt)
                     message, address = client_socket.recvfrom(1024)
                     log_message(f'El tipo de lo recibido en broadcast es {type(message)} ,  {type(address)}')
-                    log_message(f"Mensaje recibido desde {address}: {message.decode()}",func=self._recive_broadcastt)
+                    message=pickle.loads(message)
+                    log_message(f'El tipo de lo recibido deserializado en broadcast es {type(message)} ,  {type(address)}')
+                    log_message(f"Mensaje recibido desde {address}: {message}",func=self._recive_broadcastt)
                     if address[0]!=socket.gethostbyname(socket.gethostname()):
                         log_message('Se recibio desde otro nodo',func=self._recive_broadcastt)
-                        message=str(message.decode())
+                        #message=str(message.decode())
                         log_message(f'Este ahora es el mensaje {message} que tiene un tipo {type(message)}',func=self._recive_broadcastt)
-                        op,node=message.split('-')
+                        #op,node=message.split('-')
+                        op,node=message
                         op=int(op)
                         log_message(f'LLego la respuesta con opcion {op} de tipo {type(op)}')
                         if int(op)==JOIN:
                             log_message(f'El mensaje recibido al broadcast era para join desde el ip {address[0]} de tipo {type(address[0])}')
-                            self.join(ChordNodeReference(address[0],self.port))
+                            #self.join(ChordNodeReference(address[0],self.port))
+                            self.join(node)
                     time.sleep(3)
                 except:
                     log_message(f'Error en el while True del recv broadcast Error: {traceback.format_exc()}',self._recive_broadcastt)
@@ -680,16 +698,21 @@ class ChordNode:
         Returns:
             tuple[ChordNodeReference,int,object]: _description_
         """
-        log_message(f'Se ha mandado a buscar el valor de la llave {key}',func=self.retrieve_key)
-        node_to_retrieve=self.find_key_owner(key)
-        log_message(f'El nodo que le pertenece esa llave {key} es {node_to_retrieve.id}',func=self.retrieve_key)
-        if self.id==node_to_retrieve.id:# Entonces debo Hacer retrieve yo
-            log_message(f'Yo soy el dueño de la llave {key}',func=self.retrieve_key)
-            value=self.data.get(key,None)# Si no esta la llave que devuelva None
-            response=(self.ref,key,value)
-            log_message(f'Como resultado del retrieval de la key {key} es {response}',func=self.retrieve_key)
+        try:
+            log_message(f'Se ha mandado a buscar el valor de la llave {key}',func=self.retrieve_key)
+            node_to_retrieve=self.find_key_owner(key)
+            log_message(f'El nodo que le pertenece esa llave {key} es {node_to_retrieve.id}',func=self.retrieve_key)
+            if self.id==node_to_retrieve.id:# Entonces debo Hacer retrieve yo
+                log_message(f'Yo soy el dueño de la llave {key}',func=self.retrieve_key)
+                value=self.data.get(key,None)# Si no esta la llave que devuelva None
+                response=(self.ref,key,value)
+                log_message(f'Como resultado del retrieval de la key {key} es {response}',func=self.retrieve_key)
+                return response
+            response=node_to_retrieve.retrieve_key(key)
+            log_message(f'La respuesta de retrieval al nodo con id{node_to_retrieve.id} es {response}',func=self.retrieve_key)
             return response
-        return node_to_retrieve.retrieve_key(key)
+        except Exception as e :
+            log_message(f'Hubo un error en el retrieve key: {e} \n {traceback.format_exc()} ',func=self.retrieve_key)
     
     def client_store_key(self,key:int,value)->tuple[int,int]:
         """Es paraa que el cliente temporal de chord meta una llave
@@ -785,6 +808,13 @@ class ChordNode:
                          log_message(f'Ha llegado una peticion de un cliente de meter una llave y valor key{key} valor {value}',func=self.server_handle)     
                          data_resp=self.client_store_key(key,value) 
                          log_message(f'La respues al cliente de guardar la llava {key} y el value {value} es {data_resp} de tipo {type(data_resp)}',func=self.server_handle)
+                    elif option ==RETRIEVE_KEY:
+                        search_key=int(a)
+                        log_message(f'Se ha enviado hacer Retrieve a la llave {search_key}',func=self.server_handle)
+                        response=self.retrieve_key(search_key)
+                        node,key,value=response
+                        log_message(f'El resultado de retrieve la llave {search_key} es  {node}, llave encontrada:{key},valor:{value} de tipo {type(value)}',func=self.server_handle)
+                        data_resp=response
                     elif option==RETRIEVE_KEY_CLIENT:
                         key=int(a)
                         log_message(f'A llegado desde un cliente la peticion de tomar el valor que guarda la llave {key}',func=self.server_handle)

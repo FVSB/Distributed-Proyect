@@ -27,10 +27,11 @@ import time
 while True:
        
         try:       
-           #a=send_data(STORE_KEY_CLIENT,'172.17.0.3',data=(8,"La data a guardar"))
-            a=send_data(RETRIEVE_KEY_CLIENT,'172.17.0.3',data=8)
+            a=send_data(STORE_KEY_CLIENT,'172.17.0.2',data=(9,"La data a guardar"))
+            b=send_data(RETRIEVE_KEY_CLIENT,'172.17.0.4',data=9)
             if a is None : continue
             print(a)
+            print(b)
             break
         except:
            print("Nada")
