@@ -1,7 +1,7 @@
 from chord import *
 
 
-class Lider(ChordNode):
+class Leader(ChordNode):
     
     def make_election(self):
         """Convoco hacer elecciones
@@ -56,12 +56,8 @@ class Lider(ChordNode):
             log_message(f'El ganador de las elecciones es {node.id} y el que yo creia como lider es {self.leader.id}',func=self.broadcast_handle)
             self.Election_handler(node)       
                        
-    def start_threads(self):
-        super().start_threads()
-        threading.Thread(target=self._check_make_election,daemon=True).start()# Comprobar si debo hacer eleccion o no
-        threading.Thread(target=self.check_election_valid,daemon=True).start()# Comprobar que estoy en eleccion
-        threading.Thread(target=self.check_i_am_alone,daemon=True).start()#Chequea si estoy solo
-        threading.Thread(target=self.show,daemon=True).start()
+   
+    
     def show(self,time_:int=3):
         """
         Show my ip and id and mi predecessor and succesors ips and ids
@@ -87,6 +83,44 @@ class Lider(ChordNode):
             
             
             time.sleep(time_) # Se presenta cada 10 segundos
+    
+    def check_i_am_stable(self,time_=2):
+        """
+        Chequea contantemente si estoy estable o no 
+
+        Args:
+            time_ (int, optional): _description_. Defaults to 2.
+        """
+        while True:
+            time.sleep(time_)
+            try:
+                
+                with self.in_election_lock:
+                    in_election=self.in_election_
+                        
+                if in_election:
+                    self.is_stable=False
+                else:
+                    time.sleep(time_*2)
+                    with self.in_election_lock:
+                        if not self.in_election_:
+                            self.is_stable=True
+
+
+            except Exception as e:
+                log_message(f'Error en chequear si soy un nodo estable',func=self.is_stable)
+                
+    def start_threads(self):
+        super().start_threads()
+        threading.Thread(target=self._check_make_election,daemon=True).start()# Comprobar si debo hacer eleccion o no
+        threading.Thread(target=self.check_election_valid,daemon=True).start()# Comprobar que estoy en eleccion
+        threading.Thread(target=self.check_i_am_alone,daemon=True).start()#Chequea si estoy solo
+        threading.Thread(target=self.show,daemon=True).start()
+        threading.Thread(target=self.check_i_am_stable,daemon=True).start()# Chequeo constantemente si soy un nodo estable
+        
+    
+            
+    
     def __init__(self, ip: str, port: int = 8001, m: int = 160):
         super().__init__(ip, port, m)
         self.leader_:ChordNodeReference=self.ref
@@ -97,12 +131,35 @@ class Lider(ChordNode):
         self.in_election_lock:threading.RLock=threading.RLock()
         self.i_am_alone_:bool=False # EMpiezo pensando que no para hacer descubrimiento
         self.i_am_alone_lock:threading.RLock=threading.RLock()
+        self.is_stable_:bool=False
+        self.is_stable_lock:threading.RLock=threading.RLock()
+
+        """Dicta si estoy estable la red o no"""
+        
         #Threads
     
         #self.start_threads()
+        
+    @property
+    def is_stable(self)->bool:
+        """
+        Dice si estoy estable o no
+        Raises:
+            
+        Returns:
+            _type_: _description_
+        """
+        with self.is_stable_lock:
+            return self.is_stable_
+    
+    @is_stable.setter
+    def is_stable(self,value:bool):
+        with self.is_stable_lock:
+            self.is_stable_=value
+        
    
     @property 
-    def i_am_alone(self):
+    def i_am_alone(self)->bool:
         with self.i_am_alone_lock:
             return self.i_am_alone_
     @i_am_alone.setter
@@ -206,7 +263,7 @@ if __name__ == "__main__":
     print("Hello from Lider node")
     #time.sleep(10)
     ip = socket.gethostbyname(socket.gethostname())
-    node = Lider(ip,m=3)
+    node = Leader(ip,m=3)
     node.start_threads()#Iniciar los nodos
     while True:
         pass

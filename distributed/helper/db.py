@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, Column, Integer, Text, LargeBinary
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from doc import  Documento
+from helper.docs_class import  Document
 import pickle
 # Crear el motor de base de datos
 engine = create_engine('sqlite:///stable.db')
@@ -28,7 +28,7 @@ Base.metadata.create_all(engine)
 
 
 # Crear un objeto Documento
-mi_documento = Document(100, "Mi título", b'\x01\x23\x45\x67\x89\xAB\xCD\xEF', 456)
+#mi_documento = Document(100, "Mi título", b'\x01\x23\x45\x67\x89\xAB\xCD\xEF', 456)
 
 
 
@@ -41,7 +41,16 @@ def insert_document(document:Document,node_id:int):
     session.close()
     return True
     
-def get_document_by_id(id_document:int):
+def get_document_by_id(id_document:int)->tuple[Document,int]:
+    """
+    
+
+    Args:
+        id_document (int): _description_
+
+    Returns:
+        tuple[Document,int]: Documento Nodo al  que le corresponde
+    """
     session=Session()
     doc=session.query(MiTabla).filter_by(id=id_document).first()
     data=None
@@ -83,7 +92,7 @@ def delete_document(document_id:int):
         response=True
     session.close()
 
-insert_document(mi_documento,0)  
+#insert_document(mi_documento,0)  
         
 # Insertar el objeto en la tabla
 #nueva_fila = MiTabla(id=mi_documento.id, titule=mi_documento.titule, document=mi_documento.document, nodo_id=mi_documento.nodo_id)

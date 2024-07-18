@@ -8,4 +8,5 @@ def index():
 
 if __name__ == '__main__':
     ip = socket.gethostbyname(socket.gethostname())
-    app.run(host=ip, port=5000)
+    print(f'Mi ip {ip}')
+    app.run(host=ip, port=5000,debug=True)

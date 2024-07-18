@@ -44,3 +44,7 @@ class Document:
     
     def get_in_bytes(self)->bytes:
         return pickle.dumps(self)
+    
+    
+if __name__=='__main__':
+    pass
