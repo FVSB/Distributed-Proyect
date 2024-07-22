@@ -182,7 +182,7 @@ class ChordNode:
         threading.Thread(target=self._search_successor,daemon=True,args=(JOIN,self.ref,)).start() # Enviar broadcast cuando no tengo sucesor
         threading.Thread(target=self._recive_broadcastt,daemon=True).start() # Recibir continuamente broadcast
         threading.Thread(target=self.stabilize_finger,daemon=True).start()
-        #threading.Thread(target=self.search_test,daemon=True).start()
+        threading.Thread(target=self.search_test,daemon=True).start()
     
     
     def __init__(self, ip: str, port: int = 8001, m: int = 160): #m=160
@@ -385,15 +385,15 @@ class ChordNode:
         Returns:
             ChordNodeReference: _description_
         """
-      
-      
+        if id==self.id: return self.ref # Osea si el id a buscar es el mismo que el mio que me devuelva 
+        
         node = self.find_pred(id)  # Find predecessor of id
-        log_message(f'El resultado de buscar el predecesor del nodo {id} es el nodo {node.id}',func=self.find_succ)
+       # log_message(f'El resultado de buscar el predecesor del nodo {id} es el nodo {node.id}',func=self.find_succ)
         if node.id!= self.id:
-            log_message(f'Para el id {id } se entregó el nodo {node.id}',func=self.find_succ)
+          #  log_message(f'Para el id {id } se entregó el nodo {node.id}',func=self.find_succ)
             return node.succ
         else:
-            log_message(f'Para el id {id } se entregó Se entregó mi sucesor {self.succ.id}',func=self.find_succ)
+         #   log_message(f'Para el id {id } se entregó Se entregó mi sucesor {self.succ.id}',func=self.find_succ)
             return self.succ
         
             
@@ -411,7 +411,7 @@ class ChordNode:
             
         """
         # Comprobar que mi predecesor sea el predecesor de ello 
-        if self.pred and self._inbetween(id,self.pred.id,self.id):
+        if (self.pred and self._inbetween(id,self.pred.id,self.id)) :
             return self.pred
         
         node:ChordNodeReference = self
@@ -421,7 +421,7 @@ class ChordNode:
             
             i+=1
             
-            if node.id==id: return node.pred #Se el nodo que salio del finguer tab
+            if node.id==id: return node.pred # Es pq en el finguer se guardan sucesores de ids entonces si se pide el figuer mas cercano a ese nodo puede ser que devuelva el finguer con ese id
             
             if node.id==self.id:
                 node=self.closest_preceding_finger(id)
@@ -429,13 +429,15 @@ class ChordNode:
                 node = node.closest_preceding_finger(id)
                 
             if i>2*self.m: # Es pq se ha estancado entre yo y mi sucesor
-                log_message(f'Se va a buscar predecesor mas cercano en el finger del sucesor {self.succ.id} el id {id}',func=self.find_pred)
+               # log_message(f'Se va a buscar predecesor mas cercano en el finger del sucesor {self.succ.id} el id {id}',func=self.find_pred)
                 node=self.succ.closest_preceding_finger(id)
-                log_message(f'El nodo mas cercano del finger es {node.id} que se le mandó a preguntar al sucesor {self.succ.id} por el id {id}',func=self.find_pred)
+               # log_message(f'El nodo mas cercano del finger es {node.id} que se le mandó a preguntar al sucesor {self.succ.id} por el id {id}',func=self.find_pred)
                 
             
-            log_message(f'Se está buscando el nodo sucessor del id {id} se va por el nodo {node.id} iteracion {i}')
-            
+            #log_message(f'Se está buscando el nodo sucessor del id {id} se va por el nodo {node.id} iteracion {i}')
+            if i>4*self.m:
+                log_message(f'Se ha superado el maximo de busqueda del finger mas cercano al id {id} con i {i}',func=self.find_pred)
+                raise Exception(f'Se ha superado el maximo de busqueda del finger mas cercano al id {id} con i {i}')
             
         
         return node
@@ -454,9 +456,9 @@ class ChordNode:
         for i in range(self.m - 1, -1, -1):
             if self.finger[i].id ==self.id:continue # Dale continue pq no se puede seleccionar uno mismo en el finger table
             if self.finger[i] and self._inbetween(self.finger[i].id, self.id, id):
-                log_message(f'El nodo pred mas cercano por el finger al id {id} es el nodo {self.finger[i]}')
+               # log_message(f'El nodo pred mas cercano por el finger al id {id} es el nodo {self.finger[i]}')
                 return self.finger[i]
-        log_message(f'El más cercano soy yo del id {id}',func=ChordNode.closest_preceding_finger)
+       # log_message(f'El más cercano soy yo del id {id}',func=ChordNode.closest_preceding_finger)
         return self.ref
 
     # Method to join a Chord network using 'node' as an entry point
@@ -623,9 +625,9 @@ class ChordNode:
                 if self.next >= self.m:
                     self.next = 0
                 rr=(self.id + 2 ** self.next) % 2 ** self.m
-                log_message(f'Mandando a buscar el sucesor del nodo con id {rr}',func=self.fix_fingers)
+               # log_message(f'Mandando a buscar el sucesor del nodo con id {rr}',func=self.fix_fingers)
                 a=self.find_succ((self.id + 2 ** self.next) % 2 ** self.m)
-                log_message(f'El resultado de buscar el sucesor de {rr} es {a.id} ',func=self.fix_fingers)
+               # log_message(f'El resultado de buscar el sucesor de {rr} es {a.id} ',func=self.fix_fingers)
                 ok=False
                 for _ in range(3):
                     if a.check_predecessor(): # Chequear que el nodo esta vivo
@@ -813,9 +815,9 @@ class ChordNode:
                        # log_message(f'Me llego una peticion de buscar el predecesor de {id}',func=self.start_server)
                         data_resp = self.find_pred(id)
                     elif option == GET_SUCCESSOR:
-                        log_message(f'Se a mandando a pedir el sucesor del nodo',func=self.handle_request)
+                       # log_message(f'Se a mandando a pedir el sucesor del nodo',func=self.handle_request)
                         data_resp = self.succ if self.succ else self.ref
-                        log_message(f'Se a mandando a pedir el sucesor del nodo se a respondido {data_resp.id}',func=self.handle_request)
+                       # log_message(f'Se a mandando a pedir el sucesor del nodo se a respondido {data_resp.id}',func=self.handle_request)
                     elif option == GET_PREDECESSOR:
                         data_resp = self.pred if self.pred else self.ref
                     elif option == NOTIFY:
@@ -834,9 +836,9 @@ class ChordNode:
                         data_resp = self.ref
                     elif option == CLOSEST_PRECEDING_FINGER:
                         id = int(data[1])
-                        log_message(f'Se esta buscando el finger mas cercano para el id {id}',func=self.handle_request)
+                       # log_message(f'Se esta buscando el finger mas cercano para el id {id}',func=self.handle_request)
                         data_resp = self.closest_preceding_finger(id)
-                        log_message(f'El nodo que esta mas cerca al id { id} en la table de finger es {data_resp.id}',func=self.handle_request)
+                       # log_message(f'El nodo que esta mas cerca al id { id} en la table de finger es {data_resp.id}',func=self.handle_request)
                     elif option == JOIN:
                         ip = data[2]
                         #log_message(f'Recibido la peticion de JOIN desde ip {ip} con id: {getShaRepr(ip)} ')
