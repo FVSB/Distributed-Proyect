@@ -938,6 +938,7 @@ if __name__ == "__main__":
     print("Hello dht")
     #time.sleep(10)
     ip = socket.gethostbyname(socket.gethostname())
+    log_message(f' Mi ip es {ip}')
     node = ChordNode(ip,m=4)
     node.start_threads()#INiciar el nodo
     if len(sys.argv) >= 2:

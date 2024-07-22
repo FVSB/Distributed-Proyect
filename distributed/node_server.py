@@ -24,7 +24,7 @@ class STORENODE(Leader):
     def handle_request(self, data, option, a):
         if option==STORE_KEY_SERVER:
             
-        return super().handle_request(data, option, a)
+            return super().handle_request(data, option, a)
         
     
     def insert_document(self,document:Document):
