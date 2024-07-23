@@ -19,7 +19,7 @@ class MiTabla(Base):
     __tablename__ = 'docs'
 
     id = Column(Integer, primary_key=True)
-    titule = Column(Text)
+    title = Column(Text)
     document = Column(LargeBinary)
     node_id = Column(Integer)
 
@@ -33,13 +33,13 @@ Base.metadata.create_all(engine)
 def insert_document(document:Document,node_id:int):
     session=Session()
     serialized_data=pickle.dumps(document)
-    to_save=MiTabla(id=document.id,titule=document.titule,document=serialized_data,node_id=node_id)
+    to_save=MiTabla(id=document.id,title=document.title,document=serialized_data,node_id=node_id)
     session.add(to_save)
     session.commit()
     session.close()
     return True
     
-def get_document_by_id(id_document:int)->tuple[Document,int]:
+def get_document_by_id(id_document:int)->Document:
     """
     
 
@@ -47,13 +47,14 @@ def get_document_by_id(id_document:int)->tuple[Document,int]:
         id_document (int): _description_
 
     Returns:
-        tuple[Document,int]: Documento Nodo al  que le corresponde
+        Document: Documento 
+        El documento si existe, None si no existe
     """
     session=Session()
     doc=session.query(MiTabla).filter_by(id=id_document).first()
     data=None
     if doc:
-      data=pickle.loads(doc.document)# Tomar el documento como objeto
+      data:Document=pickle.loads(doc.document)# Tomar el documento como objeto
     session.close()
     return data
 

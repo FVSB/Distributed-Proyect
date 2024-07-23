@@ -115,7 +115,7 @@ if __name__ == '__main__':
     ip = socket.gethostbyname(socket.gethostname())
     node=NodeServer(ip,m=3)
     print(f'Mi ip {ip}')
-    
+    app.run(host=ip,port=node.port)
     node.start_threads()#Iniciar los nodos
     while True:
         pass
