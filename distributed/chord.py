@@ -7,6 +7,7 @@ import traceback
 import logging
 from helper.protocol_codes import *
 from helper.logguer import log_message
+from helper.utils import getShaRepr
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 import zmq
 import pickle
@@ -18,23 +19,7 @@ import pickle
 #    return int(hashlib.sha1(data.encode()).hexdigest(), 16)
 #
 
-def getShaRepr(data: str, max_value: int = 16):
-    # Genera el hash SHA-1 y obtén su representación en hexadecimal
-    hash_hex = hashlib.sha1(data.encode()).hexdigest()
     
-    # Convierte el hash hexadecimal a un entero
-    hash_int = int(hash_hex, 16)
-    
-    # Define un arreglo o lista con los valores del 0 al 16
-    values = list(range(max_value + 1))
-    
-    # Usa el hash como índice para seleccionar un valor del arreglo
-    # Asegúrate de que el índice esté dentro del rango válido
-    index = hash_int % len(values)
-    
-    # Devuelve el valor seleccionado
-    return values[index]    
-import asyncio
 # Class to reference a Chord node
 class ChordNodeReference:
     def __init__(self, ip: str, port: int = 8001):
@@ -182,7 +167,7 @@ class ChordNode:
         threading.Thread(target=self._search_successor,daemon=True,args=(JOIN,self.ref,)).start() # Enviar broadcast cuando no tengo sucesor
         threading.Thread(target=self._recive_broadcastt,daemon=True).start() # Recibir continuamente broadcast
         threading.Thread(target=self.stabilize_finger,daemon=True).start()
-        threading.Thread(target=self.search_test,daemon=True).start()
+       # threading.Thread(target=self.search_test,daemon=True).start()
     
     
     def __init__(self, ip: str, port: int = 8001, m: int = 160): #m=160

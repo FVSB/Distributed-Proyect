@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from helper.docs_class import  Document
 import pickle
 # Crear el motor de base de datos
-engine = create_engine('sqlite:///stable.db')
+engine = create_engine('sqlite:///app/database/database.db')
 
 # Crear una sesión
 Session = sessionmaker(bind=engine)
@@ -27,8 +27,6 @@ class MiTabla(Base):
 Base.metadata.create_all(engine)
 
 
-# Crear un objeto Documento
-#mi_documento = Document(100, "Mi título", b'\x01\x23\x45\x67\x89\xAB\xCD\xEF', 456)
 
 
 
@@ -92,12 +90,3 @@ def delete_document(document_id:int):
         response=True
     session.close()
 
-#insert_document(mi_documento,0)  
-        
-# Insertar el objeto en la tabla
-#nueva_fila = MiTabla(id=mi_documento.id, titule=mi_documento.titule, document=mi_documento.document, nodo_id=mi_documento.nodo_id)
-#session.add(nueva_fila)
-#session.commit()
-#
-## Cerrar la sesión
-#session.close()
