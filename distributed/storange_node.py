@@ -1,5 +1,4 @@
 from chord_lider import *
-from chord_lider import *
 from flask import Flask,request,jsonify,Response,abort,redirect, url_for
 import socket
 import jsonpickle
