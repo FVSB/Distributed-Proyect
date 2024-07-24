@@ -3,6 +3,7 @@ import hashlib
 from flask import Flask,request,jsonify,Response
 import socket
 import jsonpickle
+import pickle
 def getShaRepr(data: str, max_value: int = 16):
     """Hashea a SHA-1 los datos que entren y lo devuelve en un numero entre 1 y 16
 
@@ -38,3 +39,19 @@ def serialize_pyobj_to_json_file(obj)->Response:
 
 def deserialize_pyobj_from_json(data):
     return jsonpickle.decode(data)
+
+
+
+
+class Paquete:
+    def __init__(self, numero, bytes_datos, es_final):
+        self.numero = numero
+        self.bytes_datos = bytes_datos
+        self.es_final = es_final
+
+    def serialize(self):
+        return pickle.dumps(self)
+
+    @staticmethod
+    def deserialize(data)->'Paquete':
+        return pickle.loads(data)
