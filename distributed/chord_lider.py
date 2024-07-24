@@ -261,7 +261,6 @@ class Leader(ChordNode):
 
 if __name__ == "__main__":
     print("Hello from Lider node")
-    #time.sleep(10)
     ip = socket.gethostbyname(socket.gethostname())
     node = Leader(ip,m=3)
     node.start_threads()#Iniciar los nodos

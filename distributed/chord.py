@@ -896,9 +896,7 @@ class ChordNode:
                     conn.close()
     def start_server(self):
     
-        #context = zmq.Context()
-        #socket = context.socket(zmq.REP)
-        #socket.bind(f"tcp://{self.ip}:{self.port}")
+        
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             s.bind((self.ip, self.port))
@@ -921,14 +919,12 @@ class ChordNode:
 
 if __name__ == "__main__":
     print("Hello dht")
-    #time.sleep(10)
+
     ip = socket.gethostbyname(socket.gethostname())
     log_message(f' Mi ip es {ip}')
     node = ChordNode(ip,m=4)
-    node.start_threads()#INiciar el nodo
-    if len(sys.argv) >= 2:
-        other_ip = sys.argv[1]
-        #node.join(ChordNodeReference(other_ip, node.port))
-    
+    node.start_threads()#Iniciar el nodo
+
+        
     while True:
         pass
