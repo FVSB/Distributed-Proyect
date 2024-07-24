@@ -127,16 +127,16 @@ class StoreNode(Leader):
             
             # Verificar que yo soy el dueño de ese id
             key=getShaRepr(name)
-            
-            node=self.find_key_owner(key) 
-            
+            node=self.find_key_owner(key)
+            log_message(f'El nodo que debe tener el documento con nombre {name} y llave {key} es el nodo {node.id}')
             if node.id!=self.id:# Redirecciono
                 red_ip=self.url_from_ip(node.ip)
                 log_message(f'Se va a rederigir al nodo con id {node.id} para realizar la busqueda del archivo {name} con el start {start}',func=self.get_file_by_name)
                 url=self.add_end_point_to_url(red_ip,'get_document_by_name')
                 params={'name':name,'start':start}
                 url=f'{url}?{urlencode(params)}'
-                redirect(url)    
+                log_message(f'La url para redireccionar la peticion del documento {name} con llave {key} es {url}',func=self.get_file_by_name)
+                return redirect(url)    
             
            
 
