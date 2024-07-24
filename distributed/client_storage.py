@@ -6,7 +6,7 @@ url='http://172.31.0.8:8000/upload'
 
 
 document='393993939'
-name='archivo.txt'
+name='hola.txt'
 
 data=pickle.dumps((name,document))
 

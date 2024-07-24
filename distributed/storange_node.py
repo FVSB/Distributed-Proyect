@@ -1,13 +1,13 @@
 from chord_lider import *
 from chord_lider import *
-from flask import Flask,request,jsonify,Response,abort
+from flask import Flask,request,jsonify,Response,abort,redirect, url_for
 import socket
 import jsonpickle
 from helper.docs_class import *
 from helper.utils import *
 import helper.db as db
 from enum import Enum
-
+from urllib.parse import urlencode
 app = Flask(__name__)
 app.logger.disabled = True
 log = logging.getLogger('werkzeug')
@@ -45,7 +45,26 @@ class StoreNode(Leader):
         threading.Thread(target=lambda:app.run(host=self.ip,port=8000),daemon=True).start() # Iniciar servidor por el puerto 8000
         
         
+    def url_from_ip(self,ip:str):
+        """Dado una ip devuelve su url de flask correspondiente
 
+        Args:
+            ip (str): la ip
+
+        Raises:
+            Exception: Si la ip no es un str
+
+        Returns:
+            str: Devuelve la url para el nodo en flask que sale por el puerto 8000 
+        """
+        if not isinstance(ip,str):
+            log_message(f'La ip debe ser un str no un {type(ip)}, {ip}',func=self.url_from_ip)
+            raise Exception(f'El ip debe ser un str no un {type(ip)}, {ip}')
+        return f'http://{ip}:8000'
+    
+    def add_end_point_to_url(self,url:str,end_point:str)->str:
+        
+        return f'{url}/{end_point}'
     
     
    # @app.route('/upload', methods=['POST'])
@@ -67,7 +86,7 @@ class StoreNode(Leader):
         log_message(f'El archivo tiene nombre {name}',func=self.upload_file)
         hash_name=getShaRepr(name) # Hashear el nombre dado que esta sera la llave
 
-
+        
         # Mandar a guardar en la base de datos
 
         # Comprobar que no esta en la base de datos
@@ -92,7 +111,7 @@ class StoreNode(Leader):
     
     def get_file_by_name(self):
         """
-        Es el endpoint para devuelver un documento dado su nombre
+        Es el endpoint para devuelver un documento dado su nombre  el endpoint es "get_document_by_name"
         """
         addr_from=request.remote_addr # La direccion desde donde se envia la petición
         
@@ -100,16 +119,33 @@ class StoreNode(Leader):
         try:
             name = str(request.args.get('name', None))
             start = int(request.args.get('start', 1)) # Paquete por donde empezar la descarga
+            
             if name is None:# Debe enviar al menor un nombre de archivo
                 log_message(f'Se envio a pedir el documento {name}, desde el paquete {start}',func=self.get_file_by_name)
-                abort(409,'Se esperaba que el nombre no fuera None')
+                return jsonify({'message':'Se esperaba que el nombre no fuera None'},400)
+            
+            
+            # Verificar que yo soy el dueño de ese id
+            key=getShaRepr(name)
+            
+            node=self.find_key_owner(key) 
+            
+            if node.id!=self.id:# Redirecciono
+                red_ip=self.url_from_ip(node.ip)
+                log_message(f'Se va a rederigir al nodo con id {node.id} para realizar la busqueda del archivo {name} con el start {start}',func=self.get_file_by_name)
+                url=self.add_end_point_to_url(red_ip,'get_document_by_name')
+                params={'name':name,'start':start}
+                url=f'{url}?{urlencode(params)}'
+                redirect(url)    
+            
+           
 
             doc=db.get_document_by_id(getShaRepr(name))
 
             if doc is None: # Si es None es pq no está en la DB
                 log_message(f'El documento con nombre {name} no se encuentra en la base de datos',func=self.get_file_by_name)
-                #return jsonify({'message':f'El documento con nombre {name} no se encuentra en la base de datos'},409)
-                abort(404, description="File not found")
+                return jsonify({'message':f'El documento con nombre {name} no se encuentra en la base de datos'},409)
+                #abort(404, description="File not found")
 
             log_message(f'Se a recuperado exitosamente el documento {doc.title} dado que se habia pedido el {name} desde el paquete {start}',func=self.get_file_by_name)
 
