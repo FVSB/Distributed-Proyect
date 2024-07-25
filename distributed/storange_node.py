@@ -63,6 +63,8 @@ class StoreNode(Leader):
     def add_end_point_to_url(self, url: str, end_point: str) -> str:
 
         return f"{url}/{end_point}"
+    
+    
 
     def upload_file(self):
         addr_from = request.remote_addr
@@ -162,7 +164,7 @@ class StoreNode(Leader):
             log_message(
                 f"El nodo que debe tener el documento con nombre {name} y llave {key} es el nodo {node.id}"
             )
-            if node.id != self.id:  # Redirecciono
+            if node.id != self.id:  # Redirecciono al nodo que es dueño de la llave
                 red_ip = self.url_from_ip(node.ip)
                 log_message(
                     f"Se va a rederigir al nodo con id {node.id} para realizar la busqueda del archivo {name} con el start {start}",
@@ -190,7 +192,7 @@ class StoreNode(Leader):
                     },
                     409,
                 )
-                # abort(404, description="File not found")
+                
 
             log_message(
                 f"Se a recuperado exitosamente el documento {doc.title} dado que se habia pedido el {name} desde el paquete {start}",
