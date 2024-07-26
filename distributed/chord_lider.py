@@ -54,11 +54,12 @@ class Leader(ChordNode):
             self.Election_handler(node)
         elif op==ELECTION_WINNER:# Es que alguien gano las elecciones
             log_message(f'El ganador de las elecciones es {node.id} y el que yo creia como lider es {self.leader.id}',func=self.broadcast_handle)
-            self.Election_handler(node)       
+            #self.Election_handler(node)       Esto funcionaba antes
+            self.winner_handle(node)
                        
    
     
-    def show(self,time_:int=3):
+    def show(self,time_:int=3, print_final:bool=True):
         """
         Show my ip and id and mi predecessor and succesors ips and ids
         """
@@ -79,7 +80,11 @@ class Leader(ChordNode):
             
             log_message(f'El lider es {self.leader.id}',func=self.show)
             
-            log_message('*'*20,level='INFO')
+            log_message(f'La lista de sucesores es {self.succ_list}',func=self.show)
+            
+            log_message(f'Se puede confiar en la lista de sucesores {self.succ_list_ok}',func=self.show)
+            
+            if print_final:log_message('*'*20,level='INFO') # Printea el final en este hilo
             
             
             time.sleep(time_) # Se presenta cada 10 segundos
@@ -115,30 +120,102 @@ class Leader(ChordNode):
         threading.Thread(target=self._check_make_election,daemon=True).start()# Comprobar si debo hacer eleccion o no
         threading.Thread(target=self.check_election_valid,daemon=True).start()# Comprobar que estoy en eleccion
         threading.Thread(target=self.check_i_am_alone,daemon=True).start()#Chequea si estoy solo
-        threading.Thread(target=self.show,daemon=True).start()
+        #threading.Thread(target=self.show,daemon=True).start()
         threading.Thread(target=self.check_i_am_stable,daemon=True).start()# Chequeo constantemente si soy un nodo estable
+        threading.Thread(target=self.check_succ_list,daemon=True).start() # Chequeo de que la lista de sucesores este actualizada
         
     
             
     
-    def __init__(self, ip: str, port: int = 8001, m: int = 160):
+    def __init__(self, ip: str, port: int = 8001, m: int = 160,succ_lis_count:int=2):
         super().__init__(ip, port, m)
         self.leader_:ChordNodeReference=self.ref
         self.leader_lock:threading.RLock=threading.RLock()#Lock para conocer quien es el lider
         self.i_am_leader_:bool=True
         self.i_am_leader_lock:threading.RLock=threading.RLock()#Lock para conocer si soy el lider
         self.in_election_:bool=True
+        """
+        True si estoy en eleccion False si no lo estoy
+        """
         self.in_election_lock:threading.RLock=threading.RLock()
         self.i_am_alone_:bool=False # EMpiezo pensando que no para hacer descubrimiento
         self.i_am_alone_lock:threading.RLock=threading.RLock()
         self.is_stable_:bool=False
-        self.is_stable_lock:threading.RLock=threading.RLock()
-
         """Dicta si estoy estable la red o no"""
+        
+        self.is_stable_lock:threading.RLock=threading.RLock()
+        
+        self.succ_list_count_:int=succ_lis_count
+        """
+        Dice cuantos es la lista de sucesores
+        """
+        self.succ_list_:list[ChordNodeReference]=[self.ref]*self.succ_list_count_
+        """
+        Dice mi lista de sucesores para la posterior replicación
+        """
+        self.succ_list_lock:threading.RLock=threading.RLock()
+        
+        self.succ_list_ok_:bool=False 
+        """
+        Dice si está o no actualizado la lista de sucesores
+        """
+        self.succ_list_ok_lock:threading.RLock=threading.RLock()        
+        
+
         
         #Threads
     
         #self.start_threads()
+        
+    @property 
+    def succ_list_ok(self)->bool:
+        """
+        Retonar si está actualizado o no la lista de sucesores
+
+        Returns:
+            bool: _description_
+        """
+        with self.succ_list_ok_lock:
+            return self.succ_list_ok_
+        
+    @succ_list_ok.setter
+    def succ_list_ok(self,value:bool):
+        if not isinstance(value,bool):
+            raise Exception(f'Value debe de ser de tipo bool no de tipo: {type(value)} value: {value}' )
+        with self.succ_list_ok_lock:
+            self.succ_list_ok_=value
+        
+    @property 
+    def in_election(self)->bool:
+        """Retorna con seguridad entre hilos si se está o no en eleccion
+
+        Raises:
+         
+        Returns:
+            bool: _description_
+        """
+        with self.in_election_lock:
+            return self.in_election_
+        
+    @property 
+    def succ_list(self)->list[ChordNodeReference]:
+        """
+        Da la lista de sucesores en vista a la replicación
+
+        Returns:
+            list[ChordNodeReference]: _description_
+        """
+        with self.succ_list_lock:
+            return self.succ_list_ 
+        
+    @succ_list.setter
+    def succ_list(self,value:list[ChordNodeReference]):
+        if not isinstance(value,list) or not all(isinstance(item, ChordNodeReference) for item in value):
+            log_message(f'Value no es una lista de ChordNodeReference para la lista de succesores',func=self.succ_list)
+            raise Exception(f'Value no es una lista de ChordNodeReference para la lista de succesores')
+        with self.succ_list_lock:
+            self.succ_list_=value
+            
         
     @property
     def is_stable(self)->bool:
@@ -215,8 +292,33 @@ class Leader(ChordNode):
             except Exception as e:
                 log_message(f'Error chequeando si hay eleccion {e} \n {traceback.format_exc()}',func=self.check_election_valid)
                     
-        
-        
+    def check_succ_list(self,time_:int=1):
+        check=True # Dice si hay que chequear o no la lista de sucesores
+        while True:
+            time.sleep(time_)
+            try:
+
+                if self.in_election:
+                    check=True # Si estoy en eleccion cuando deje de estarlo tengo que chequear
+                    self.succ_list_ok=False # No se debe mirar en la lista de sucesores
+                
+                if  self.in_election or not check:# Si está en elecciones o no hay que chequear mejor que vuelva a preguntar
+                    continue 
+                
+                succ:ChordNodeReference=self.succ # Pongo primero a mi sucesor
+                succ_list:list[ChordNodeReference]=self.succ_list # Capto la anterior primero
+                for i in range(self.succ_list_count_): # Iterar por la cant de nodos que tenemos 
+                    succ_list[i]=succ
+                    succ=succ.succ # Ahora el sucesor es el sucesor de mi sucesor
+
+                if not self.in_election: #
+                    self.succ_list=succ_list
+                    self.succ_list_ok=True # Se puede volver a confiar en la lista de sucesores
+
+            except Exception as e:
+                log_message(f'Ocurrio un error actualizando la lista de sucesores {e} \n {traceback.format_exc()}',func=self.check_succ_list)  
+
+    
     def winner_handle(self,winner_node:ChordNodeReference):
         """Comprueba el ganador de lider 
             Si el lider ganador es menor que el que tenia propuesto lo acepto
@@ -237,6 +339,7 @@ class Leader(ChordNode):
         self.leader=winner_node
         with self.in_election_lock:
             self.in_election_=False # Ya no estoy en elecciones
+        
     def Election_handler(self,node_propose:ChordNodeReference):
         """
         Maneja las propuestas de ser el lider 
@@ -262,7 +365,7 @@ class Leader(ChordNode):
 if __name__ == "__main__":
     print("Hello from Lider node")
     ip = socket.gethostbyname(socket.gethostname())
-    node = Leader(ip,m=3)
+    node = Leader(ip,m=3,succ_lis_count=2)
     node.start_threads()#Iniciar los nodos
     while True:
         pass

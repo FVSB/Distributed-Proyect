@@ -28,6 +28,9 @@ class StoreNode(Leader):
         app.add_url_rule(
             "/get_document_by_name", view_func=self.get_file_by_name, methods=["GET"]
         )
+        
+        
+    
 
     def start_threads(self):
         """Inicia todos los hilos
@@ -132,6 +135,7 @@ class StoreNode(Leader):
                 ),
                 500,
             )
+    
 
     def get_file_by_name(self):
         """
@@ -232,7 +236,7 @@ class StoreNode(Leader):
                 f" A ocurrido un error {e} tratando de dar en el endpoint de devulver un archivo por nombre {traceback.format_exc()}",
                 func=self.get_file_by_name,
             )
-
+   
 
 if __name__ == "__main__":
     print("Hello from Storage node")
