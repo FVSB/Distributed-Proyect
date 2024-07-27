@@ -27,7 +27,9 @@ client = OpenAI(base_url="http://host.docker.internal:1234/v1", api_key="lm-stud
 def get_embedding(text, model="nomic-ai/nomic-embed-text-v1.5-GGUF"):
     text = text.replace("\n", " ")
     return client.embeddings.create(input=[text], model=model).data[0].embedding
-text="""
+
+
+text = """
 {Es de tipo .txt}
 Fine-Tuning Techniques: Fine-tuning involves extending the capabilities of language models by directly modifying their weights
 and/or architecture. This can be done efficiently without requiring
@@ -57,7 +59,11 @@ user questio
 
 # Ejemplo de uso
 embedding_string = np.array(get_embedding(text))  # Embedding del primer string
-embedding_query = np.array(get_embedding("{Es de tipo .txt}Tecnicas de fine tuning de modelos para chatbots y como se pueden construir las querys"))  # Embedding del segundo string
+embedding_query = np.array(
+    get_embedding(
+        "{Es de tipo .txt}Tecnicas de fine tuning de modelos para chatbots y como se pueden construir las querys"
+    )
+)  # Embedding del segundo string
 
 similitud = cosine_similarity(embedding_string, embedding_query)
 print(f"La similitud del coseno entre los embeddings es: {similitud}")
