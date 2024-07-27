@@ -32,6 +32,7 @@ class StoreNode(Leader):
         app.add_url_rule(
             "/get_document_by_name", view_func=self.get_file_by_name, methods=["GET"]
         )
+        app.add_url_rule("/update", view_func=self.update_file, methods=["POST"]) # Actualizar
         app.add_url_rule(
             "/save_document_like_replica",
             view_func=self.save_document_like_replica,
@@ -202,8 +203,11 @@ class StoreNode(Leader):
                 doc, self._delete_document_replica_if_no_check_response
             )  # Añadir al gestor de eventos por si no es persistente que lo elimine
 
-            log_message(f'Listo para enviar respuesta al nodo {addr_from} del documento {doc_id} con guid {guid}',func=self.save_document_like_replica)
-            
+            log_message(
+                f"Listo para enviar respuesta al nodo {addr_from} del documento {doc_id} con guid {guid}",
+                func=self.save_document_like_replica,
+            )
+
             return Response(
                 pickle.dumps((SAVE_DOC_WAITING_OK, guid)),
                 status=HTTPStatus.OK,
@@ -318,7 +322,9 @@ class StoreNode(Leader):
             tuple[list[str],bool]: Devuelve una lista con los guids de cada archivo en cada replica y el bool es si fue exitosa en todas
         """
         try:
-            log_message(f'Se va a enviar a guardar el documento {document.id} en las replicas {succ_list}')
+            log_message(
+                f"Se va a enviar a guardar el documento {document.id} en las replicas {succ_list}"
+            )
             lis: list[str] = []
             for replica in succ_list:
                 if replica.id == self.id:
@@ -340,7 +346,7 @@ class StoreNode(Leader):
                     f"Se guardo exitosamente el documento {document.id} en la replica {replica.id}",
                     func=self.save_in_my_replicas,
                 )
-                
+
                 data = response.content  # Tomar la respuesta
                 code, guid = pickle.loads(data)  # Tomar los datos
                 log_message(
@@ -480,7 +486,10 @@ class StoreNode(Leader):
 
         if doc_to_save is None:  # Es que no se envió nada
             # Retornar error de no file
-            return jsonify({"message": 'Bad Request: Parámetro "param" requerido'}), 400
+            return (
+                jsonify({"message": 'Bad Request: Parámetro "param" requerido'}),
+                HTTPStatus.BAD_REQUEST,
+            )
 
         name, doc_to_save = pickle.loads(doc_to_save)
         log_message(f"La data es {name}{doc_to_save}", func=self.upload_file)
@@ -515,7 +524,7 @@ class StoreNode(Leader):
                             "message": f"El documento con nombre {name} se guardo correctamente"
                         }
                     ),
-                    200,
+                    HTTPStatus.OK,
                 )
 
         except Exception as e:
@@ -528,7 +537,7 @@ class StoreNode(Leader):
                 jsonify(
                     {"message": f"Ocurrio un problema guardando el documento {name}"}
                 ),
-                500,
+                HTTPStatus.INTERNAL_SERVER_ERROR,
             )
 
     # EndPoint get_file_by_name
@@ -629,6 +638,64 @@ class StoreNode(Leader):
             log_message(
                 f" A ocurrido un error {e} tratando de dar en el endpoint de devulver un archivo por nombre {traceback.format_exc()}",
                 func=self.get_file_by_name,
+            )
+
+    def update_file(self):
+        addr_from = request.remote_addr
+        log_message(
+            f"Se a mandado a actualizar un archivo que envio el addr: {addr_from} ",
+            func=self.upload_file,
+        )
+        # Nombre del archivo , str con el archivo
+        doc_to_save = self.get_data_from_request()  # Tomar los bytes de la data
+
+        if doc_to_save is None:  # Es que no se envió nada
+            # Retornar error de no file
+            return (
+                jsonify({"message": 'Bad Request: Parámetro "param" requerido'}),
+                HTTPStatus.BAD_REQUEST,
+            )
+
+        name, doc_to_save = pickle.loads(doc_to_save)
+        log_message(f"La data es {name} data:{doc_to_save}", func=self.upload_file)
+
+        log_message(f"El archivo tiene nombre {name}", func=self.upload_file)
+        hash_name: int = getShaRepr(
+            name
+        )  # Hashear el nombre dado que esta sera la llave
+
+        # Comprobar que está en la base de datos
+        if not db.has_document(hash_name):  # Mandar error de que no se envió nada
+            return (
+                jsonify(
+                    {
+                        "message": f"El archivo {name} no se encuentra en la base de datos"
+                    }
+                ),
+                HTTPStatus.BAD_REQUEST,
+            )
+
+        # Actualizar
+        log_message(
+            f"Se va a tratar de actualizar el documento {name}", func=self.update_file
+        )
+        try:
+            db.update_document(hash_name, Document(name, doc_to_save), self.id)
+            log_message(f"Se actualizó el documento {name}", func=self.update_file)
+            return (
+                jsonify({"message": f"Se actualizó correctamente el documento {name}"}),
+                HTTPStatus.OK,
+            )
+        except Exception as e:
+            log_message(
+                f"Hubo un problema tratanto de actualizar el archivo {name} Error:{e} \n {traceback.format_exc()}",
+                func=self.update_file,
+            )
+            return (
+                jsonify(
+                    {"message": f"Ocurrio un problema actualizando el documento {name}"}
+                ),
+                HTTPStatus.INTERNAL_SERVER_ERROR,
             )
 
 

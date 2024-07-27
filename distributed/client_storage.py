@@ -1,11 +1,11 @@
 import requests
 import pickle
 
-url='http://192.168.16.3:8000/upload'
+url='http://172.30.0.7:8000/update'
 
 
 
-document='393993939'
+document='Cambie'
 name='hola.txt'
 
 data=pickle.dumps((name,document))
