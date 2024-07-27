@@ -8,6 +8,7 @@ import helper.db as db
 from enum import Enum
 from urllib.parse import urlencode
 import requests as rq
+
 app = Flask(__name__)
 app.logger.disabled = (
     True  # Desactivar el  logguer de flask para que no haya conflicto con el mio
@@ -32,7 +33,7 @@ class StoreNode(Leader):
             "/save_document_like_replica",
             view_func=self.save_document_like_replica,
             methods=["POST"],
-        ) # Endpoint para guardar los documentos en las replicas
+        )  # Endpoint para guardar los documentos en las replicas
 
     def start_threads(self):
         """Inicia todos los hilos
@@ -45,6 +46,12 @@ class StoreNode(Leader):
         threading.Thread(
             target=lambda: app.run(host=self.ip, port=8000), daemon=True
         ).start()  # Iniciar servidor por el puerto 8000
+
+        #################################
+        #                               #
+        #            UTILS              #
+        #                               #
+        #################################
 
     def url_from_ip(self, ip: str):
         """Dado una ip devuelve su url de flask correspondiente
@@ -69,73 +76,16 @@ class StoreNode(Leader):
 
         return f"{url}/{end_point}"
 
-    def save_in_my_replicas(self, document: Document) -> bool:
-        try:
-            for replica in self.succ_list:
-                if replica.id==self.id:continue # Nunca me mando a guardar como replica a mi mismo
-                url = self.url_from_ip(replica.ip)
-                url = self.add_end_point_to_url(url, "save_document_like_replica")
-                data=pickle.dumps((self.ref,document))
-                log_message(f'Se va a enviar a guarda en la replica {replica.id} el documento {document.id} url:{url}',func=self.save_in_my_replicas)
-                file={'file':data}
-                response = rq.post(url, files=file)
-                if response.status_code !=200:
-                    log_message(f'Enviando a guardadar a la replica {replica.id} el archivo {document.id} no se ha recibido 200 se recibio {response.status_code}')
-                    return False
-                log_message(f'Se guardo exitosamente el documento {document.id} en la replica {node.id}',func=self.save_in_my_replicas)
-                
-                
-                
-            log_message(f'Se guardó satisfactoriamente en mi replicas el documento {document.id}',func=self.save_in_my_replicas)
-            return True
-        except Exception as e: 
-            log_message(f'Ocurrio un error guardando en las replicas el documento {document.id} Error:{e} \n {traceback.format_exc()} ',func=self.save_in_my_replicas)
-            return False
-    def save_document(self, document: Document) -> bool:
-        """
-         Realiza la transacción atomica de guardar un documento en los nodos replica
-
-        Args:
-            document (Document): _description_
-
-        Returns:
-            bool: _description_
-        """
-        name = document.title
-        # Primero llamar a mis nodos replicas para que traten de guardar la información
-        log_message(f'Llamando a mis replicas para que me guarden el archivo {document.id}',func=self.save_document)
-        if not self.save_in_my_replicas(document):# Chequear que se haya guardado en mis replicas
-            log_message(f'No se pudo guardar el documento {document.id} las replicas ', func=self.save_document)
-            return False
-        log_message(f'El documento {document.id}, titulo {document.title} se guardó exitosamente en las replicas',func=self.save_document)
-            
-        db.insert_document(
-            document, self.id
-        )  # Se trata de insertar un documento en la base de datos
-        log_message(
-            f"El archivo con nombre {name} se a guardado correctamente en la base de datos",
-            func=self.save_document,
-        )
-        return True
-
-    def get_data_from_request(self) -> bytes:
-        """
-            Retorna los bytes con lo que envio el cliente
-
-        Returns:
-            bytes: _description_
-        """
-        # El cliente manda (Nombre archivo, archivo)
-        file = request.files["file"]
-
-        data = file.stream.read()
-
-        return data
+        ###############################
+        #                             #
+        #       Save like replica     #
+        #                             #
+        ###############################
 
     # EndPoint SaveDocumentReplica
     def save_document_like_replica(self):
         """
-        End Point para guardar documento siendo una réplica 
+        End Point para guardar documento siendo una réplica
         """
         addr_from = request.remote_addr
         log_message(
@@ -189,6 +139,119 @@ class StoreNode(Leader):
             )
             return jsonify({"code": SAVE_DOC_WAITING_OK}), 200
 
+            ##################################
+            #                                #
+            #       I´m owner of the data    #
+            #                                #
+            ##################################
+
+    def get_data_from_request(self) -> bytes:
+        """
+            Retorna los bytes con lo que envio el cliente
+
+        Returns:
+            bytes: _description_
+        """
+        # El cliente manda (Nombre archivo, archivo)
+        file = request.files["file"]
+
+        data = file.stream.read()
+
+        return data
+
+    def save_in_my_replicas(
+        self, document: Document, succ_list: list[ChordNodeReference]
+    ) -> bool:
+        """
+        Manda a guardar en las replicas el documento
+
+        Args:
+            document (Document): _description_
+            succ_list (list[ChordNodeReference]): _description_
+
+        Returns:
+            bool: _description_
+        """
+        try:
+            for replica in succ_list:
+                if replica.id == self.id:
+                    continue  # Nunca me mando a guardar como replica a mi mismo
+                url = self.url_from_ip(replica.ip)
+                url = self.add_end_point_to_url(url, "save_document_like_replica")
+                data = pickle.dumps((self.ref, document))
+                log_message(
+                    f"Se va a enviar a guarda en la replica {replica.id} el documento {document.id} url:{url}",
+                    func=self.save_in_my_replicas,
+                )
+                file = {"file": data}
+                response = rq.post(url, files=file)
+                if response.status_code != 200:
+                    log_message(
+                        f"Enviando a guardadar a la replica {replica.id} el archivo {document.id} no se ha recibido 200 se recibio {response.status_code}"
+                    )
+                    return False
+                log_message(
+                    f"Se guardo exitosamente el documento {document.id} en la replica {node.id}",
+                    func=self.save_in_my_replicas,
+                )
+
+            log_message(
+                f"Se guardó satisfactoriamente en mi replicas el documento {document.id}",
+                func=self.save_in_my_replicas,
+            )
+            return True
+        except Exception as e:
+            log_message(
+                f"Ocurrio un error guardando en las replicas el documento {document.id} Error:{e} \n {traceback.format_exc()} ",
+                func=self.save_in_my_replicas,
+            )
+            return False
+
+    def save_document(self, document: Document) -> bool:
+        """
+         Realiza la transacción atomica de guardar un documento en los nodos replica
+
+        Args:
+            document (Document): _description_
+
+        Returns:
+            bool: _description_
+        """
+
+        name = document.title
+
+        succ_list = self.succ_list
+
+        # Primero llamar a mis nodos replicas para que traten de guardar la información
+        log_message(
+            f"Llamando a mis replicas para que me guarden el archivo {document.id}",
+            func=self.save_document,
+        )
+        if not self.save_in_my_replicas(
+            document, succ_list
+        ):  # Chequear que se haya guardado en mis replicas
+            log_message(
+                f"No se pudo guardar el documento {document.id} las replicas ",
+                func=self.save_document,
+            )
+            return False
+        log_message(
+            f"El documento {document.id}, titulo {document.title} se guardó exitosamente en las replicas",
+            func=self.save_document,
+        )
+
+        # Insertar acá el documento
+        db.insert_document(
+            document, self.id
+        )  # Se trata de insertar un documento en la base de datos
+        log_message(
+            f"El archivo con nombre {name} se a guardado correctamente en la base de datos",
+            func=self.save_document,
+        )
+        # Mandar a confirmar a las replicas
+
+        return True
+
     # Endpoint upload_file
     def upload_file(self):
         addr_from = request.remote_addr
@@ -212,7 +275,7 @@ class StoreNode(Leader):
         # Mandar a guardar en la base de datos
 
         # Comprobar que no esta en la base de datos
-       
+
         doc = db.get_document_by_id(hash_name)
         log_message(f"El tipo de doc es {type(doc)}", func=self.upload_file)
         if doc is not None:
@@ -230,26 +293,15 @@ class StoreNode(Leader):
         # Guardar en la base de datos
         try:
             if self.save_document(Document(name, doc_to_save)):
-                return ( jsonify(
-                             {
-                                 "message": f"El documento con nombre {name} se guardo correctamente"
-                             }
-                         ),
-                         200,)
+                return (
+                    jsonify(
+                        {
+                            "message": f"El documento con nombre {name} se guardo correctamente"
+                        }
+                    ),
+                    200,
+                )
 
-            # try:
-            #     if self.save_document(
-            #         Document(name, doc_to_save)
-            #     ):  # funcion que hace la transaccion atómica
-            #         (
-            #             jsonify(
-            #                 {
-            #                     "message": f"El documento con nombre {name} se guardo correctamente"
-            #                 }
-            #             ),
-            #             200,
-            #         )
-        
         except Exception as e:
             log_message(
                 f" Hubo un error tratando de guardar el archivo {name} \n {e} \n {traceback.format_exc()}",

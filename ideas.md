@@ -40,3 +40,13 @@ En caso de Entrada,Salida (Tb Cubre que se parta la red y resincronize):
          B-->A;
 
     ```
+
+
+
+
+## TODO:
+- Se tiene que en el momento de mandar a salvar en las replicas asegurarse que es estable la lista de sucesores está quitada por temas de comodidad de tiempo.
+
+- añadir la capa de seguridad que durante la inserccion en todo momento revise que no se está en eleccion 
+
+- Hay que hacer el tercer check y añadir el simulador 
