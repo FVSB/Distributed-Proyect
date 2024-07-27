@@ -1,8 +1,9 @@
-from sqlalchemy import create_engine, Column, Integer, Text, LargeBinary,Boolean,update
+from sqlalchemy import create_engine, Column, Integer, Text, LargeBinary,Boolean,update,func,DateTime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from helper.docs_class import  Document
 from helper.logguer import log_message
+import datetime
 import pickle
 # Crear el motor de base de datos
 engine = create_engine('sqlite:///app/database/database.db')
@@ -29,6 +30,8 @@ class Docs(Base):
     """
     Si es persistente o no
     """
+    
+    last_update=Column(DateTime, default=func.now(), onupdate=func.now())
     
     node_id = Column(Integer)
     
@@ -67,11 +70,20 @@ def insert_document(document:Document,node_id:int,persistent:bool=False)->bool:
     
     
 def has_document(id_document:int)->bool:
+    """
+    Devuelve True o False si el documento esta o no en la DB
+
+    Args:
+        id_document (int): _description_
+
+    Returns:
+        bool: _description_
+    """
     try:
         session=Session()
         doc=session.query(Docs).filter_by(id=id_document).first()
         session.close()
-        return doc is None
+        return doc is not None
     except Exception as e:
         log_message(f'Ocurrion un problema preguntando si existe el documento con id {id_document} {e}',func=has_document)
         
@@ -200,12 +212,26 @@ def get_all_nodes_i_save()->set[int]:
 
 
 
-def update_document(id_document:int,new_data:Document):
+def update_document(id_document:int,new_data:Document,node_id:int=-1):
+    """
+    Dado el id de un documento cambia el campo document por el que se le pasa
+    si el node_id>-1 tb se actualiza el nodo del que es dueño
+
+    Args:
+        id_document (int): _description_
+        new_data (Document): _description_
+        node_id (int, optional): _description_. Defaults to -1.
+
+    Returns:
+        _type_: _description_
+    """
     session=Session()
     doc=session.query(Docs).filter_by(id=id_document).first()
     response=False
     if doc:
         doc.document=pickle.dumps(new_data)
+        if node_id>-1:# Es que se quiere actualizar tb el nodo que es dueño ademas de la data
+            doc.node_id=node_id
         session.commit()
 
         response=True
@@ -213,12 +239,11 @@ def update_document(id_document:int,new_data:Document):
     return response
 
 def delete_document(document_id:int):
-    session=Session()
-    doc=session.query(Docs).filter_by(id=document_id).first()
-    response=False
-    if doc:
-        session.delete(doc)
-        session.commit()
-        response=True
-    session.close()
+    """
+    Se elimina el documento, pero no se elimina que este está eliminado
+
+    Args:
+        document_id (int): _description_
+    """
+    return update_document(document_id,None)
 

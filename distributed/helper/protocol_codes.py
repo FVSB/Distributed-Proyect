@@ -21,5 +21,6 @@ STORE_KEY_SERVER=16
 
 
 
-
+# Sobre los protocolos con respecto a los mensajes dueño data, replica
+SAVE_DOC_WAITING_OK=17
 
