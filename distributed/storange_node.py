@@ -239,7 +239,7 @@ class StoreNode(Leader):
             )
             return Response(
                 f"Se hizo persistente con exito el documento {document_id} con guid {guid}",
-                status=HTTPStatus.ok,
+                status=HTTPStatus.OK,
             )
 
         except Exception as e:
