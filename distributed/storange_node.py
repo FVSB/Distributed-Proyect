@@ -9,6 +9,7 @@ import helper.db as db
 from enum import Enum
 from urllib.parse import urlencode
 import requests as rq
+from http import HTTPStatus
 
 
 app = Flask(__name__)
@@ -36,6 +37,12 @@ class StoreNode(Leader):
             view_func=self.save_document_like_replica,
             methods=["POST"],
         )  # Endpoint para guardar los documentos en las replicas
+
+        app.add_url_rule(
+            "/persist_insert_document",
+            view_func=self.persist_insert_document,
+            methods=["POST"],
+        )  # Esto es para recibir la confirmación que se haga persistente
 
     def start_threads(self):
         """Inicia todos los hilos
@@ -169,11 +176,15 @@ class StoreNode(Leader):
                     f"Se realizo el cambio del documento {doc.id} con titulo {doc.title} del que es dueño el nodo {node.id}",
                     func=self.save_document_like_replica,
                 )
-                self.data_replicate_gestor.add_document_to_the_queue(
+                guid = self.data_replicate_gestor.add_document_to_the_queue(
                     doc, self._delete_document_replica_if_no_check_response
-                )# Añadir al gestor de eventos por si no es persistente que lo elimine
+                )  # Añadir al gestor de eventos por si no es persistente que lo elimine
 
-                return jsonify({"code": SAVE_DOC_WAITING_OK}), 200
+                # return jsonify({"code": SAVE_DOC_WAITING_OK,'guid':guid}), 200
+                return Response(
+                    pickle.dumps((SAVE_DOC_WAITING_OK, guid)),
+                    status=HTTPStatus.OK,
+                )
             else:
                 log_message(
                     f"Hubo un error tratando de actualizar el documento con id {doc_id} de dueño {node.id}",
@@ -187,16 +198,61 @@ class StoreNode(Leader):
                 f"Se inserto correctamente el documento {doc.id} que es dueño el nodo {node.id}",
                 func=self.save_document_like_replica,
             )
-            self.data_replicate_gestor.add_document_to_the_queue(
+            guid = self.data_replicate_gestor.add_document_to_the_queue(
                 doc, self._delete_document_replica_if_no_check_response
-            )# Añadir al gestor de eventos por si no es persistente que lo elimine
-            return jsonify({"code": SAVE_DOC_WAITING_OK}), 200
+            )  # Añadir al gestor de eventos por si no es persistente que lo elimine
 
-            ##################################
-            #                                #
-            #       I´m owner of the data    #
-            #                                #
-            ##################################
+            log_message(f'Listo para enviar respuesta al nodo {addr_from} del documento {doc_id} con guid {guid}',func=self.save_document_like_replica)
+            
+            return Response(
+                pickle.dumps((SAVE_DOC_WAITING_OK, guid)),
+                status=HTTPStatus.OK,
+            )
+
+    def persist_insert_document(self):
+        """Endpoint post para que confirmen si se realizo exitosamente la inserccion siendo yo una replica"""
+        try:
+            addr_from = request.remote_addr
+            log_message(
+                f"Se a mandado a confirmar la insercción de un archivo como replica que envio el addr: {addr_from} ",
+                func=self.save_document_like_replica,
+            )
+            data = self.get_data_from_request()
+            document_id, guid = pickle.loads(data)  # La data recibida
+            # Chequear que el documento está en nuestro sistema
+            if not db.has_document(
+                document_id
+            ):  # Si no esta en la db se envia un 404 que no está en la base de datos
+                log_message(
+                    f"El documento {document_id} no se encuentra en la base de datos por tanto no se puede confirmar nada de el",
+                    func=self.persist_insert_document,
+                )
+                return Response(
+                    "No esta el documento en la base de datos",
+                    status=HTTPStatus.NOT_FOUND,
+                )
+
+            db.persist_document(document_id)
+            log_message(
+                f"Se pudo hacer persistente el documento guardado como replica {document_id} con guid {guid} al nodo {addr_from}",
+                func=self.persist_insert_document,
+            )
+            return Response(
+                f"Se hizo persistente con exito el documento {document_id} con guid {guid}",
+                status=HTTPStatus.ok,
+            )
+
+        except Exception as e:
+            log_message(
+                f"Hubo un error tratando de hacer persistente un documento siendo yo la replica del documento {document_id} con guid {guid} la informacion viene de {addr_from} Error:{e} \n {traceback.format_exc()}",
+                func=self.persist_insert_document,
+            )
+
+        ##################################
+        #                                #
+        #       I´m owner of the data    #
+        #                                #
+        ##################################
 
     def get_data_from_request(self) -> bytes:
         """
@@ -212,9 +268,45 @@ class StoreNode(Leader):
 
         return data
 
+    def send_file_to_node(
+        self, node: ChordNodeReference, sub_url: str, data: bytes
+    ) -> rq.Response:
+        """
+         Dado un nodo la suburl del metodo post a enviar y los bytes envia una informaión a un nodo
+
+        Args:
+            node (ChordNodeReference): _description_
+            sub_url (str): _description_
+            data (bytes): _description_
+
+        Raises:
+            Exception: _description_
+
+        Returns:
+            Response: _description_
+        """
+        try:
+
+            url = self.url_from_ip(node.ip)
+            url = self.add_end_point_to_url(url, sub_url)
+
+            log_message(
+                f"Se va a enviar un mensaje a nodo {node.id} url:{url}",
+                func=self.send_file_to_node,
+            )
+            file = {"file": data}
+            response = rq.post(url, files=file)
+            return response
+        except Exception as e:
+            log_message(
+                f"Hubo una exepción enviando un mensaje al nodo {node.id} con la url {url} Error:{e} \n {traceback.format_exc()}",
+                func=self.send_file_to_node,
+            )
+            raise Exception(e)
+
     def save_in_my_replicas(
         self, document: Document, succ_list: list[ChordNodeReference]
-    ) -> bool:
+    ) -> tuple[list[str], bool]:
         """
         Manda a guardar en las replicas el documento
 
@@ -223,42 +315,102 @@ class StoreNode(Leader):
             succ_list (list[ChordNodeReference]): _description_
 
         Returns:
-            bool: _description_
+            tuple[list[str],bool]: Devuelve una lista con los guids de cada archivo en cada replica y el bool es si fue exitosa en todas
         """
         try:
+            log_message(f'Se va a enviar a guardar el documento {document.id} en las replicas {succ_list}')
+            lis: list[str] = []
             for replica in succ_list:
                 if replica.id == self.id:
                     continue  # Nunca me mando a guardar como replica a mi mismo
-                url = self.url_from_ip(replica.ip)
-                url = self.add_end_point_to_url(url, "save_document_like_replica")
                 data = pickle.dumps((self.ref, document))
                 log_message(
-                    f"Se va a enviar a guarda en la replica {replica.id} el documento {document.id} url:{url}",
+                    f"Se va a enviar a guarda en la replica {replica.id} el documento {document.id} a guardar el documento",
                     func=self.save_in_my_replicas,
                 )
-                file = {"file": data}
-                response = rq.post(url, files=file)
+                response = self.send_file_to_node(
+                    replica, "save_document_like_replica", data
+                )  # Enviar data
                 if response.status_code != 200:
                     log_message(
                         f"Enviando a guardadar a la replica {replica.id} el archivo {document.id} no se ha recibido 200 se recibio {response.status_code}"
                     )
                     return False
                 log_message(
-                    f"Se guardo exitosamente el documento {document.id} en la replica {node.id}",
+                    f"Se guardo exitosamente el documento {document.id} en la replica {replica.id}",
                     func=self.save_in_my_replicas,
                 )
-
+                
+                data = response.content  # Tomar la respuesta
+                code, guid = pickle.loads(data)  # Tomar los datos
+                log_message(
+                    f"Guardado el archivo {document.id} en la replica {replica.id} con guid {guid}",
+                    func=self.save_in_my_replicas,
+                )
+                lis.append(guid)
             log_message(
                 f"Se guardó satisfactoriamente en mi replicas el documento {document.id}",
                 func=self.save_in_my_replicas,
             )
-            return True
+            return (lis, True)
         except Exception as e:
             log_message(
                 f"Ocurrio un error guardando en las replicas el documento {document.id} Error:{e} \n {traceback.format_exc()} ",
                 func=self.save_in_my_replicas,
             )
             return False
+
+    def confirmation_insert_in_my_replicas(
+        self,
+        replicas_lis: list[ChordNodeReference],
+        guid_list: list[str],
+        document_id: int,
+    ) -> list[ChordNodeReference]:
+        """
+        Confirma que se insertó correctamente el documento, confirma a las replicas
+        devuelve una lista con las replicas que confirmaron que estuvo todo ok
+
+        Args:
+            replicas_lis (list[ChordNodeReference]): _description_
+            guid_list (list[str]): _description_
+            document_id (int): _description_
+
+        Returns:
+            list[ChordNodeReference]: _description_
+        """
+
+        lis: list[ChordNodeReference] = []
+        try:
+            for replica, guid in zip(replicas_lis, guid_list):
+                try:
+                    log_message(
+                        f"Se va a  mandar a confirmar en las replica {replica.id} el documento {document_id} con guid {guid}"
+                    )
+                    response = self.send_file_to_node(
+                        replica,
+                        "persist_insert_document",
+                        pickle.dumps((document_id, guid)),
+                    )
+                    if response.status_code != 200:
+                        log_message(
+                            f"Ocurrio un error tratando de aceptar en la replica {replica.id} el documento {document_id} con guid {guid}",
+                            func=self.confirmation_insert_in_my_replicas,
+                        )
+                    else:  # Si se completo exitosamente añadir a la lista de exitoso
+                        lis.append(replica)
+                except Exception as e:
+                    log_message(
+                        f"Ocurrio un problema enviando confirmacion del documento {document_id} con guid {guid} a la replica {replica.id}",
+                        func=self.confirmation_insert_in_my_replicas,
+                    )
+
+        except Exception as e:
+            log_message(
+                f"Ocurrio un problema mandando a confirmar la inserccion del documento {document_id} ",
+                func=self.confirmation_insert_in_my_replicas,
+            )
+
+        return lis
 
     def save_document(self, document: Document) -> bool:
         """
@@ -280,9 +432,12 @@ class StoreNode(Leader):
             f"Llamando a mis replicas para que me guarden el archivo {document.id}",
             func=self.save_document,
         )
-        if not self.save_in_my_replicas(
+
+        lis_guid, ok_ = self.save_in_my_replicas(
             document, succ_list
-        ):  # Chequear que se haya guardado en mis replicas
+        )  # Lista con guid de las replicas para confirmar además del bool de si se completó todo con éxito
+
+        if not ok_:  # Chequear que se haya guardado en mis replicas
             log_message(
                 f"No se pudo guardar el documento {document.id} las replicas ",
                 func=self.save_document,
@@ -295,13 +450,21 @@ class StoreNode(Leader):
 
         # Insertar acá el documento
         db.insert_document(
-            document, self.id
-        )  # Se trata de insertar un documento en la base de datos
+            document, self.id, True
+        )  # Se trata de insertar un documento en la base de datos Ademas se hace persistente
         log_message(
             f"El archivo con nombre {name} se a guardado correctamente en la base de datos",
             func=self.save_document,
         )
         # Mandar a confirmar a las replicas
+        lis_ok_replicaton = self.confirmation_insert_in_my_replicas(
+            succ_list, lis_guid, document.id
+        )
+
+        log_message(
+            f"Se guardó exitosamente el archivo {document.id} en este nodo {self.id}y en las replicas {lis_ok_replicaton}",
+            func=self.save_document,
+        )
 
         return True
 

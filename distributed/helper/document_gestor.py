@@ -173,7 +173,7 @@ class DataReplicatedGestor:
                 )
                 item.execute()  # Ejecutar el evento
                 log_message(
-                    f"Se ejecuto el evento de contrato {item.id} en el tiempo {self.time_now } con guid {item.guid}",
+                    f"Se ejecuto el evento de contrato {item.document_id} en el tiempo {self.time_now } con guid {item.guid}",
                     func=self.pop_from_heap_and_execute,
                 )
             return lis
