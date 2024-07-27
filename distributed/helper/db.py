@@ -247,3 +247,21 @@ def delete_document(document_id:int):
     """
     return update_document(document_id,None)
 
+
+def delete_document_all(document_id:int):
+    """
+    Se elimina toda la fila del documento en cuestion
+
+    Args:
+        document_id (int): _description_
+    """
+    session = Session()
+    doc = session.query(Docs).filter_by(id=document_id).first()
+    response = False
+    if doc:
+        session.delete(doc)
+        session.commit()
+        response = True
+    session.close()
+    return response
+        

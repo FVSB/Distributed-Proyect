@@ -4,6 +4,8 @@ from flask import Flask,request,jsonify,Response
 import socket
 import jsonpickle
 import pickle
+import uuid
+
 def getShaRepr(data: str, max_value: int = 16):
     """Hashea a SHA-1 los datos que entren y lo devuelve en un numero entre 1 y 16
 
@@ -31,6 +33,21 @@ def getShaRepr(data: str, max_value: int = 16):
     return values[index] 
 
 
+def get_guid()->str:
+    """
+    Genera un guid aleatorio
+
+    Returns:
+        str: _description_
+    """
+    # Genera un GUID aleatorio
+    guid = uuid.uuid4()
+
+    # Convierte el GUID a string
+    guid_str = str(guid)
+
+    return guid_str
+    
 
 
 def serialize_pyobj_to_json_file(obj)->Response:

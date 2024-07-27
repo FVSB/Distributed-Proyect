@@ -4,10 +4,12 @@ import socket
 import jsonpickle
 from helper.docs_class import *
 from helper.utils import *
+from helper.document_gestor import DataReplicatedGestor
 import helper.db as db
 from enum import Enum
 from urllib.parse import urlencode
 import requests as rq
+
 
 app = Flask(__name__)
 app.logger.disabled = (
@@ -20,7 +22,7 @@ log.disabled = True  # Desactivar los otros posibles logguers que no sea el mio
 class StoreNode(Leader):
     def __init__(self, ip: str, port: int = 8001, m: int = 160):
         super().__init__(ip, port, m)
-
+        self.data_replicate_gestor: DataReplicatedGestor = DataReplicatedGestor()
         self.setup_routes()
 
     def setup_routes(self):
@@ -46,6 +48,50 @@ class StoreNode(Leader):
         threading.Thread(
             target=lambda: app.run(host=self.ip, port=8000), daemon=True
         ).start()  # Iniciar servidor por el puerto 8000
+
+    def _delete_document_replica_if_no_check_response(
+        self, document_id: int, event_guid: str
+    ):
+        """
+        Es el método que llama el gestor de replicas cuando se tiene que ejecutar el evento
+
+        Args:
+            document_id (int): Id del documento en cuestión con respecto al evento
+            event_guid (str): Guid del evento en cuestion
+        """
+        try:
+            # Chequear que el documento exista antes de eliminarlo
+            if not db.has_document(
+                document_id
+            ):  # Si ya no existe pues no se puede eliminar
+                log_message(
+                    f"El documento con id {document_id} no existe en la base de datos por lo cual no se puede eliminar",
+                    func=self._delete_document_replica_if_no_check_response,
+                )
+                return
+            if db.is_document_persistent(
+                document_id
+            ):  # Si el documento es persistente => que ya se recibió la confirmación
+                log_message(
+                    f"El documento {document_id} es persistente en la db con el guid {event_guid} por lo cual no se va a eliminar",
+                    func=self._delete_document_replica_if_no_check_response,
+                )
+                return
+            log_message(
+                f"El documento con id {document_id}  y guid {event_guid} no es persistente en la base de datos => se va a eliminar totalmente la columna",
+                func=self._delete_document_replica_if_no_check_response,
+            )
+            db.delete_document_all(document_id)
+            log_message(
+                f"Se eliminó la fila del documento id {document_id} con el evento {event_guid}",
+                func=self._delete_document_replica_if_no_check_response,
+            )
+
+        except Exception as e:
+            log_message(
+                f"Ocurrio un error al tratar de efectuar el evento del documento {document_id} con guid: {event_guid}",
+                func=self._delete_document_replica_if_no_check_response,
+            )
 
         #################################
         #                               #
@@ -123,6 +169,10 @@ class StoreNode(Leader):
                     f"Se realizo el cambio del documento {doc.id} con titulo {doc.title} del que es dueño el nodo {node.id}",
                     func=self.save_document_like_replica,
                 )
+                self.data_replicate_gestor.add_document_to_the_queue(
+                    doc, self._delete_document_replica_if_no_check_response
+                )# Añadir al gestor de eventos por si no es persistente que lo elimine
+
                 return jsonify({"code": SAVE_DOC_WAITING_OK}), 200
             else:
                 log_message(
@@ -137,6 +187,9 @@ class StoreNode(Leader):
                 f"Se inserto correctamente el documento {doc.id} que es dueño el nodo {node.id}",
                 func=self.save_document_like_replica,
             )
+            self.data_replicate_gestor.add_document_to_the_queue(
+                doc, self._delete_document_replica_if_no_check_response
+            )# Añadir al gestor de eventos por si no es persistente que lo elimine
             return jsonify({"code": SAVE_DOC_WAITING_OK}), 200
 
             ##################################
