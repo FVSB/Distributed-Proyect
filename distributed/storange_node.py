@@ -51,6 +51,8 @@ class StoreNode(Leader):
             methods=["POST"],
         )  # Esto es para recibir la confirmación que se haga persistente
 
+
+        app.add_url_rule("/delete_file",view_func=self.delete_file, methods=["POST"],)# Esto es para eliminar un archivo
     def start_threads(self):
         """Inicia todos los hilos
 
@@ -315,7 +317,9 @@ class StoreNode(Leader):
             old_owner = db.get_node_id_owner_by_doc_id(
                 doc_id
             )  # dueño de documento antes del update
-            if not db.update_document(
+            
+            
+            if not db.update_document( # Actualizar el documento
                 doc_id, new_doc, node.id, True
             ):  # SI no se completo es pq no existia el documento como fila
                 raise Exception(
@@ -583,7 +587,7 @@ class StoreNode(Leader):
                 f"El archivo con nombre {name} se a guardado correctamente en la base de datos",
                 func=self.Crud_action,
             )
-        elif crud_code == CrudCode.Update:  # Se quiere actualizar el documento
+        else :  # Se quiere actualizar o eliminar (Poner en None la data del documento) el documento
             if not db.update_document(document.id, document, self.id, False):
                 raise Exception(
                     f"No se puede actualizar un documento si no existe la fila de este {document.id} {document.title}"
@@ -842,6 +846,65 @@ class StoreNode(Leader):
                 ),
                 HTTPStatus.INTERNAL_SERVER_ERROR,
             )
+            
+    def delete_file(self):
+        addr_from = request.remote_addr
+        log_message(
+            f"Se a mandado a actualizar un archivo que envio el addr: {addr_from} ",
+            func=self.upload_file,
+        )
+        # Nombre del archivo , str con el archivo
+        data = self.get_data_from_request()  # Tomar los bytes de la data
+
+        if data is None:  # Es que no se envió nada
+            # Retornar error de no file
+            return (
+                jsonify({"message": 'Bad Request: Parámetro "param" requerido'}),
+                HTTPStatus.BAD_REQUEST,
+            )
+        doc_name:str=pickle.loads(data)
+        doc_id=getShaRepr(doc_name)
+        log_message(f'Se ha enviado a eliminar el documento {doc_name} con id {doc_id} ',func=self.delete_file)
+        # Comprobar que está en la base de datos
+        if not db.has_document(doc_id):  # Mandar error de que no se envió nada
+            return (
+                jsonify(
+                    {
+                        "message": f"El archivo {doc_name} no se encuentra en la base de datos"
+                    }
+                ),
+                HTTPStatus.BAD_REQUEST,
+            )
+        log_message(f'Mandando a eliminar {doc_name} : {doc_id} de mi db y mis replicas',func=self.delete_file)
+        
+        try:
+            document=Document(doc_name,None)
+            if not self.Crud_action(
+                document=document,
+                sub_url="update_document_like_replica",
+                crud_code=CrudCode.Delete,
+            ): # Si se pudo guardar en las replicas => que se guarda en la db
+                log_message(f'No se pudo actualizar el documento {document.id} ',func=self.update_file)
+                
+            
+            
+            log_message(f"Se eliminó el documento {doc_name}", func=self.update_file)
+            return (
+                jsonify({"message": f"Se actualizó eliminó el documento {doc_name} "}),
+                HTTPStatus.OK,
+            )
+        except Exception as e:
+            log_message(
+                f"Hubo un problema tratanto de eliminar el archivo {doc_name} Error:{e} \n {traceback.format_exc()}",
+                func=self.update_file,
+            )
+            return (
+                jsonify(
+                    {"message": f"Ocurrio un problema eliminar el documento {doc_name}"}
+                ),
+                HTTPStatus.INTERNAL_SERVER_ERROR,
+            )
+            
 
 
 if __name__ == "__main__":

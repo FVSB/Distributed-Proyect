@@ -73,7 +73,7 @@ def log_message(message, level="INFO", extra_data={}, func=None):
 
     logger = logging.getLogger(__name__)
     logger.log(logging.getLevelName(level), message, extra=extra_data)
-
+    serialize_logs(logs_json)
 
 if __name__ == "__main__":
     # Ejemplo de uso

@@ -298,7 +298,7 @@ def update_document(
 
 def delete_document(document_id: int):
     """
-    Se elimina el documento, pero no se elimina que este está eliminado
+    Se elimina el documento, pero no se elimina  la fila, solo se pone en None la columna documento
 
     Args:
         document_id (int): _description_
