@@ -5,6 +5,7 @@ import jsonpickle
 import pickle
 import uuid
 
+from enum import Enum, auto
 
 def getShaRepr(data: str, max_value: int = 16):
     """Hashea a SHA-1 los datos que entren y lo devuelve en un numero entre 1 y 16
@@ -70,3 +71,27 @@ class Paquete:
     @staticmethod
     def deserialize(data) -> "Paquete":
         return pickle.loads(data)
+
+
+
+
+
+class CrudCode(Enum):
+    Insert = auto()
+    Update = auto()
+    Delete = auto()
+
+    def __lt__(self, other):
+        if self.__class__ is other.__class__:
+            return self.value < other.value
+        return NotImplemented
+
+    def __eq__(self, other):
+        if self.__class__ is other.__class__:
+            return self.value == other.value
+        return NotImplemented
+
+    def __gt__(self, other):
+        if self.__class__ is other.__class__:
+            return self.value > other.value
+        return NotImplemented

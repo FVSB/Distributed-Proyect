@@ -237,3 +237,48 @@ class DataReplicatedGestor:
                 f"Ocurrion un error tratando de añadir el documento {document.id} {document.title} en la cola de eventos en el tiempo {self.time_now} Error: {e} \n {traceback.format_exc()} ",
                 func=self.add_document_to_the_queue,
             )
+
+    def update_document( self,
+        new_document: Document,
+        old_document:Document,
+        old_owner:int,
+        handle_fun: Callable[[int, str], None],
+        time_waiting: int = 10)->str:
+        """
+        Dado el documento a upgradear : new document y el viejo : old_document
+        si en el tiempo dicho no se a actualizado a tiempo la información 
+        se devuelve al anterior version
+
+        Args:
+            new_document (Document): _description_
+            old_document (Document): _description_
+             old_owner:int El nodo dueño del archivo antes del update
+            handle_fun (Callable[[int, str], None]): _description_
+            time_waiting (int, optional): _description_. Defaults to 10.
+
+        Returns:
+            guid str: identificador unico del proceso
+            
+        """
+        if old_document.id!=new_document.id:
+            raise Exception(f'El documento nuevo tiene id {new_document.id} y el antiguo tiene {old_document.id} son distintos Error')
+        try:
+            guid = get_guid()
+
+            def handle(): # document_id: int, event_guid: str, old_document: Document, old_owner: int
+                handle_fun(old_document.id, guid,old_document,old_owner)
+
+            time_end = self.time_now + time_waiting
+            handle = DeleteHandle(time_end, old_document.id, handle, guid)
+            guid = handle.guid
+            log_message(
+                f"El documento {old_document.id} {old_document.title} se volverá al estado anterior  de no tener confirmación en el tiempo {time_end} estamos en el {self.time_now} guid: {guid}",
+                func=self.add_document_to_the_queue,
+            )
+            self.heap.push(handle)
+            return guid
+        except Exception as e:
+            log_message(
+                f"Ocurrion un error tratando de añadir el documento {old_document.id} {old_document.title} en la cola de eventos en el tiempo {self.time_now} Error: {e} \n {traceback.format_exc()} ",
+                func=self.add_document_to_the_queue,
+            )

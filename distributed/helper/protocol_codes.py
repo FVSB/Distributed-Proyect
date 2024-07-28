@@ -22,3 +22,8 @@ STORE_KEY_SERVER = 16
 
 # Sobre los protocolos con respecto a los mensajes dueño data, replica
 SAVE_DOC_WAITING_OK = 17
+SAVE_DOC_WAITING_UPDATED = 18
+ERROR_NO_EXIST_DOC_IN_THIS_REPLICA = (
+    19  # Dice que error pq no existe esa fila en esa replica
+)
+ERROR_THIS_IS_NOT_THE_LASTED_VERSION=20

@@ -5,7 +5,7 @@ url='http://172.30.0.7:8000/update'
 
 
 
-document='Cambie'
+document='Mira a vefff'
 name='hola.txt'
 
 data=pickle.dumps((name,document))

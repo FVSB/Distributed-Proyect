@@ -223,6 +223,26 @@ def get_document_by_id(id_document: int) -> Document:
     return data
 
 
+def get_node_id_owner_by_doc_id(id_document: int) -> int:
+    """
+    Dado un id de documento devuelve quien es el dueño de ese documento
+    int con el id si existe la fila,  None si no Existe
+
+    Args:
+        id_document (int): _description_
+
+    Returns:
+        int: _description_
+    """
+    session = Session()
+    doc = session.query(Docs).filter_by(id=id_document).first()
+    id_ = None
+    if doc:
+        id_ = doc.node_id
+    session.close()
+    return id_
+
+
 def get_all_nodes_i_save() -> set[int]:
     """
     Retorna un set con todos ids de nodos que guarda
@@ -240,7 +260,12 @@ def get_all_nodes_i_save() -> set[int]:
     return response
 
 
-def update_document(id_document: int, new_data: Document, node_id: int = -1):
+def update_document(
+    id_document: int,
+    new_data: Document,
+    node_id: int = -1,
+    make_no_persist: bool = True,
+):
     """
     Dado el id de un documento cambia el campo document por el que se le pasa
     si el node_id>-1 tb se actualiza el nodo del que es dueño
@@ -249,7 +274,7 @@ def update_document(id_document: int, new_data: Document, node_id: int = -1):
         id_document (int): _description_
         new_data (Document): _description_
         node_id (int, optional): _description_. Defaults to -1.
-
+        make_no_persist:bool Default True: True para decir que cuando haga el update cambie a que Se NO persit osea False ahi
     Returns:
         _type_: _description_
     """
@@ -262,6 +287,8 @@ def update_document(id_document: int, new_data: Document, node_id: int = -1):
             node_id > -1
         ):  # Es que se quiere actualizar tb el nodo que es dueño ademas de la data
             doc.node_id = node_id
+            if make_no_persist:  # Si quiero que lo haga no persisrente
+                doc.persistent = False
         session.commit()
 
         response = True
