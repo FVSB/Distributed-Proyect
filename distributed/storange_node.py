@@ -21,8 +21,15 @@ log.disabled = True  # Desactivar los otros posibles logguers que no sea el mio
 
 
 class StoreNode(Leader):
-    def __init__(self, ip: str, port: int = 8001, m: int = 160):
+    """
+    Tiene la logica de guardar documentos y mandar a actualizar en sus replicas pero no tiene de resincronizacion de estas cuando se cae
+
+    Args:
+        Leader (_type_): _description_
+    """
+    def __init__(self, ip: str, port: int = 8001,flask_port:int=8000, m: int = 160):
         super().__init__(ip, port, m)
+        self.flask_port:int=flask_port
         self.data_replicate_gestor: DataReplicatedGestor = DataReplicatedGestor()
         self.setup_routes()
 
@@ -66,7 +73,7 @@ class StoreNode(Leader):
 
         super().start_threads()
         threading.Thread(
-            target=lambda: app.run(host=self.ip, port=8000), daemon=True
+            target=lambda: app.run(host=self.ip, port=self.flask_port), daemon=True
         ).start()  # Iniciar servidor por el puerto 8000
 
         #############################################
@@ -189,7 +196,7 @@ class StoreNode(Leader):
                 f"La ip debe ser un str no un {type(ip)}, {ip}", func=self.url_from_ip
             )
             raise Exception(f"El ip debe ser un str no un {type(ip)}, {ip}")
-        return f"http://{ip}:8000"
+        return f"http://{ip}:{self.flask_port}"
 
     def add_end_point_to_url(self, url: str, end_point: str) -> str:
 
@@ -512,6 +519,7 @@ class StoreNode(Leader):
         replicas_lis: list[ChordNodeReference],
         guid_list: list[str],
         document_id: int,
+        ok_replicas: list[ChordNodeReference],
     ) -> list[ChordNodeReference]:
         """
         Confirma que se insertó correctamente el documento, confirma a las replicas
@@ -545,6 +553,9 @@ class StoreNode(Leader):
                         )
                     else:  # Si se completo exitosamente añadir a la lista de exitoso
                         lis.append(replica)
+                        ok_replicas.append(
+                            replica
+                        )  # Se añade a la lista que se pasa como referencia la cual va tomando cuales nodos si fueron exitosos
                 except Exception as e:
                     log_message(
                         f"Ocurrio un problema enviando confirmacion del documento {document_id} con guid {guid} a la replica {replica.id}",
@@ -561,7 +572,7 @@ class StoreNode(Leader):
 
     def Crud_action(
         self, document: Document, sub_url: str, crud_code: CrudCode
-    ) -> bool:
+    ) -> tuple[bool, list[ChordNodeReference]]:
         """
          Realiza la transacción atomica de guardar un documento en los nodos replica
 
@@ -570,66 +581,80 @@ class StoreNode(Leader):
             sub_url (str): Es la ruta a guardar por ejemplo "save_document_like_replica"  para insertar desde el inicio un archivo
             crud_code (CrudCode): Dice si se quiere insertar, update, delete el documento
         Returns:
-            bool: _description_
+            tuple[bool,list[ChordNodeReference]]: True si se guardo correctamente en todos los nodos, [Devuelve en que nodos en los que está el documento] ,False ocurrio un error
+            En la lista de nodos devuelve en cuales esta guardada la información, si está vacia => que no se guardo el dato si se llego a informar alguna replica esta las eliminará
         """
+        to_return: list[ChordNodeReference] = []
+        try:
+            name = document.title
 
-        name = document.title
+            succ_list = self.succ_list
 
-        succ_list = self.succ_list
-
-        # Primero llamar a mis nodos replicas para que traten de guardar la información
-        log_message(
-            f"Llamando a mis replicas para que me guarden el archivo {document.id}",
-            func=self.Crud_action,
-        )
-
-        lis_guid, ok_ = self.save_in_my_replicas(
-            document, succ_list, sub_url
-        )  # Lista con guid de las replicas para confirmar además del bool de si se completó todo con éxito
-
-        if not ok_:  # Chequear que se haya guardado en mis replicas
+            # Primero llamar a mis nodos replicas para que traten de guardar la información
             log_message(
-                f"No se pudo guardar el documento {document.id} las replicas ",
+                f"Llamando a mis replicas para que me guarden el archivo {document.id}",
                 func=self.Crud_action,
             )
-            return False
-        log_message(
-            f"El documento {document.id}, titulo {document.title} se guardó exitosamente en las replicas",
-            func=self.Crud_action,
-        )
-        if crud_code == CrudCode.Insert:  # Insertar acá el documento
 
-            if not db.insert_document(
-                document, self.id, True
-            ):  # Se trata de insertar un documento en la base de datos Ademas se hace persistente
-                log_message(f'Error al tratar de insertar el documento {document.id} {document.title} ',func=self.Crud_action)
-                raise Exception(f'Error al tratar de insertar el documento {document.id} {document.title} ')
-            log_message(
-                f"El archivo con nombre {name} se a guardado correctamente en la base de datos",
-                func=self.Crud_action,
-            )
-        else:  # Se quiere actualizar o eliminar (Poner en None la data del documento) el documento
-            if not db.update_document(document.id, document, self.id, False):
-                raise Exception(
-                    f"No se puede actualizar un documento si no existe la fila de este {document.id} {document.title}"
+            lis_guid, ok_ = self.save_in_my_replicas(
+                document, succ_list, sub_url
+            )  # Lista con guid de las replicas para confirmar además del bool de si se completó todo con éxito
+
+            if not ok_:  # Chequear que se haya guardado en mis replicas
+                log_message(
+                    f"No se pudo guardar el documento {document.id} las replicas ",
+                    func=self.Crud_action,
                 )
-            db.persist_document(document.id)
+                return (False, to_return)
             log_message(
-                f"Se actualizaron los cambios del documento {document.id} {document.title}",
+                f"El documento {document.id}, titulo {document.title} se guardó exitosamente en las replicas",
+                func=self.Crud_action,
+            )
+            if crud_code == CrudCode.Insert:  # Insertar acá el documento
+
+                if not db.insert_document(
+                    document, self.id, True
+                ):  # Se trata de insertar un documento en la base de datos Ademas se hace persistente
+                    log_message(
+                        f"Error al tratar de insertar el documento {document.id} {document.title} ",
+                        func=self.Crud_action,
+                    )
+                    raise Exception(
+                        f"Error al tratar de insertar el documento {document.id} {document.title} "
+                    )
+                log_message(
+                    f"El archivo con nombre {name} se a guardado correctamente en la base de datos",
+                    func=self.Crud_action,
+                )
+            else:  # Se quiere actualizar o eliminar (Poner en None la data del documento) el documento
+                if not db.update_document(document.id, document, self.id, False):
+                    raise Exception(
+                        f"No se puede actualizar un documento si no existe la fila de este {document.id} {document.title}"
+                    )
+                db.persist_document(document.id)
+                log_message(
+                    f"Se actualizaron los cambios del documento {document.id} {document.title}",
+                    func=self.Crud_action,
+                )
+            # Como hasta acá se pudo añadir en mi db
+            to_return.append(self.ref)  # Añado mi referencia
+
+            # Mandar a confirmar a las replicas
+            lis_ok_replicaton = self.confirmation_crud_in_my_replicas(
+                succ_list, lis_guid, document.id, to_return
+            )
+
+            log_message(
+                f"Se guardó exitosamente el archivo {document.id} en este nodo {self.id}y en las replicas {lis_ok_replicaton}",
                 func=self.Crud_action,
             )
 
-        # Mandar a confirmar a las replicas
-        lis_ok_replicaton = self.confirmation_crud_in_my_replicas(
-            succ_list, lis_guid, document.id
-        )
-
-        log_message(
-            f"Se guardó exitosamente el archivo {document.id} en este nodo {self.id}y en las replicas {lis_ok_replicaton}",
-            func=self.Crud_action,
-        )
-
-        return True
+            return (True, to_return)
+        except Exception as e:
+            log_message(
+                f"Ocurrio un Error en Crud Action con codigo {crud_code} el documento {document.id} {document.title} a la sub_url {sub_url} Error:{e} \n {traceback.format_exc()}"
+            )
+            return (False, to_return)
 
     # Endpoint upload_file
     def upload_file(self):
@@ -674,11 +699,12 @@ class StoreNode(Leader):
 
         # Guardar en la base de datos
         try:
-            if self.Crud_action(
+            ok_crud,nodes_save=self.Crud_action(
                 Document(name, doc_to_save),
                 "save_document_like_replica",
                 CrudCode.Insert,
-            ):
+            )
+            if ok_crud:# Si se realizó todo en orden
                 return (
                     jsonify(
                         {
@@ -687,6 +713,8 @@ class StoreNode(Leader):
                     ),
                     HTTPStatus.OK,
                 )
+            else:# Es que ocurrio un error
+                log_message(f'Ocurrio un error tratando de insertar el documento con {name} y data {doc_to_save} e id{getShaRepr(name)} se guardo correctamente en los nodos {nodes_save}',func=self.upload_file)
 
         except Exception as e:
             log_message(
@@ -842,25 +870,27 @@ class StoreNode(Leader):
         )
         try:
             document = Document(name, doc_to_save)
-            if not self.Crud_action(
+            ok_crud,nodes_save=self.Crud_action(
                 document=document,
                 sub_url="update_document_like_replica",
                 crud_code=CrudCode.Update,
-            ):  # Si se pudo guardar en las replicas => que se guarda en la db
+            )
+            if not ok_crud:  # Si se pudo guardar en las replicas => que se guarda en la db
                 log_message(
-                    f"No se pudo actualizar el documento {document.id} ",
+                    f"No se pudo actualizar el documento {document.id} se guardo la actualización en los nodos {nodes_save} ",
                     func=self.update_file,
                 )
-
-            log_message(f"Se actualizó el documento {name}", func=self.update_file)
-            return (
-                jsonify(
-                    {
-                        "message": f"Se actualizó correctamente el documento {name} {doc_to_save}"
-                    }
-                ),
-                HTTPStatus.OK,
-            )
+                
+            else:
+                log_message(f"Se actualizó el documento {name}", func=self.update_file)
+                return (
+                    jsonify(
+                        {
+                            "message": f"Se actualizó correctamente el documento {name} {doc_to_save}"
+                        }
+                    ),
+                    HTTPStatus.OK,
+                )
         except Exception as e:
             log_message(
                 f"Hubo un problema tratanto de actualizar el archivo {name} Error:{e} \n {traceback.format_exc()}",
@@ -911,21 +941,22 @@ class StoreNode(Leader):
 
         try:
             document = Document(doc_name, None)
-            if not self.Crud_action(
+            ok_crud,nodes_save=not self.Crud_action(
                 document=document,
                 sub_url="update_document_like_replica",
                 crud_code=CrudCode.Delete,
-            ):  # Si se pudo guardar en las replicas => que se guarda en la db
+            )
+            if not ok_crud :  # Si se pudo guardar en las replicas => que se guarda en la db
                 log_message(
-                    f"No se pudo actualizar el documento {document.id} ",
+                    f"No se pudo actualizar el documento {document.id} se pudo guardar el cambio en los nodos {nodes_save}",
                     func=self.update_file,
                 )
-
-            log_message(f"Se eliminó el documento {doc_name}", func=self.update_file)
-            return (
-                jsonify({"message": f"Se actualizó eliminó el documento {doc_name} "}),
-                HTTPStatus.OK,
-            )
+            else:
+                log_message(f"Se eliminó el documento {doc_name}", func=self.update_file)
+                return (
+                    jsonify({"message": f"Se actualizó eliminó el documento {doc_name} "}),
+                    HTTPStatus.OK,
+                )
         except Exception as e:
             log_message(
                 f"Hubo un problema tratanto de eliminar el archivo {doc_name} Error:{e} \n {traceback.format_exc()}",
