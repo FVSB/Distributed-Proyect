@@ -51,8 +51,12 @@ class StoreNode(Leader):
             methods=["POST"],
         )  # Esto es para recibir la confirmación que se haga persistente
 
+        app.add_url_rule(
+            "/delete_file",
+            view_func=self.delete_file,
+            methods=["POST"],
+        )  # Esto es para eliminar un archivo
 
-        app.add_url_rule("/delete_file",view_func=self.delete_file, methods=["POST"],)# Esto es para eliminar un archivo
     def start_threads(self):
         """Inicia todos los hilos
 
@@ -212,7 +216,10 @@ class StoreNode(Leader):
         if data is None:  # Es que no se envió nada
             # Retornar error de no file
             log_message(f"La data no puede ser null", func=self.get_data_from_request)
-            return jsonify({"message": 'Bad Request: Parámetro "param" requerido'}), HTTPStatus.BAD_REQUEST
+            return (
+                jsonify({"message": 'Bad Request: Parámetro "param" requerido'}),
+                HTTPStatus.BAD_REQUEST,
+            )
 
         node, doc = pickle.loads(data)
         doc: Document = doc
@@ -281,8 +288,13 @@ class StoreNode(Leader):
             data = self.get_data_from_request()  # Retornar los bytes con la data
             if data is None:  # Es que no se envió nada
                 # Retornar error de no file
-                log_message(f"La data no puede ser null", func=self.get_data_from_request)
-                return jsonify({"message": 'Bad Request: Parámetro "param" requerido'}), HTTPStatus.BAD_REQUEST
+                log_message(
+                    f"La data no puede ser null", func=self.get_data_from_request
+                )
+                return (
+                    jsonify({"message": 'Bad Request: Parámetro "param" requerido'}),
+                    HTTPStatus.BAD_REQUEST,
+                )
 
             node, new_doc = pickle.loads(data)
             new_doc: Document = new_doc
@@ -317,9 +329,8 @@ class StoreNode(Leader):
             old_owner = db.get_node_id_owner_by_doc_id(
                 doc_id
             )  # dueño de documento antes del update
-            
-            
-            if not db.update_document( # Actualizar el documento
+
+            if not db.update_document(  # Actualizar el documento
                 doc_id, new_doc, node.id, True
             ):  # SI no se completo es pq no existia el documento como fila
                 raise Exception(
@@ -329,11 +340,19 @@ class StoreNode(Leader):
                 new_doc, old_doc, old_owner, self._revoke_update_actions, 10
             )
 
-            log_message(f'Se guardo exitosamente el documento {doc_id} dueño {node.id} event {guid}',func=self.update_document_like_replica)
+            log_message(
+                f"Se guardo exitosamente el documento {doc_id} dueño {node.id} event {guid}",
+                func=self.update_document_like_replica,
+            )
 
-            return Response(pickle.dumps((SAVE_DOC_WAITING_UPDATED, guid)),status=HTTPStatus.OK)
+            return Response(
+                pickle.dumps((SAVE_DOC_WAITING_UPDATED, guid)), status=HTTPStatus.OK
+            )
         except Exception as e:
-            log_message(f'Ocurrio un error tratando de upgradear en la replica Error: {e} \n{traceback.format_exc()}',func=self.update_document_like_replica)
+            log_message(
+                f"Ocurrio un error tratando de upgradear en la replica Error: {e} \n{traceback.format_exc()}",
+                func=self.update_document_like_replica,
+            )
             raise Exception(e)
 
     def persist_insert_document(self):
@@ -463,7 +482,7 @@ class StoreNode(Leader):
                     log_message(
                         f"Enviando a guardadar a la replica {replica.id} el archivo {document.id} no se ha recibido 200 se recibio {response.status_code}"
                     )
-                    return ([],False)
+                    return ([], False)
                 log_message(
                     f"Se guardo exitosamente el documento {document.id} en la replica {replica.id}",
                     func=self.save_in_my_replicas,
@@ -486,7 +505,7 @@ class StoreNode(Leader):
                 f"Ocurrio un error guardando en las replicas el documento {document.id} Error:{e} \n {traceback.format_exc()} ",
                 func=self.save_in_my_replicas,
             )
-            return ([],False)
+            return ([], False)
 
     def confirmation_crud_in_my_replicas(
         self,
@@ -580,14 +599,16 @@ class StoreNode(Leader):
         )
         if crud_code == CrudCode.Insert:  # Insertar acá el documento
 
-            db.insert_document(
+            if not db.insert_document(
                 document, self.id, True
-            )  # Se trata de insertar un documento en la base de datos Ademas se hace persistente
+            ):  # Se trata de insertar un documento en la base de datos Ademas se hace persistente
+                log_message(f'Error al tratar de insertar el documento {document.id} {document.title} ',func=self.Crud_action)
+                raise Exception(f'Error al tratar de insertar el documento {document.id} {document.title} ')
             log_message(
                 f"El archivo con nombre {name} se a guardado correctamente en la base de datos",
                 func=self.Crud_action,
             )
-        else :  # Se quiere actualizar o eliminar (Poner en None la data del documento) el documento
+        else:  # Se quiere actualizar o eliminar (Poner en None la data del documento) el documento
             if not db.update_document(document.id, document, self.id, False):
                 raise Exception(
                     f"No se puede actualizar un documento si no existe la fila de este {document.id} {document.title}"
@@ -602,7 +623,7 @@ class StoreNode(Leader):
         lis_ok_replicaton = self.confirmation_crud_in_my_replicas(
             succ_list, lis_guid, document.id
         )
-        
+
         log_message(
             f"Se guardó exitosamente el archivo {document.id} en este nodo {self.id}y en las replicas {lis_ok_replicaton}",
             func=self.Crud_action,
@@ -820,19 +841,24 @@ class StoreNode(Leader):
             f"Se va a tratar de actualizar el documento {name}", func=self.update_file
         )
         try:
-            document=Document(name, doc_to_save)
+            document = Document(name, doc_to_save)
             if not self.Crud_action(
                 document=document,
                 sub_url="update_document_like_replica",
                 crud_code=CrudCode.Update,
-            ): # Si se pudo guardar en las replicas => que se guarda en la db
-                log_message(f'No se pudo actualizar el documento {document.id} ',func=self.update_file)
-                
-            
-            
+            ):  # Si se pudo guardar en las replicas => que se guarda en la db
+                log_message(
+                    f"No se pudo actualizar el documento {document.id} ",
+                    func=self.update_file,
+                )
+
             log_message(f"Se actualizó el documento {name}", func=self.update_file)
             return (
-                jsonify({"message": f"Se actualizó correctamente el documento {name} {doc_to_save}"}),
+                jsonify(
+                    {
+                        "message": f"Se actualizó correctamente el documento {name} {doc_to_save}"
+                    }
+                ),
                 HTTPStatus.OK,
             )
         except Exception as e:
@@ -846,7 +872,7 @@ class StoreNode(Leader):
                 ),
                 HTTPStatus.INTERNAL_SERVER_ERROR,
             )
-            
+
     def delete_file(self):
         addr_from = request.remote_addr
         log_message(
@@ -862,9 +888,12 @@ class StoreNode(Leader):
                 jsonify({"message": 'Bad Request: Parámetro "param" requerido'}),
                 HTTPStatus.BAD_REQUEST,
             )
-        doc_name:str=pickle.loads(data)
-        doc_id=getShaRepr(doc_name)
-        log_message(f'Se ha enviado a eliminar el documento {doc_name} con id {doc_id} ',func=self.delete_file)
+        doc_name: str = pickle.loads(data)
+        doc_id = getShaRepr(doc_name)
+        log_message(
+            f"Se ha enviado a eliminar el documento {doc_name} con id {doc_id} ",
+            func=self.delete_file,
+        )
         # Comprobar que está en la base de datos
         if not db.has_document(doc_id):  # Mandar error de que no se envió nada
             return (
@@ -875,19 +904,23 @@ class StoreNode(Leader):
                 ),
                 HTTPStatus.BAD_REQUEST,
             )
-        log_message(f'Mandando a eliminar {doc_name} : {doc_id} de mi db y mis replicas',func=self.delete_file)
-        
+        log_message(
+            f"Mandando a eliminar {doc_name} : {doc_id} de mi db y mis replicas",
+            func=self.delete_file,
+        )
+
         try:
-            document=Document(doc_name,None)
+            document = Document(doc_name, None)
             if not self.Crud_action(
                 document=document,
                 sub_url="update_document_like_replica",
                 crud_code=CrudCode.Delete,
-            ): # Si se pudo guardar en las replicas => que se guarda en la db
-                log_message(f'No se pudo actualizar el documento {document.id} ',func=self.update_file)
-                
-            
-            
+            ):  # Si se pudo guardar en las replicas => que se guarda en la db
+                log_message(
+                    f"No se pudo actualizar el documento {document.id} ",
+                    func=self.update_file,
+                )
+
             log_message(f"Se eliminó el documento {doc_name}", func=self.update_file)
             return (
                 jsonify({"message": f"Se actualizó eliminó el documento {doc_name} "}),
@@ -904,7 +937,6 @@ class StoreNode(Leader):
                 ),
                 HTTPStatus.INTERNAL_SERVER_ERROR,
             )
-            
 
 
 if __name__ == "__main__":

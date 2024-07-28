@@ -15,7 +15,7 @@ from helper.docs_class import Document
 from helper.logguer import log_message
 import datetime
 import pickle
-
+import traceback
 # Crear el motor de base de datos
 engine = create_engine("sqlite:///app/database/database.db")
 
@@ -80,7 +80,7 @@ def insert_document(document: Document, node_id: int, persistent: bool = False) 
         return True
     except Exception as e:
         log_message(
-            f"Ocurrio un error insertando el documento con id {document.id} y titulo {document.title}",
+            f"Ocurrio un error insertando el documento con id {document.id} y titulo {document.title} Error:{e} \n {traceback.format_exc()}",
             func=insert_document,
         )
         return False
