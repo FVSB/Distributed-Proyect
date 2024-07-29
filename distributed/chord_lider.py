@@ -70,6 +70,8 @@ class Leader(ChordNode):
         
         log_message(f'Estoy en eleccion {self.in_election_}',func=self.show)
         
+        log_message(f'Soy Estable {self.is_stable} ',func=self.show)
+        
         log_message(f'El lider es {self.leader.id}',func=self.show)
         
         log_message(f'La lista de sucesores es {self.succ_list}',func=self.show)
@@ -101,7 +103,7 @@ class Leader(ChordNode):
         while True:
             time.sleep(time_)
             try:
-                
+                in_election=True
                 with self.in_election_lock:
                     in_election=self.in_election_
                         
@@ -224,7 +226,7 @@ class Leader(ChordNode):
     @property
     def is_stable(self)->bool:
         """
-        Dice si estoy estable o no
+        Dice si estoy estable o no => que me aseguré que ningun nodo esta en elecciones
         Raises:
             
         Returns:

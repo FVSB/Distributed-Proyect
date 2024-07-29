@@ -70,7 +70,7 @@ class SyncStoreNode(StoreNode):
             addr_from = request.remote_addr
 
             log_message(
-                f"Se ha mandado a reinsertar un documento siendo yo el dueño actual de {addr_from} {node.id}",
+                f"Se ha mandado a reinsertar un documento siendo yo el dueño actual de {addr_from} ",
                 func=self.sync_keys_from_others,
             )
 
@@ -284,15 +284,15 @@ class SyncStoreNode(StoreNode):
                     response_.status_code != 200
                 ):  # Si no ocurrio un 200 hubo algun error lanzar exc
                     log_message(
-                        f"Ocurrio un Error enviando al nodo {node.id} {node.ip} el documento {key} con fecha {document.record} codigo de estatus {response_.status_code}",
+                        f"Ocurrio un Error enviando al nodo {owner.id} {owner.ip} el documento {key} con fecha {document.record} codigo de estatus {response_.status_code}",
                         func=self.send_to_reinsert_others_documents,
                     )
                     raise Exception(
-                        f"Ocurrio un Error enviando al nodo {node.id} {node.ip} el documento {key} con fecha {document.record} codigo de estatus {response_.status_code}"
+                        f"Ocurrio un Error enviando al nodo {owner.id} {owner.ip} el documento {key} con fecha {document.record} codigo de estatus {response_.status_code}"
                     )
 
                 log_message(
-                    f"El documento {key} fue correctamente enviado a su dueño {node}",
+                    f"El documento {key} fue correctamente enviado a su dueño {owner}",
                     func=self.send_to_reinsert_others_documents,
                 )
 
