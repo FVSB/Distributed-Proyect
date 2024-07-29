@@ -885,7 +885,7 @@ class ChordNode:
             time.sleep(5)  # 10
 
     # Check predecessor method to periodically verify if the predecessor is alive
-    def check_predecessor(self,time_:float=0.1):
+    def check_predecessor(self,time_:float=2):
         """Check predecessor method to periodically verify if the predecessor is alive"""
         counter = 0
         while True:

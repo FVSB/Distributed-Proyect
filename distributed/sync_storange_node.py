@@ -27,6 +27,12 @@ class SyncStoreNode(StoreNode):
         False si todavia no he hecho no persistente mis datos
         """
         self.can_other_sync_data_with_me_lock: threading.RLock = threading.RLock()
+        """
+        lock para saber si puedo recibir data de otros
+        """
+        
+        
+        
 
     def data_to_print(self):
         super().data_to_print()
@@ -104,6 +110,9 @@ class SyncStoreNode(StoreNode):
             view_func=self.sync_keys_from_others,
             methods=["POST"],
         )  # Metodo que recibe los documentos que ahora le pertenecen en la resincronización
+        
+        app.add_url_rule("/can_recive_update_documents",view_func=self.can_recive_update_documents,
+            methods=["GET"]) # Saber si puedo o no recibir documentos como resincronización
         ###########################
         #                         #
         #       Endpoints         #
@@ -119,10 +128,10 @@ class SyncStoreNode(StoreNode):
         """
         try:
             addr_from = request.remote_addr
-            time_ = 0.5
+            time_ = 1
             for i in range(30):
                 try:
-                    time.sleep(time_)
+                    time.sleep(i)
                     if not self.can_other_sync_data_with_me:
                         log_message(
                             f"En la iteración {i} no se a podido completar el pedido de {addr_from}",
@@ -141,13 +150,16 @@ class SyncStoreNode(StoreNode):
                         f"Ocurrio un error tratando de responder si puedo recibir documentos de resincronización en la iteracion {i+1} Error:{e} \n {traceback.format_exc()}",
                         func=self.can_recive_update_documents,
                     )
+                
             log_message(
                 f"No se pudo completar en ninguna iteración la respuesta de si pueden sincronizar conmigo para el addr {addr_from} ",
                 func=self.can_recive_update_documents,
+            
             )
             return Response(
                 "Error no se ha podido sincronizar", status=HTTPStatus.FORBIDDEN
             )
+
         except Exception as e:
             log_message(
                 f"Ocurrio un error tratando de responder si puedo recibir documentos de resincronización de forma general Error:{e} \n {traceback.format_exc()}",
@@ -303,11 +315,13 @@ class SyncStoreNode(StoreNode):
     def reinsert_my_keys(self, my_keys: list[int]) -> bool:
         # Mandar a reinsertar cada llave
         try:
+            log_message(f'Tengo que reinsertar como mias las sgts llaves {my_keys}',func=self.reinsert_my_keys)
             with self.succ_list_lock:  # Se bloquea que ningun otro hilo pueda modificarlo
                 for key in my_keys:
                     try:
 
                         document = db.get_document_by_id(key)
+                        log_message(f'Se va a reinsertar en mis replicas el documento {document.id} {document.record} {document.text}',func=self.reinsert_my_keys)
                         ok_, replica = self.Crud_action(
                             document,
                             "save_document_like_replica",
@@ -323,6 +337,7 @@ class SyncStoreNode(StoreNode):
                                 func=self.reinsert_my_keys,
                             )
                             return False
+                        log_message(f'Se pudo reinsertar correctamenete el {document.id} {document.record} {document.text}',func=self.reinsert_my_keys)
 
                     except Exception as e:
                         log_message(
@@ -330,11 +345,48 @@ class SyncStoreNode(StoreNode):
                             func=self.reinsert_my_keys,
                         )
                         return False
+                    log_message(f'Se reinsertaron correctamente en mi las llaves {my_keys}',func=self.reinsert_my_keys)
                 return True  # Se completo la reinserccion
         except Exception as e:
             log_message(f"Error reinsenrtando mis llaves", func=self.reinsert_my_keys)
             return False
+    def can_send_to_others_reinsert_documents(self,node:ChordNodeReference)->bool:
+        """
+        
+        Devuelve True o False si puedo enviar al nuevo dueño la data para que se haga cargo
+        Args:
+            node (ChordNodeReference): _description_
+            
+        """
+        try:
+            log_message(f'El nodo {node} pregunta si está listo para yo enviarle su data que le pertenece',func=self.can_send_to_others_reinsert_documents)
+            #can_recive_update_documents
+            
+            url = self.url_from_ip(node.ip)
+            url = self.add_end_point_to_url(url,"can_recive_update_documents")
 
+            log_message(
+                f"Se va a enviar un mensaje a nodo {node.id} url:{url} para preguntarle por si ya puede recibir su nueva data ",
+                func=self.send_file_to_node,
+            )
+            
+            response=rq.get(url)
+            
+            if response.status_code==200:
+                log_message(f'El nodo {node.id} esta listo para recibir su nueva data',func=self.can_send_to_others_reinsert_documents)
+                return True
+            
+            log_message(f'Error: El nodo {node.id} no puede recibir su nueva data ',func=self.can_send_to_others_reinsert_documents)
+            return False
+            
+            
+        except Exception as e:
+            log_message(f'Ocurrio un error tratando de esperar por enviar sus documentos al nodo {node}',self.can_send_to_others_reinsert_documents)
+            return False
+        
+    
+    
+    
     def send_to_reinsert_others_documents(self, keys: list[id]) -> bool:
         """
         Envia a reinsertar los documentos que no son de mi propiedad, despues que tiene la aceptación si no es persistente
@@ -347,7 +399,9 @@ class SyncStoreNode(StoreNode):
             bool: True si se completo con exito  False si hubo algun problema o fallo enviar algun archivo
 
         """
+        
         try:
+            log_message(f'Se a mandar las sgts llaves a sus nuevos dueños {keys}',func=self.send_to_reinsert_others_documents)
             for key in keys:  # Iterar por las llaves
 
                 if not self.is_stable:  # Si empece otra vez en elección retorno False
@@ -377,7 +431,13 @@ class SyncStoreNode(StoreNode):
                     raise Exception(
                         f"Error el documento con llave {key} es {type(document)} no puede ser None => que se elimino antes en la db "
                     )
-
+                # Tratar de esperarr a que el pueda recibir la data
+                
+                if not self.can_send_to_others_reinsert_documents(owner):
+                    raise Exception(f'El nodo {owner} no puede recibir su nueva data')
+                
+                
+                
                 response_: Response = self.send_file_to_node(
                     owner, "sync_keys_from_others", pickle.dumps((self.ref, document))
                 )
@@ -512,7 +572,7 @@ class SyncStoreNode(StoreNode):
                         f"Se va a enviar a sincronizar los datos",
                         func=self.check_need_sync_store_data,
                     )
-
+                    
                     if not self.sync_data(2):
                         log_message(
                             f"No se pudo sincronizar la data",
@@ -547,7 +607,7 @@ class SyncStoreNode(StoreNode):
         while True:
             try:
                 time.sleep(time_)
-                if self.in_election or not (self.is_stable and self.succ_list_ok):
+                if self.in_election or not (self.is_stable and self.succ_list_ok) :
                     self.can_other_sync_data_with_me = False
 
             except Exception as e:

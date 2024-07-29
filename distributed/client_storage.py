@@ -5,7 +5,7 @@ url='http://172.30.0.3:8000/upload'
 
 
 
-document='Cambie'
+document='Hello'
 name='hola.txt'
 
 data=pickle.dumps((name,document))

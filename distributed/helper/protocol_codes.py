@@ -27,3 +27,6 @@ ERROR_NO_EXIST_DOC_IN_THIS_REPLICA = (
     19  # Dice que error pq no existe esa fila en esa replica
 )
 ERROR_THIS_IS_NOT_THE_LASTED_VERSION=20
+
+
+CAN_YOU_TAKE_YOUR_NEW_KEYS=21 # Es para enviar al chord_node_reference si se puede hacer cargo ya de las que ahora son suyas

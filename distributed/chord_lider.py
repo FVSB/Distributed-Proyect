@@ -93,7 +93,7 @@ class Leader(ChordNode):
             
             time.sleep(time_) # Se presenta cada 10 segundos
     
-    def check_i_am_stable(self,time_=2):
+    def check_i_am_stable(self,time_=0.1):
         """
         Chequea contantemente si estoy estable o no 
 
@@ -110,7 +110,7 @@ class Leader(ChordNode):
                 if in_election:
                     self.is_stable=False
                 else:
-                    time.sleep(time_*2)
+                    time.sleep(time_*20)
                     with self.in_election_lock:
                         if not self.in_election_:
                             self.is_stable=True
@@ -233,6 +233,8 @@ class Leader(ChordNode):
             _type_: _description_
         """
         with self.is_stable_lock:
+            if self.in_election:
+                self.is_stable_=False
             return self.is_stable_
     
     @is_stable.setter
@@ -318,13 +320,16 @@ class Leader(ChordNode):
                 if  self.in_election or not check:# Si está en elecciones o no hay que chequear mejor que vuelva a preguntar
                     continue 
                 
+                if not self.is_stable:# Si no se está estable esperar a estar estable
+                    continue
+                
                 succ:ChordNodeReference=self.succ # Pongo primero a mi sucesor
                 succ_list:list[ChordNodeReference]=self.succ_list # Capto la anterior primero
                 for i in range(self.succ_list_count_): # Iterar por la cant de nodos que tenemos 
                     succ_list[i]=succ
                     succ=succ.succ # Ahora el sucesor es el sucesor de mi sucesor
 
-                if not self.in_election: #
+                if not self.in_election and self.is_stable: #
                     self.succ_list=succ_list
                     self.succ_list_ok=True # Se puede volver a confiar en la lista de sucesores
 
