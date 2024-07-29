@@ -54,8 +54,8 @@ class Leader(ChordNode):
             self.Election_handler(node)
         elif op==ELECTION_WINNER:# Es que alguien gano las elecciones
             log_message(f'El ganador de las elecciones es {node.id} y el que yo creia como lider es {self.leader.id}',func=self.broadcast_handle)
-            #self.Election_handler(node)       Esto funcionaba antes
-            self.winner_handle(node)
+            self.Election_handler(node)      
+            
     def find_key_owner(self, key: int) -> ChordNodeReference:
         while not self.is_stable:
             time.sleep(1) # mientras no sea estable
@@ -73,7 +73,7 @@ class Leader(ChordNode):
         else:
             log_message(f'Mi sucesor es {self.succ.id if self.succ else None} con ip {self.succ.ip  if self.succ else None}',level='INFO')
         
-        log_message(f'Estoy en eleccion {self.in_election_}',func=self.show)
+        log_message(f'Estoy en eleccion {self.in_election}',func=self.show)
         
         log_message(f'Soy Estable {self.is_stable} ',func=self.show)
         
@@ -101,7 +101,7 @@ class Leader(ChordNode):
     
             except Exception as e:
                 log_message(f'Ocurrio un error {e} Printeando SHow {traceback.format_exc()}',func=self.show)
-    def check_i_am_stable(self,time_=0.1):
+    def check_i_am_stable(self,time_=1):
         """
         Chequea contantemente si estoy estable o no 
 
@@ -111,17 +111,16 @@ class Leader(ChordNode):
         while True:
             time.sleep(0.1)
             try:
-                in_election=True
-                with self.in_election_lock:
-                    in_election=self.in_election_
+                in_election=self.in_election
+                
                         
                 if in_election:
                     self.is_stable=False
                 else:
-                    time.sleep(time_*20)
-                    with self.in_election_lock:
-                        if not self.in_election_:
-                            self.is_stable=True
+                    time.sleep(4)
+                    
+                    if not self.in_election:
+                        self.is_stable=True
 
 
             except Exception as e:

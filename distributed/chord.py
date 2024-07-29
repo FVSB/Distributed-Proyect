@@ -890,7 +890,9 @@ class ChordNode:
         counter = 0
         while True:
             try:
-                #log_message(f"Chequeando predecesor", func=self.check_predecessor)
+                time.sleep(time_)
+                
+                log_message(f"Chequeando predecesor", func=self.check_predecessor)
                 if self.pred:
                     if (
                         not self.pred.check_predecessor()
@@ -913,9 +915,9 @@ class ChordNode:
                             func=self.check_predecessor,
                         )
 
-                    #log_message(
-                    #    f"Chequeando predecesor ...", func=ChordNode.check_predecessor
-                    #)
+                    log_message(
+                        f"Chequeando predecesor ...", func=ChordNode.check_predecessor
+                    )
             except Exception as e:
                 log_message(
                     f"Se desconecto el predecesor con id {self.pred.id} e ip {self.pred.ip},error:{e}",
@@ -925,7 +927,7 @@ class ChordNode:
                 traceback.print_exc()
                 self.pred = None  # Hago mi predecesor en None
 
-            time.sleep(time_)
+            
 
     def find_key_owner(self, key: int) -> ChordNodeReference:
         """Localiza al dueño de una llave
