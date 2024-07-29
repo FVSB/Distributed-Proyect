@@ -101,7 +101,7 @@ class Leader(ChordNode):
             time_ (int, optional): _description_. Defaults to 2.
         """
         while True:
-            time.sleep(time_)
+            time.sleep(0.1)
             try:
                 in_election=True
                 with self.in_election_lock:

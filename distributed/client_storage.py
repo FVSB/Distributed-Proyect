@@ -1,7 +1,7 @@
 import requests
 import pickle
 
-url='http://172.30.0.7:8000/upload'
+url='http://172.30.0.3:8000/upload'
 
 
 

@@ -118,6 +118,64 @@ class MinHeap:
             return item in self._heap
 
 
+class Set:
+    """
+    Tener un set seguro ante hilos para controlar los guids que ya se hicieron check
+    """
+
+    def __init__(self) -> None:
+        self._set: set[str] = set([])
+        self._lock: threading.RLock = threading.RLock()
+
+    def add_guid(self, guid: str):
+        if not isinstance(guid, str):
+            log_message(
+                f"Error añadiendo al set gestor de hilos guid debe ser str no {type(guid)} {guid}",
+                func=self.add_guid,
+            )
+        with self._lock:
+            self._set.add(guid)
+
+    def contains_guid(self, guid: str) -> bool:
+        if not isinstance(guid, str):
+            log_message(
+                f"Error vuendo si lo contiene al set gestor de hilos guid debe ser str no {type(guid)} {guid}",
+                func=self.contains_guid,
+            )
+        with self._lock:
+            return guid in self._set
+
+    def delete_guid_if_exist(self, guid: str) -> bool:
+        """
+        Dado un guid lo elimina del set
+        True si estaba
+        False si no estaba
+
+        Args:
+            guid (str): _description_
+
+        Returns:
+            bool: _description_
+        """
+        if not isinstance(guid, str):
+            log_message(
+                f"Error tratando de eliminar  del set gestor de hilos guid debe ser str no {type(guid)} {guid}",
+                func=self.delete_guid_if_exist,
+            )
+        with self._lock:
+            if not guid in self._set:
+                log_message(
+                    f"Se queria eliminar el guid {guid } pero no estaba en el set",
+                    func=self.delete_guid_if_exist,
+                )
+                return False
+            self._set.remove(guid)
+            log_message(
+                f"Se a eliminado del set el guid {guid}", func=self.delete_guid_if_exist
+            )
+            return True
+
+
 class DataReplicatedGestor:
     def __init__(self) -> None:
         self.heap = MinHeap([])
@@ -132,6 +190,12 @@ class DataReplicatedGestor:
         """
         Lock para que no haya problemas con los hilos
         """
+        self.ok_status: Set = Set()
+        """
+        El set es para in añadiendo las confirmaciones 
+        Si esta en el set => que no puede ser aplicada la función handle
+        """
+
         threading.Thread(target=self._loop, daemon=False).start()  # Inicializar el Hilo
 
     @property
@@ -169,6 +233,27 @@ class DataReplicatedGestor:
                 lis.append(item)
                 log_message(
                     f"Se va a mandar a ejecutar el evento del contrato {item.document_id} en el tiempo {self.time_now} con guid {item.guid}",
+                    func=self.pop_from_heap_and_execute,
+                )
+
+                guid = item.guid
+                log_message(
+                    f"Comprobar si el guid {guid} está en el set",
+                    func=self.pop_from_heap_and_execute,
+                )
+                if self.ok_status.contains_guid(guid):
+                    log_message(
+                        f"El guid {guid} fue confirmado => que no se ejecutará el execute",
+                        func=self.pop_from_heap_and_execute,
+                    )
+                    if not self.ok_status.delete_guid_if_exist(guid):
+                        log_message(
+                            f"No se pudo eliminar correctamente el guid {guid} del set",
+                            func=self.pop_from_heap_and_execute,
+                        )
+                    continue
+                log_message(
+                    f"El guid {guid} no se encuentra en el set => hay que ejecutar el execute",
                     func=self.pop_from_heap_and_execute,
                 )
                 item.execute()  # Ejecutar el evento
@@ -238,15 +323,17 @@ class DataReplicatedGestor:
                 func=self.add_document_to_the_queue,
             )
 
-    def update_document( self,
+    def update_document(
+        self,
         new_document: Document,
-        old_document:Document,
-        old_owner:int,
+        old_document: Document,
+        old_owner: int,
         handle_fun: Callable[[int, str], None],
-        time_waiting: int = 10)->str:
+        time_waiting: int = 10,
+    ) -> str:
         """
         Dado el documento a upgradear : new document y el viejo : old_document
-        si en el tiempo dicho no se a actualizado a tiempo la información 
+        si en el tiempo dicho no se a actualizado a tiempo la información
         se devuelve al anterior version
 
         Args:
@@ -258,15 +345,17 @@ class DataReplicatedGestor:
 
         Returns:
             guid str: identificador unico del proceso
-            
+
         """
-        if old_document.id!=new_document.id:
-            raise Exception(f'El documento nuevo tiene id {new_document.id} y el antiguo tiene {old_document.id} son distintos Error')
+        if old_document.id != new_document.id:
+            raise Exception(
+                f"El documento nuevo tiene id {new_document.id} y el antiguo tiene {old_document.id} son distintos Error"
+            )
         try:
             guid = get_guid()
 
-            def handle(): # document_id: int, event_guid: str, old_document: Document, old_owner: int
-                handle_fun(old_document.id, guid,old_document,old_owner)
+            def handle():  # document_id: int, event_guid: str, old_document: Document, old_owner: int
+                handle_fun(old_document.id, guid, old_document, old_owner)
 
             time_end = self.time_now + time_waiting
             handle = DeleteHandle(time_end, old_document.id, handle, guid)
@@ -282,3 +371,12 @@ class DataReplicatedGestor:
                 f"Ocurrion un error tratando de añadir el documento {old_document.id} {old_document.title} en la cola de eventos en el tiempo {self.time_now} Error: {e} \n {traceback.format_exc()} ",
                 func=self.add_document_to_the_queue,
             )
+
+    def confirm_guid(self, guid: str):
+        """
+        Es que se acepto la transacción por tanto no se ejecutará la función handle
+
+        Args:
+            guid (str): _description_
+        """
+        self.ok_status.add_guid(guid)

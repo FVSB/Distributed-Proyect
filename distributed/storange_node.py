@@ -27,9 +27,10 @@ class StoreNode(Leader):
     Args:
         Leader (_type_): _description_
     """
-    def __init__(self, ip: str, port: int = 8001,flask_port:int=8000, m: int = 160):
+
+    def __init__(self, ip: str, port: int = 8001, flask_port: int = 8000, m: int = 160):
         super().__init__(ip, port, m)
-        self.flask_port:int=flask_port
+        self.flask_port: int = flask_port
         self.data_replicate_gestor: DataReplicatedGestor = DataReplicatedGestor()
         self.setup_routes()
 
@@ -213,74 +214,82 @@ class StoreNode(Leader):
         """
         End Point para guardar documento siendo una réplica
         """
-        addr_from = request.remote_addr
-        log_message(
-            f"Se a mandado a guardar un archivo como replica que envio el addr: {addr_from} ",
-            func=self.save_document_like_replica,
-        )
-
-        data = self.get_data_from_request()  # Retornar los bytes con la data
-        if data is None:  # Es que no se envió nada
-            # Retornar error de no file
-            log_message(f"La data no puede ser null", func=self.get_data_from_request)
-            return (
-                jsonify({"message": 'Bad Request: Parámetro "param" requerido'}),
-                HTTPStatus.BAD_REQUEST,
-            )
-
-        node, doc = pickle.loads(data)
-        doc: Document = doc
-        node: ChordNodeReference = node
-
-        # Si es mas antiguo que el que yo tenia lanzo exepcion y le envio 400
-
-        # Chequear que no hay mas ninguno en la db
-        doc_id = doc.id
-        if db.has_document(doc_id):
+        try:
+            addr_from = request.remote_addr
             log_message(
-                f"Ya se tiene guardado el documento {doc.title} con id {doc_id}",
+                f"Se a mandado a guardar un archivo como replica que envio el addr: {addr_from} ",
                 func=self.save_document_like_replica,
             )
-            if db.update_document(
-                doc, node.id
-            ):  # Retornar que se hizo el cambio exitosamente
+
+            data = self.get_data_from_request()  # Retornar los bytes con la data
+            if data is None:  # Es que no se envió nada
+                # Retornar error de no file
                 log_message(
-                    f"Se realizo el cambio del documento {doc.id} con titulo {doc.title} del que es dueño el nodo {node.id}",
+                    f"La data no puede ser null", func=self.get_data_from_request
+                )
+                return (
+                    jsonify({"message": 'Bad Request: Parámetro "param" requerido'}),
+                    HTTPStatus.BAD_REQUEST,
+                )
+
+            node, doc = pickle.loads(data)
+            doc: Document = doc
+            node: ChordNodeReference = node
+
+            # Si es mas antiguo que el que yo tenia lanzo exepcion y le envio 400
+
+            # Chequear que no hay mas ninguno en la db
+            doc_id = doc.id
+            if db.has_document(doc_id):
+                log_message(
+                    f"Ya se tiene guardado el documento {doc.title} con id {doc_id}",
+                    func=self.save_document_like_replica,
+                )
+                if db.update_document(
+                    doc_id, doc, node.id
+                ):  # Retornar que se hizo el cambio exitosamente
+                    log_message(
+                        f"Se realizo el cambio del documento {doc.id} con titulo {doc.title} del que es dueño el nodo {node.id}",
+                        func=self.save_document_like_replica,
+                    )
+                    guid = self.data_replicate_gestor.add_document_to_the_queue(
+                        doc, self._delete_document_replica_if_no_check_response
+                    )  # Añadir al gestor de eventos por si no es persistente que lo elimine
+
+                    return Response(
+                        pickle.dumps((SAVE_DOC_WAITING_OK, guid)),
+                        status=HTTPStatus.OK,
+                    )
+                else:
+                    log_message(
+                        f"Hubo un error tratando de actualizar el documento con id {doc_id} de dueño {node.id}",
+                        func=self.save_document_like_replica,
+                    )
+            else:  # Es que no existe el documento en la base de datos
+                db.insert_document(
+                    doc, node.id, False
+                )  # Se añade en la base de datos y decimos que ahora no es persistente, esperamos confirmación
+                log_message(
+                    f"Se inserto correctamente el documento {doc.id} que es dueño el nodo {node.id}",
                     func=self.save_document_like_replica,
                 )
                 guid = self.data_replicate_gestor.add_document_to_the_queue(
                     doc, self._delete_document_replica_if_no_check_response
                 )  # Añadir al gestor de eventos por si no es persistente que lo elimine
 
+                log_message(
+                    f"Listo para enviar respuesta al nodo {addr_from} del documento {doc_id} con guid {guid}",
+                    func=self.save_document_like_replica,
+                )
+
                 return Response(
                     pickle.dumps((SAVE_DOC_WAITING_OK, guid)),
                     status=HTTPStatus.OK,
                 )
-            else:
-                log_message(
-                    f"Hubo un error tratando de actualizar el documento con id {doc_id} de dueño {node.id}",
-                    func=self.save_document_like_replica,
-                )
-        else:  # Es que no existe el documento en la base de datos
-            db.insert_document(
-                doc, node.id, False
-            )  # Se añade en la base de datos y decimos que ahora no es persistente, esperamos confirmación
+        except Exception as e:
             log_message(
-                f"Se inserto correctamente el documento {doc.id} que es dueño el nodo {node.id}",
+                f"Hubo un problema tratando de salvar el documento como replica Error:{e} \n {traceback.format_exc()}",
                 func=self.save_document_like_replica,
-            )
-            guid = self.data_replicate_gestor.add_document_to_the_queue(
-                doc, self._delete_document_replica_if_no_check_response
-            )  # Añadir al gestor de eventos por si no es persistente que lo elimine
-
-            log_message(
-                f"Listo para enviar respuesta al nodo {addr_from} del documento {doc_id} con guid {guid}",
-                func=self.save_document_like_replica,
-            )
-
-            return Response(
-                pickle.dumps((SAVE_DOC_WAITING_OK, guid)),
-                status=HTTPStatus.OK,
             )
         # Endpoint update_document_like_replica
 
@@ -368,7 +377,7 @@ class StoreNode(Leader):
             addr_from = request.remote_addr
             log_message(
                 f"Se a mandado a confirmar la insercción de un archivo como replica que envio el addr: {addr_from} ",
-                func=self.save_document_like_replica,
+                func=self.persist_insert_document,
             )
             data = self.get_data_from_request()
             document_id, guid = pickle.loads(data)  # La data recibida
@@ -386,6 +395,8 @@ class StoreNode(Leader):
                 )
 
             db.persist_document(document_id)
+            self.data_replicate_gestor.confirm_guid(guid)
+            log_message(f'Fue aceptado el guid {guid}',func=self.persist_insert_document)
             log_message(
                 f"Se pudo hacer persistente el documento guardado como replica {document_id} con guid {guid} al nodo {addr_from}",
                 func=self.persist_insert_document,
@@ -552,6 +563,7 @@ class StoreNode(Leader):
                             func=self.confirmation_crud_in_my_replicas,
                         )
                     else:  # Si se completo exitosamente añadir a la lista de exitoso
+                        log_message(f'Ocurrio exitosa la confirmación a la replica {replica.id} el documento {document_id} y guid {guid}')
                         lis.append(replica)
                         ok_replicas.append(
                             replica
@@ -626,9 +638,9 @@ class StoreNode(Leader):
                     f"El archivo con nombre {name} se a guardado correctamente en la base de datos",
                     func=self.Crud_action,
                 )
-            
+
             else:  # Se quiere actualizar o eliminar (Poner en None la data del documento) el documento
-                
+
                 if not db.update_document(document.id, document, self.id, False):
                     raise Exception(
                         f"No se puede actualizar un documento si no existe la fila de este {document.id} {document.title}"
@@ -701,12 +713,12 @@ class StoreNode(Leader):
 
         # Guardar en la base de datos
         try:
-            ok_crud,nodes_save=self.Crud_action(
+            ok_crud, nodes_save = self.Crud_action(
                 Document(name, doc_to_save),
                 "save_document_like_replica",
                 CrudCode.Insert,
             )
-            if ok_crud:# Si se realizó todo en orden
+            if ok_crud:  # Si se realizó todo en orden
                 return (
                     jsonify(
                         {
@@ -715,8 +727,11 @@ class StoreNode(Leader):
                     ),
                     HTTPStatus.OK,
                 )
-            else:# Es que ocurrio un error
-                log_message(f'Ocurrio un error tratando de insertar el documento con {name} y data {doc_to_save} e id{getShaRepr(name)} se guardo correctamente en los nodos {nodes_save}',func=self.upload_file)
+            else:  # Es que ocurrio un error
+                log_message(
+                    f"Ocurrio un error tratando de insertar el documento con {name} y data {doc_to_save} e id{getShaRepr(name)} se guardo correctamente en los nodos {nodes_save}",
+                    func=self.upload_file,
+                )
 
         except Exception as e:
             log_message(
@@ -872,17 +887,19 @@ class StoreNode(Leader):
         )
         try:
             document = Document(name, doc_to_save)
-            ok_crud,nodes_save=self.Crud_action(
+            ok_crud, nodes_save = self.Crud_action(
                 document=document,
                 sub_url="update_document_like_replica",
                 crud_code=CrudCode.Update,
             )
-            if not ok_crud:  # Si se pudo guardar en las replicas => que se guarda en la db
+            if (
+                not ok_crud
+            ):  # Si se pudo guardar en las replicas => que se guarda en la db
                 log_message(
                     f"No se pudo actualizar el documento {document.id} se guardo la actualización en los nodos {nodes_save} ",
                     func=self.update_file,
                 )
-                
+
             else:
                 log_message(f"Se actualizó el documento {name}", func=self.update_file)
                 return (
@@ -943,20 +960,26 @@ class StoreNode(Leader):
 
         try:
             document = Document(doc_name, None)
-            ok_crud,nodes_save=not self.Crud_action(
+            ok_crud, nodes_save = not self.Crud_action(
                 document=document,
                 sub_url="update_document_like_replica",
                 crud_code=CrudCode.Delete,
             )
-            if not ok_crud :  # Si se pudo guardar en las replicas => que se guarda en la db
+            if (
+                not ok_crud
+            ):  # Si se pudo guardar en las replicas => que se guarda en la db
                 log_message(
                     f"No se pudo actualizar el documento {document.id} se pudo guardar el cambio en los nodos {nodes_save}",
                     func=self.update_file,
                 )
             else:
-                log_message(f"Se eliminó el documento {doc_name}", func=self.update_file)
+                log_message(
+                    f"Se eliminó el documento {doc_name}", func=self.update_file
+                )
                 return (
-                    jsonify({"message": f"Se actualizó eliminó el documento {doc_name} "}),
+                    jsonify(
+                        {"message": f"Se actualizó eliminó el documento {doc_name} "}
+                    ),
                     HTTPStatus.OK,
                 )
         except Exception as e:

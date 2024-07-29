@@ -876,12 +876,12 @@ class ChordNode:
             time.sleep(5)  # 10
 
     # Check predecessor method to periodically verify if the predecessor is alive
-    def check_predecessor(self):
+    def check_predecessor(self,time_:float=0.1):
         """Check predecessor method to periodically verify if the predecessor is alive"""
         counter = 0
         while True:
             try:
-                log_message(f"Chequeando predecesor", func=self.check_predecessor)
+                #log_message(f"Chequeando predecesor", func=self.check_predecessor)
                 if self.pred:
                     if (
                         not self.pred.check_predecessor()
@@ -916,7 +916,7 @@ class ChordNode:
                 traceback.print_exc()
                 self.pred = None  # Hago mi predecesor en None
 
-            time.sleep(5)
+            time.sleep(time_)
 
     def find_key_owner(self, key: int) -> ChordNodeReference:
         """Localiza al dueño de una llave
