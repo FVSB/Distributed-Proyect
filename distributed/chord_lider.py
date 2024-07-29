@@ -56,7 +56,12 @@ class Leader(ChordNode):
             log_message(f'El ganador de las elecciones es {node.id} y el que yo creia como lider es {self.leader.id}',func=self.broadcast_handle)
             #self.Election_handler(node)       Esto funcionaba antes
             self.winner_handle(node)
-                       
+    def find_key_owner(self, key: int) -> ChordNodeReference:
+        while not self.is_stable:
+            time.sleep(1) # mientras no sea estable
+            log_message(f'Se mando a buscar la llave {key} pero no es estable la sit ',func=self.find_key_owner)
+        return super().find_key_owner(key)
+                      
     def data_to_print(self):
         """Para poder añadir cosas a pintar"""
         log_message(f'Mi predecesor es {self.pred.id if self.pred else None} con ip {self.pred.ip if self.pred else None} ',level='INFO')
@@ -85,14 +90,17 @@ class Leader(ChordNode):
         print(f'ENtro en print')
         """Printea quien soy yo"""
         while True:
-            log_message('-'*20,level='INFO')
-            
-            self.data_to_print()# Printear los logs
-            if print_final:log_message('*'*20,level='INFO') # Printea el final en este hilo
-            
-            
-            time.sleep(time_) # Se presenta cada 10 segundos
+            try:
+                log_message('-'*20,level='INFO')
+
+                self.data_to_print()# Printear los logs
+                if print_final:log_message('*'*20,level='INFO') # Printea el final en este hilo
+
+
+                time.sleep(time_) # Se presenta cada 10 segundos
     
+            except Exception as e:
+                log_message(f'Ocurrio un error {e} Printeando SHow {traceback.format_exc()}',func=self.show)
     def check_i_am_stable(self,time_=0.1):
         """
         Chequea contantemente si estoy estable o no 
@@ -377,9 +385,10 @@ class Leader(ChordNode):
         if node_propose.id<self.leader.id:# Si el nodo que se propuso es menor que el nodo que tengo como lider
             self.leader=node_propose # Actualizo mi lider
             log_message(f'Mi nuevo lider es {self.leader.id}',func=self.Election_handler)
+           
     
+  
     
-
 if __name__ == "__main__":
     print("Hello from Lider node")
     ip = socket.gethostbyname(socket.gethostname())
