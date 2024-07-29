@@ -50,6 +50,20 @@ def get_guid() -> str:
     return guid_str
 
 
+def is_equal_list(lis_1:list,list_2:list)->bool:
+    """
+    Retorna True si la lista 1 y la 2 los objetos en ellas son iguales
+    False en otro caso
+
+    Args:
+        lis_1 (list): _description_
+        list_2 (list): _description_
+
+    Returns:
+        bool: _description_
+    """
+    return set(lis_1)==set(list_2)
+
 def serialize_pyobj_to_json_file(obj) -> Response:
     serialize = jsonpickle.encode(obj)
     return jsonify(serialize)
@@ -80,6 +94,7 @@ class CrudCode(Enum):
     Insert = auto()
     Update = auto()
     Delete = auto()
+    ReInsertSelf=auto()
 
     def __lt__(self, other):
         if self.__class__ is other.__class__:

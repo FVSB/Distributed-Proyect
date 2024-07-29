@@ -9,7 +9,7 @@ class DocsRecords:
         self.is_delete: bool = False
         self.last_change: datetime = datetime.utcnow()  # Muestra la hora utc
 
-    def can_update(self, other: "DocsRecords") -> bool:
+    def can_update(self, new_doc: "DocsRecords") -> bool:
         """
         Dado el documento nuevo a update se ve si es mas nuevo que el de esta instancia
         
@@ -20,13 +20,13 @@ class DocsRecords:
         Returns:
             bool: True si el other es mas nuevo False si esta instancia es mas nueva
         """
-        if not isinstance(other, DocsRecords):
-            raise Exception(f'Other debe ser de tipo  DocsRecords no:{type(other)} {other} ')
+        if not isinstance(new_doc, DocsRecords):
+            raise Exception(f'Other debe ser de tipo  DocsRecords no:{type(new_doc)} {new_doc} ')
         
-        if self.doc_id != other.doc_id:
+        if self.doc_id != new_doc.doc_id:
             return False
         return (
-            self.last_change < other.last_change
+            self.last_change <= new_doc.last_change
         )  # Si el ultimo cambio es mas reciente se queda el ultimo cambio
     def __str__(self)->str:
         return f'Historial: {self.last_change}'

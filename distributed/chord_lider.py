@@ -57,7 +57,24 @@ class Leader(ChordNode):
             #self.Election_handler(node)       Esto funcionaba antes
             self.winner_handle(node)
                        
-   
+    def data_to_print(self):
+        """Para poder añadir cosas a pintar"""
+        log_message(f'Mi predecesor es {self.pred.id if self.pred else None} con ip {self.pred.ip if self.pred else None} ',level='INFO')
+        log_message(f'Yo soy id:{self.id},con ip:{self.ip} ',level='INFO')
+        if self.succ.id == self.id:
+            if self.succ.ip !=self.ip:
+                log_message('El sucesor tiene igual ID pero no tiene igual ip',level='INFO')
+            log_message(f'Todavia no tengo sucesor',level='INFO'),
+        else:
+            log_message(f'Mi sucesor es {self.succ.id if self.succ else None} con ip {self.succ.ip  if self.succ else None}',level='INFO')
+        
+        log_message(f'Estoy en eleccion {self.in_election_}',func=self.show)
+        
+        log_message(f'El lider es {self.leader.id}',func=self.show)
+        
+        log_message(f'La lista de sucesores es {self.succ_list}',func=self.show)
+        
+        log_message(f'Se puede confiar en la lista de sucesores {self.succ_list_ok}',func=self.show)
     
     def show(self,time_:int=3, print_final:bool=True):
         """
@@ -67,23 +84,8 @@ class Leader(ChordNode):
         """Printea quien soy yo"""
         while True:
             log_message('-'*20,level='INFO')
-            log_message(f'Mi predecesor es {self.pred.id if self.pred else None} con ip {self.pred.ip if self.pred else None} ',level='INFO')
-            log_message(f'Yo soy id:{self.id},con ip:{self.ip} ',level='INFO')
-            if self.succ.id == self.id:
-                if self.succ.ip !=self.ip:
-                    log_message('El sucesor tiene igual ID pero no tiene igual ip',level='INFO')
-                log_message(f'Todavia no tengo sucesor',level='INFO'),
-            else:
-                log_message(f'Mi sucesor es {self.succ.id if self.succ else None} con ip {self.succ.ip  if self.succ else None}',level='INFO')
             
-            log_message(f'Estoy en eleccion {self.in_election_}',func=self.show)
-            
-            log_message(f'El lider es {self.leader.id}',func=self.show)
-            
-            log_message(f'La lista de sucesores es {self.succ_list}',func=self.show)
-            
-            log_message(f'Se puede confiar en la lista de sucesores {self.succ_list_ok}',func=self.show)
-            
+            self.data_to_print()# Printear los logs
             if print_final:log_message('*'*20,level='INFO') # Printea el final en este hilo
             
             
@@ -154,7 +156,9 @@ class Leader(ChordNode):
         Dice mi lista de sucesores para la posterior replicación
         """
         self.succ_list_lock:threading.RLock=threading.RLock()
-        
+        """
+        Lock para la lista de sucesores
+        """
         self.succ_list_ok_:bool=False 
         """
         Dice si está o no actualizado la lista de sucesores
@@ -237,6 +241,13 @@ class Leader(ChordNode):
    
     @property 
     def i_am_alone(self)->bool:
+        """
+        Dice True si estoy Solo False si no 
+        Es seguro ante hilos
+
+        Returns:
+            bool: _description_
+        """
         with self.i_am_alone_lock:
             return self.i_am_alone_
     @i_am_alone.setter

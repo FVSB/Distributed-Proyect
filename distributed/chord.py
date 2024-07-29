@@ -160,7 +160,14 @@ class ChordNodeReference:
 
     def __repr__(self) -> str:
         return str(self)
-
+    def __eq__(self, value: 'ChordNodeReference') -> bool:
+        if not isinstance(value,ChordNodeReference):
+           # raise Exception(f'Value tiene que ser de tipo ChordNodeReference no de tipo {type(value)}, {value}')
+            return False
+        return self.ip==value.ip
+    
+    def __hash__(self) -> int:
+        return hash(self.ip)
 
 # Class representing a Chord node
 class ChordNode:

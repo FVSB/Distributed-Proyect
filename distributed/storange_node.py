@@ -626,7 +626,9 @@ class StoreNode(Leader):
                     f"El archivo con nombre {name} se a guardado correctamente en la base de datos",
                     func=self.Crud_action,
                 )
+            
             else:  # Se quiere actualizar o eliminar (Poner en None la data del documento) el documento
+                
                 if not db.update_document(document.id, document, self.id, False):
                     raise Exception(
                         f"No se puede actualizar un documento si no existe la fila de este {document.id} {document.title}"

@@ -178,14 +178,14 @@ def is_document_persistent(id_document: int) -> bool:
     return doc.persistent
 
 
-def make_false_persist_all_nodes_rows(node_id: bool):
+def make_false_persist_all_nodes_rows(node_id: int):
     """
     Dado el id de un nodo de chord todas las filas que lo tengan a el como dueño le van hacer el campo persist como False
     Retorna True si se pudo completar exitosamente la operacion
     False si ocurrio un error
 
     Args:
-        node_id (bool): _description_
+        node_id (int): _description_
     """
     try:
         session = Session()
@@ -200,7 +200,14 @@ def make_false_persist_all_nodes_rows(node_id: bool):
             f"Hubo un error tratando de hacer False la columna persistent de el nodo {node_id}"
         )
         return False
-
+def make_false_persist_all_rows():
+    """
+    Hace la columna persistent en todas las filas Falso
+    """
+    session=Session()
+    session.query(Docs).update({Docs.persistent: False})
+    session.commit()
+    session.close()
 
 def get_document_by_id(id_document: int) -> Document:
     """
@@ -259,6 +266,20 @@ def get_all_nodes_i_save() -> set[int]:
         response.add(node[0])  # Pq node es una tupla
     return response
 
+
+
+def get_all_docs_keys()->list[int]:
+    """
+    Retorna todas las llaves que hay en la db
+
+    Returns:
+        list[int]: Todas las llaves que hay en la base de datos
+    """
+    session=Session()
+    docs=session.query(Docs).all()
+    session.close()
+    return sorted([int(doc.id) for doc in docs],reverse=True)
+    
 
 def update_document(
     id_document: int,
