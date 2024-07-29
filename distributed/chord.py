@@ -304,7 +304,7 @@ class ChordNode:
 
             time.sleep(time_)  # Se presenta cada 10 segundos
 
-    def _search_successor(self, op: int, data: str = None, time_=5) -> bytes:
+    def _search_successor(self, op: int, data: str = None, time_:float=0.5) -> bytes:
         """Busca un sucesor si no tengo o si mi pred es None
 
         Args:
@@ -332,8 +332,9 @@ class ChordNode:
                         f"Enviado el broadcas para buscar succ",
                         func=self._search_successor,
                     )
+                    
                     # self.Is_Search_Succ=True
-
+                    time.sleep(2)# Esperar 2 segundos
                 except Exception as e:
                     log_message(
                         f"Ocurrio un problema enviando el broadcast: {e}",
@@ -434,7 +435,7 @@ class ChordNode:
                         )
                         self.broadcast_handle(op, message, address[0])
 
-                    time.sleep(3)
+                    time.sleep(1) # FUncionaba ok con 3
                 except:
                     log_message(
                         f"Error en el while True del recv broadcast Error: {traceback.format_exc()}",
@@ -650,7 +651,7 @@ class ChordNode:
                 )
 
     # Stabilize method to periodically verify and update the successor and predecessor
-    def stabilize(self):
+    def stabilize(self,time_:float=1):
         """Stabilize method to periodically verify and update the successor and predecessor"""
         Is = False
         node = None
@@ -727,7 +728,7 @@ class ChordNode:
                 f"successor : {self.succ} predecessor {self.pred}",
                 func=ChordNode.stabilize,
             )
-            time.sleep(5)  # Poner en produccion en 1 segundo
+            time.sleep(time_)  # Poner en produccion en 1 segundo Funcionaba bien con 5
 
     # Notify method to INFOrm the node about another node
     def notify(self, node: "ChordNodeReference"):
@@ -885,7 +886,7 @@ class ChordNode:
             time.sleep(5)  # 10
 
     # Check predecessor method to periodically verify if the predecessor is alive
-    def check_predecessor(self,time_:float=2):
+    def check_predecessor(self,time_:float=0.5):# Por defecto 2
         """Check predecessor method to periodically verify if the predecessor is alive"""
         counter = 0
         while True:
