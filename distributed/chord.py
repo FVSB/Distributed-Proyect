@@ -122,11 +122,11 @@ class ChordNodeReference:
             )
             return False
         # print(f'La respuesta de si esta vivo el nodo vivo o no es {response}')
-        log_message(
-            f"La respuesta de si esta vivo el nodo vivo o no es {response}",
-            func=ChordNodeReference.check_predecessor,
-            extra_data={"func": "check_predecesor from ChordReferenceNode"},
-        )
+        #log_message(
+        #    f"La respuesta de si esta vivo el nodo vivo o no es {response}",
+        #    func=ChordNodeReference.check_predecessor,
+        #    extra_data={"func": "check_predecesor from ChordReferenceNode"},
+        #)
         if response in ["", " ", None, EMPTYBIT]:
             return False
         try:
@@ -171,6 +171,15 @@ class ChordNodeReference:
 
 # Class representing a Chord node
 class ChordNode:
+    
+    def start_node(self):
+        """
+        Llamar despues de inicializar para poder iniciar todo
+        """
+        log_message(f'Inicializando los hilos',func=self.start_node)
+        self.start_threads()
+        log_message(f'Levantado los hilos')
+    
     def start_threads(self):
         """Levanta los hilos"""
         # Start background threads for stabilization, fixing fingers, and checking predecessor
@@ -904,9 +913,9 @@ class ChordNode:
                             func=self.check_predecessor,
                         )
 
-                    log_message(
-                        f"Chequeando predecesor ...", func=ChordNode.check_predecessor
-                    )
+                    #log_message(
+                    #    f"Chequeando predecesor ...", func=ChordNode.check_predecessor
+                    #)
             except Exception as e:
                 log_message(
                     f"Se desconecto el predecesor con id {self.pred.id} e ip {self.pred.ip},error:{e}",
@@ -1226,7 +1235,8 @@ if __name__ == "__main__":
     ip = socket.gethostbyname(socket.gethostname())
     log_message(f" Mi ip es {ip}")
     node = ChordNode(ip, m=4)
-    node.start_threads()  # Iniciar el nodo
+    #node.start_threads()  # Iniciar el nodo
+    node.start_node() # Iniciar el nodo
 
     while True:
         pass

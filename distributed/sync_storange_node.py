@@ -1,12 +1,12 @@
 from storange_node import *
 
 
-app = Flask(__name__)
-app.logger.disabled = (
-    True  # Desactivar el  logguer de flask para que no haya conflicto con el mio
-)
-log = logging.getLogger("werkzeug")
-log.disabled = True  # Desactivar los otros posibles logguers que no sea el mio
+#app = Flask(__name__)
+#app.logger.disabled = (
+#    True  # Desactivar el  logguer de flask para que no haya conflicto con el mio
+#)
+#log = logging.getLogger("werkzeug")
+#log.disabled = True  # Desactivar los otros posibles logguers que no sea el mio
 
 
 class SyncStoreNode(StoreNode):
@@ -32,6 +32,10 @@ class SyncStoreNode(StoreNode):
         super().data_to_print()
         log_message(
             f"Los datos están sincronizados {self.is_sync_data}", func=self.show
+        )
+        log_message(
+            f"Se pueden sincronizar los datos {self.can_other_sync_data_with_me}",
+            func=self.data_to_print,
         )
 
     @property
@@ -462,15 +466,15 @@ class SyncStoreNode(StoreNode):
                     )
                     continue
 
-                # if not self.send_to_reinsert_others_documents(
-                #    other_keys
-                # ):  # => Que hubo algun problema
-                #    log_message(
-                #        f"No se pudo enviar a los nuevos dueños de las llaves {other_keys} todas las llaves",
-                #        func=self.sync_data,
-                #    )
-                #    continue
-                #
+                if not self.send_to_reinsert_others_documents(
+                   other_keys
+                ):  # => Que hubo algun problema
+                   log_message(
+                       f"No se pudo enviar a los nuevos dueños de las llaves {other_keys} todas las llaves",
+                       func=self.sync_data,
+                   )
+                   continue
+            
                 log_message(
                     f"Se completo la sincronización de la data", func=self.sync_data
                 )
@@ -559,6 +563,8 @@ if __name__ == "__main__":
     ip = socket.gethostbyname(socket.gethostname())
     node = SyncStoreNode(ip, m=3)
 
-    node.start_threads()  # Iniciar los nodos
+    #node.start_threads()  # Iniciar los nodos
+    node.start_node() # Iniciar el pipeline
+    
     while True:
         pass

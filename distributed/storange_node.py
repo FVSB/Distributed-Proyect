@@ -27,13 +27,27 @@ class StoreNode(Leader):
     Args:
         Leader (_type_): _description_
     """
-
+    
+    
     def __init__(self, ip: str, port: int = 8001, flask_port: int = 8000, m: int = 160):
         super().__init__(ip, port, m)
         self.flask_port: int = flask_port
         self.data_replicate_gestor: DataReplicatedGestor = DataReplicatedGestor()
+        #self.setup_routes()
+        
+    def start_node(self):
+        super().start_node()
+        log_message(f'Inicializar el servidor de Flask',func=self.start_node)
+        self.start_flask_storange_server()
+        log_message(f'Inicializado el nodo',func=self.start_node)
+    def start_flask_storange_server(self):
         self.setup_routes()
-
+        log_message(f'Inicializar el hilo de del servidor de flask',func=self.start_flask_storange_server)
+        threading.Thread(
+            target=lambda: app.run(host=self.ip, port=self.flask_port), daemon=True
+        ).start()  # Iniciar servidor por el puerto 8000
+        
+    
     def setup_routes(self):
         # Registrar la ruta y vincularla al método de instancia
         app.add_url_rule("/upload", view_func=self.upload_file, methods=["POST"])
@@ -73,9 +87,9 @@ class StoreNode(Leader):
         """
 
         super().start_threads()
-        threading.Thread(
-            target=lambda: app.run(host=self.ip, port=self.flask_port), daemon=True
-        ).start()  # Iniciar servidor por el puerto 8000
+        #threading.Thread(
+        #    target=lambda: app.run(host=self.ip, port=self.flask_port), daemon=True
+        #).start()  # Iniciar servidor por el puerto 8000
 
         #############################################
         #                                           #
@@ -1001,6 +1015,7 @@ if __name__ == "__main__":
     ip = socket.gethostbyname(socket.gethostname())
     node = StoreNode(ip, m=3)
 
-    node.start_threads()  # Iniciar los nodos
+    #node.start_threads()  # Iniciar los nodos
+    node.start_node() # Iniciar el pipeline
     while True:
         pass

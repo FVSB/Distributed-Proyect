@@ -372,14 +372,15 @@ class Leader(ChordNode):
         if node_propose.id<self.leader.id:# Si el nodo que se propuso es menor que el nodo que tengo como lider
             self.leader=node_propose # Actualizo mi lider
             log_message(f'Mi nuevo lider es {self.leader.id}',func=self.Election_handler)
-
+    
     
 
 if __name__ == "__main__":
     print("Hello from Lider node")
     ip = socket.gethostbyname(socket.gethostname())
     node = Leader(ip,m=3,succ_lis_count=2)
-    node.start_threads()#Iniciar los nodos
+    #node.start_threads()#Iniciar los nodos
+    node.start_node() # Iniciar el pipeline
     while True:
         pass
 
