@@ -70,6 +70,11 @@ class Leader(ChordNode):
             time.sleep(time_)
             try:
                 log_message(f'Comprobando si debo hacer una Eleccion',func=self._check_make_election)
+                
+                if self.in_election:# Si estoy en eleccion continue  ANTES NO ESTABA
+                    log_message(f'COmo estoy en eleccion => no hago mas elecciones',func=self._check_make_election)
+                    continue
+                
                 if  self.pred or self.i_am_alone: 
                     
                     log_message(f'Tengo predecesor {self.pred} o estoy solo {self.i_am_alone} no debo hacer broadcast',func=self._check_make_election)
@@ -92,8 +97,9 @@ class Leader(ChordNode):
             self.Election_handler(node)
         elif op==ELECTION_WINNER:# Es que alguien gano las elecciones
             log_message(f'El ganador de las elecciones es {node.id} y el que yo creia como lider es {self.leader.id}',func=self.broadcast_handle)
-            self.Election_handler(node)      
-            
+            #self.Election_handler(node)     COn esto funcionaba ante
+            self.winner_handle(node) 
+             
     def find_key_owner(self, key: int) -> ChordNodeReference:
         """
         Busca la el dueño de la llave Si no es estable la red espera un segundo para buscarlo

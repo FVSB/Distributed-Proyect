@@ -47,7 +47,8 @@ class Docs(Base):
 
     node_id = Column(Integer)
 
-
+    text=Column(Text)#BOrrar despues
+    
 # Crear la tabla si no existe
 Base.metadata.create_all(engine)
 
@@ -73,6 +74,7 @@ def insert_document(document: Document, node_id: int, persistent: bool = False) 
             node_id=node_id,
             document=serialized_data,
             persistent=persistent,
+            text=document.text
         )
         session.add(to_save)
         session.commit()
@@ -225,6 +227,7 @@ def get_document_by_id(id_document: int) -> Document:
     doc = session.query(Docs).filter_by(id=id_document).first()
     data = None
     if doc:
+        
         data: Document = pickle.loads(doc.document)  # Tomar el documento como objeto
     session.close()
     return data
@@ -302,8 +305,9 @@ def update_document(
     session = Session()
     doc = session.query(Docs).filter_by(id=id_document).first()
     response = False
-    if doc:
-        doc.document = pickle.dumps(new_data)
+    if doc:  
+        doc.document = new_data.get_in_bytes()
+        doc.text=new_data.text  
         if (
             node_id > -1
         ):  # Es que se quiere actualizar tb el nodo que es dueño ademas de la data
@@ -324,7 +328,8 @@ def delete_document(document_id: int):
     Args:
         document_id (int): _description_
     """
-    return update_document(document_id, None)
+    document=get_document_by_id(document_id)
+    return update_document(document_id, document.delete())
 
 
 def delete_document_all(document_id: int):

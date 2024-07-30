@@ -556,7 +556,7 @@ class SyncStoreNode(StoreNode):
         )
         return False
 
-    def check_need_sync_store_data(self, time_: int = 1):
+    def check_need_sync_store_data(self, time_: int = 0.1):
         """
         Este método chequea si se tiene que resincronizar los datos
         """

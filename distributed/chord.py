@@ -36,9 +36,9 @@ class ChordNode:
     def start_threads(self):
         """Levanta los hilos"""
         # Start background threads for stabilization, fixing fingers, and checking predecessor
-        # threading.Thread(
-        #    target=self.stabilize, daemon=True  COn esto antes funcionaba
-        # ).start()  # Start stabilize thread
+        threading.Thread(
+           target=self.stabilize, daemon=True  
+        ).start()  # Start stabilize thread
         threading.Thread(
             target=self.fix_fingers, daemon=True
         ).start()  # Start fix fingers thread
