@@ -45,8 +45,21 @@ En caso de Entrada,Salida (Tb Cubre que se parta la red y resincronize):
 
 
 ## TODO:
-- Se tiene que en el momento de mandar a salvar en las replicas asegurarse que es estable la lista de sucesores está quitada por temas de comodidad de tiempo.
+-X Se tiene que en el momento de mandar a salvar en las replicas asegurarse que es estable la lista de sucesores está quitada por temas de comodidad de tiempo.
 
+- Se tiene que añadir la capa de estabilidad con respecto al lider,
+    - En chordLider cuando se termine una eleccion:
+        - El lider toma la iniciativa y dice que el ya está estable:
+            Todos los nodos si no estan en eleccion y su predecesor esta estable:
+            se ponen en estable_  y para el estable preguntan frecuentemente al lider
+            si en algun momento esoty en eleccion o mi predecesor lo esta o el lider lo deja de estar
+            yo no soy estable
+            - El lider tiene una variable bool Networt Stable cuando ve que su predecesor esta estable
+        - Con respecto a succ_ok se revisa que el lider este ok primero y despues que cada uno de esos nodos esta ok
+    - En la sincronización cuando se establece todos los nodos empiezan a resincronizar, EL lider analogo se pone en True
+    y todos miran a su predecesor cuando el lider vea su predecesor en True => que la red es estable para la insercción y mas de nuevo Esto es vital para el server del buscador
+
+        
 - añadir la capa de seguridad que durante la inserccion en todo momento revise que no se está en eleccion 
 
-- Hay que hacer el tercer check y añadir el simulador 
+-X Hay que hacer el tercer check y añadir el simulador 
