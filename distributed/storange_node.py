@@ -979,16 +979,16 @@ class StoreNode(Leader):
 
         try:
             document = Document(doc_name, None)
-            ok_crud, nodes_save = not self.Crud_action(
+            ok_crud, nodes_save = self.Crud_action(
                 document=document,
                 sub_url="update_document_like_replica",
                 crud_code=CrudCode.Delete,
             )
             if (
                 not ok_crud
-            ):  # Si se pudo guardar en las replicas => que se guarda en la db
+            ):  # Si no se pudo eliminar correctamente
                 log_message(
-                    f"No se pudo actualizar el documento {document.id} se pudo guardar el cambio en los nodos {nodes_save}",
+                    f"No se pudo eliminar el documento {document.id} se pudo guardar el cambio en los nodos {nodes_save}",
                     func=self.update_file,
                 )
             else:
