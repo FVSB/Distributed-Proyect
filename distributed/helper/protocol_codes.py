@@ -30,3 +30,6 @@ ERROR_THIS_IS_NOT_THE_LASTED_VERSION=20
 
 
 CAN_YOU_TAKE_YOUR_NEW_KEYS=21 # Es para enviar al chord_node_reference si se puede hacer cargo ya de las que ahora son suyas
+
+CHECK_NETWORK_STABILITY=22 # En chord Lider chequea que mi predecesor sea estable
+CHECK_IN_ELECTION=23 # EN ChordLider chequea si el predecesor está en elección

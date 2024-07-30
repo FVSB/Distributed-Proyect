@@ -144,6 +144,8 @@ class ChordNodeReference:
     def closest_preceding_finger(self, id: int) -> "ChordNodeReference":
         response = self._send_data(CLOSEST_PRECEDING_FINGER, id)
         return response
+    
+    
 
     # Method to store a key-value pair in the current node
     def store_key(self, key: str, value: str):
@@ -154,6 +156,47 @@ class ChordNodeReference:
     def retrieve_key(self, key: str) -> str:
         response = self._send_data(RETRIEVE_KEY, key)
         return response
+
+
+    ###################################
+    #                                 #
+    #       Añadido nuevo             #
+    #                                 #
+    ###################################
+
+    def check_network_stability(self)->bool:
+        """
+         Esto lo puede responder solo el lider
+         El lider responde si esta estable la red o no
+
+        Returns:
+            bool: True: La red es estable , False: La red no es estable
+        """
+        try:
+            response:bool=self._send_data(op=CHECK_NETWORK_STABILITY)
+            if not isinstance(response,bool):
+                raise Exception(f'response debe ser bool no {type(response)} {response}')
+            return response
+        except Exception as e:
+            log_message(f'No se pudo preguntar al nodo {self.id} si es estable Error:{e} \n {traceback.format_exc()}',func=self.check_network_stability)
+            return False
+    def check_in_election(self)->bool:
+        """
+        Chequea si yo estoy en elección, el lider toma la iniciativa
+
+        Returns:
+            bool: True si lo esta False si no
+        """
+        try:
+            response:bool=self._send_data(op=CHECK_IN_ELECTION)
+            if not isinstance(response,bool):
+                raise Exception(f'response debe ser bool no {type(response)} {response}')
+            return response
+            
+        except Exception as e:
+            log_message(f'Error no se le pudo preguntar al predecesor {self.id} si tiene está en eleccion Error:{e} \n {traceback.format_exc()}',func=self.check_in_election)
+            
+        
 
     def __str__(self) -> str:
         return f"ChordNodeReference:{self.id},{self.ip},{self.port}"
@@ -1060,8 +1103,19 @@ class ChordNode:
         return (node.id, key, value)
 
     def handle_request(self, data, option, a):
+        """
+        Recibe las peticiones en los distintos hilos
 
-        data_resp = None
+        Args:
+            data (_type_): _description_
+            option (int): Dice el tipo que es
+            a (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
+
+        data_resp:bytes = None
         if option == FIND_SUCCESSOR:
             id = int(data[1])
             data_resp = self.find_succ(id)
