@@ -122,11 +122,11 @@ class ChordNodeReference:
             )
             return False
         # print(f'La respuesta de si esta vivo el nodo vivo o no es {response}')
-        #log_message(
+        # log_message(
         #    f"La respuesta de si esta vivo el nodo vivo o no es {response}",
         #    func=ChordNodeReference.check_predecessor,
         #    extra_data={"func": "check_predecesor from ChordReferenceNode"},
-        #)
+        # )
         if response in ["", " ", None, EMPTYBIT]:
             return False
         try:
@@ -144,8 +144,6 @@ class ChordNodeReference:
     def closest_preceding_finger(self, id: int) -> "ChordNodeReference":
         response = self._send_data(CLOSEST_PRECEDING_FINGER, id)
         return response
-    
-    
 
     # Method to store a key-value pair in the current node
     def store_key(self, key: str, value: str):
@@ -157,14 +155,13 @@ class ChordNodeReference:
         response = self._send_data(RETRIEVE_KEY, key)
         return response
 
-
     ###################################
     #                                 #
     #       Añadido nuevo             #
     #                                 #
     ###################################
 
-    def check_network_stability(self)->bool:
+    def check_network_stability(self) -> bool:
         """
          Esto lo puede responder solo el lider
          El lider responde si esta estable la red o no
@@ -173,14 +170,20 @@ class ChordNodeReference:
             bool: True: La red es estable , False: La red no es estable
         """
         try:
-            response:bool=self._send_data(op=CHECK_NETWORK_STABILITY)
-            if not isinstance(response,bool):
-                raise Exception(f'response debe ser bool no {type(response)} {response}')
+            response: bool = self._send_data(op=CHECK_NETWORK_STABILITY)
+            if not isinstance(response, bool):
+                raise Exception(
+                    f"response debe ser bool no {type(response)} {response}"
+                )
             return response
         except Exception as e:
-            log_message(f'No se pudo preguntar al nodo {self.id} si es estable Error:{e} \n {traceback.format_exc()}',func=self.check_network_stability)
+            log_message(
+                f"No se pudo preguntar al nodo {self.id} si es estable Error:{e} \n {traceback.format_exc()}",
+                func=self.check_network_stability,
+            )
             return False
-    def check_in_election(self)->bool:
+
+    def check_in_election(self) -> bool:
         """
         Chequea si yo estoy en elección, el lider toma la iniciativa
 
@@ -188,47 +191,52 @@ class ChordNodeReference:
             bool: True si lo esta False si no
         """
         try:
-            response:bool=self._send_data(op=CHECK_IN_ELECTION)
-            if not isinstance(response,bool):
-                raise Exception(f'response debe ser bool no {type(response)} {response}')
+            response: bool = self._send_data(op=CHECK_IN_ELECTION)
+            if not isinstance(response, bool):
+                raise Exception(
+                    f"response debe ser bool no {type(response)} {response}"
+                )
             return response
-            
+
         except Exception as e:
-            log_message(f'Error no se le pudo preguntar al predecesor {self.id} si tiene está en eleccion Error:{e} \n {traceback.format_exc()}',func=self.check_in_election)
-            
-        
+            log_message(
+                f"Error no se le pudo preguntar al predecesor {self.id} si tiene está en eleccion Error:{e} \n {traceback.format_exc()}",
+                func=self.check_in_election,
+            )
 
     def __str__(self) -> str:
         return f"ChordNodeReference:{self.id},{self.ip},{self.port}"
 
     def __repr__(self) -> str:
         return str(self)
-    def __eq__(self, value: 'ChordNodeReference') -> bool:
-        if not isinstance(value,ChordNodeReference):
-           # raise Exception(f'Value tiene que ser de tipo ChordNodeReference no de tipo {type(value)}, {value}')
+
+    def __eq__(self, value: "ChordNodeReference") -> bool:
+        if not isinstance(value, ChordNodeReference):
+            # raise Exception(f'Value tiene que ser de tipo ChordNodeReference no de tipo {type(value)}, {value}')
             return False
-        return self.ip==value.ip
-    
+        return self.ip == value.ip
+
     def __hash__(self) -> int:
         return hash(self.ip)
 
+
 # Class representing a Chord node
 class ChordNode:
-    
+
     def start_node(self):
         """
         Llamar despues de inicializar para poder iniciar todo
         """
-        log_message(f'Inicializando los hilos',func=self.start_node)
+        log_message(f"Inicializando los hilos", func=self.start_node)
         self.start_threads()
-        log_message(f'Levantado los hilos')
-    
+        log_message(f"Levantado los hilos")
+
     def start_threads(self):
         """Levanta los hilos"""
         # Start background threads for stabilization, fixing fingers, and checking predecessor
-        threading.Thread(
-            target=self.stabilize, daemon=True
-        ).start()  # Start stabilize thread
+        # threading.Thread(
+        #    target=self.stabilize, daemon=True  COn esto antes funcionaba
+        # ).start()  # Start stabilize thread
         threading.Thread(
             target=self.fix_fingers, daemon=True
         ).start()  # Start fix fingers thread
@@ -257,12 +265,35 @@ class ChordNode:
     # threading.Thread(target=self.search_test,daemon=True).start()
 
     def __init__(self, ip: str, port: int = 8001, m: int = 160):  # m=160
+        """
+        Devuelve un nodo de chord es
+
+        Args:
+            ip (str): _description_
+            port (int, optional): _description_. Defaults to 8001.
+            m (int, optional): _description_. Defaults to 160.
+        """
         self.id = getShaRepr(ip)
         self.ip = ip
         self.port = port
         self.ref: ChordNodeReference = ChordNodeReference(self.ip, self.port)
-        self.succ: ChordNodeReference = self.ref  # Initial successor is itself
-        self.pred: ChordNodeReference = None  # Initially no predecessor
+        self.succ_: ChordNodeReference = self.ref  # Initial successor is itself
+        """
+        Initial successor is itself
+        """
+        self.succ_lock_: threading.RLock = threading.RLock()
+        """ 
+        Lock para que no haya problemas entre hilos para conocer el sucesor
+        """
+        self.pred_: ChordNodeReference = None  # Initially no predecessor
+        """
+        Referencia del predecesor
+        """
+        self.pred_lock_: threading.RLock = threading.RLock()
+        """
+        Lock para tener seguridad entre hilos del predecesor
+        """
+
         self.m = m  # Number of bits in the hash/key space
         self.finger = [self.ref] * self.m  # Finger table
         self.index_in_fingers: dict[int, set[int]] = (
@@ -283,7 +314,61 @@ class ChordNode:
         )  # Lock para saber si puedo o no cambiar el valor de is succ
         # self.Is_Search_Succ_:bool=False #
 
-        # self.start_threads()
+    @property
+    def succ(self) -> ChordNodeReference:
+        """
+        Retorna con seguridad de hilos al sucesor
+
+        Returns:
+            ChordNodeReference: _description_
+        """
+        with self.succ_lock_:
+            if self.succ_ is None:
+                self.succ_ = self.ref
+            return self.succ_
+
+    @succ.setter
+    def succ(self, value: ChordNodeReference):
+        """
+        Guarda con seguridad de hilos el nuevo valor del sucesor
+
+        Args:
+            value (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
+        with self.succ_lock_:
+            self.succ_ = value
+
+    @property
+    def pred(self) -> ChordNodeReference:
+        """
+        Retorna con seguridad entre hilos la referencia del predecesor
+
+
+
+        Returns:
+            ChordNodeReference: _description_
+        """
+        with self.pred_lock_:
+            return self.pred_
+
+    @pred.setter
+    def pred(self, value: ChordNodeReference | None):
+        """
+        Modificar el valor del predecesor
+
+        Args:
+            value (_type_): _description_
+
+
+
+        Returns:
+            _type_: _description_
+        """
+        with self.pred_lock_:
+            self.pred_ = value
 
     @property
     def key_range(self):
@@ -347,7 +432,7 @@ class ChordNode:
 
             time.sleep(time_)  # Se presenta cada 10 segundos
 
-    def _search_successor(self, op: int, data: str = None, time_:float=0.5) -> bytes:
+    def _search_successor(self, op: int, data: str = None, time_: float = 0.5) -> bytes:
         """Busca un sucesor si no tengo o si mi pred es None
 
         Args:
@@ -375,9 +460,9 @@ class ChordNode:
                         f"Enviado el broadcas para buscar succ",
                         func=self._search_successor,
                     )
-                    
+
                     # self.Is_Search_Succ=True
-                    time.sleep(2)# Esperar 2 segundos
+                    time.sleep(2)  # Esperar 2 segundos
                 except Exception as e:
                     log_message(
                         f"Ocurrio un problema enviando el broadcast: {e}",
@@ -478,7 +563,7 @@ class ChordNode:
                         )
                         self.broadcast_handle(op, message, address[0])
 
-                    time.sleep(1) # FUncionaba ok con 3
+                    time.sleep(1)  # FUncionaba ok con 3
                 except:
                     log_message(
                         f"Error en el while True del recv broadcast Error: {traceback.format_exc()}",
@@ -694,7 +779,7 @@ class ChordNode:
                 )
 
     # Stabilize method to periodically verify and update the successor and predecessor
-    def stabilize(self,time_:float=1):
+    def stabilize(self, time_: float = 0.5):  # COn uno funcionaba ok
         """Stabilize method to periodically verify and update the successor and predecessor"""
         Is = False
         node = None
@@ -723,21 +808,22 @@ class ChordNode:
                             # Mi sucesor soy yo
                             # Si mi sucesor era mi antecesor entonces hago el antecesor null
                             # if self.succ.id==self.pred.id: self.pred=None
-                            time.sleep(20)
-                            log_message(
-                                "Seleccionando_Nuevo_Sucesor", func=ChordNode.stabilize
-                            )
-                            nearest_node = self.find_succ(self.id + 1)
-                            log_message(
-                                f"EL nodo que tiene {nearest_node.id} el mas cercano",
-                                func=ChordNode.stabilize,
-                            )
-                            self.succ = (
-                                nearest_node
-                                if nearest_node.id != self.succ.id
-                                else self.ref
-                            )
-                            continue
+                            # time.sleep(20)
+                            # log_message(
+                            #    "Seleccionando_Nuevo_Sucesor", func=ChordNode.stabilize
+                            # )
+                            # nearest_node = self.find_succ(self.id + 1)
+                            # log_message(
+                            #    f"EL nodo que tiene {nearest_node.id} el mas cercano",
+                            #    func=ChordNode.stabilize,
+                            # )
+                            # self.succ = (
+                            #    nearest_node
+                            #    if nearest_node.id != self.succ.id
+                            #    else self.ref
+                            # )
+                            # continue   Lo anterior funcionaba antes
+                            self.succ = self.ref
 
                     log_message(f" Este es X {x}", func=ChordNode.stabilize)
                     if x and x.id != self.id:
@@ -929,13 +1015,13 @@ class ChordNode:
             time.sleep(5)  # 10
 
     # Check predecessor method to periodically verify if the predecessor is alive
-    def check_predecessor(self,time_:float=0.5):# Por defecto 2
+    def check_predecessor(self, time_: float = 0.5):  # Por defecto 2
         """Check predecessor method to periodically verify if the predecessor is alive"""
         counter = 0
         while True:
             try:
                 time.sleep(time_)
-                
+
                 log_message(f"Chequeando predecesor", func=self.check_predecessor)
                 if self.pred:
                     if (
@@ -970,8 +1056,6 @@ class ChordNode:
                 )
                 traceback.print_exc()
                 self.pred = None  # Hago mi predecesor en None
-
-            
 
     def find_key_owner(self, key: int) -> ChordNodeReference:
         """Localiza al dueño de una llave
@@ -1115,7 +1199,7 @@ class ChordNode:
             _type_: _description_
         """
 
-        data_resp:bytes = None
+        data_resp: bytes = None
         if option == FIND_SUCCESSOR:
             id = int(data[1])
             data_resp = self.find_succ(id)
@@ -1292,8 +1376,8 @@ if __name__ == "__main__":
     ip = socket.gethostbyname(socket.gethostname())
     log_message(f" Mi ip es {ip}")
     node = ChordNode(ip, m=4)
-    #node.start_threads()  # Iniciar el nodo
-    node.start_node() # Iniciar el nodo
+    # node.start_threads()  # Iniciar el nodo
+    node.start_node()  # Iniciar el nodo
 
     while True:
         pass

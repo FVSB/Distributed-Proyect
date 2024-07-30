@@ -48,7 +48,7 @@ En caso de Entrada,Salida (Tb Cubre que se parta la red y resincronize):
 -X Se tiene que en el momento de mandar a salvar en las replicas asegurarse que es estable la lista de sucesores está quitada por temas de comodidad de tiempo.
 
 - Se tiene que añadir la capa de estabilidad con respecto al lider,
-    - En chordLider cuando se termine una eleccion:
+   X - En chordLider cuando se termine una eleccion:
         - El lider toma la iniciativa y dice que el ya está estable:
             Todos los nodos si no estan en eleccion y su predecesor esta estable:
             se ponen en estable_  y para el estable preguntan frecuentemente al lider

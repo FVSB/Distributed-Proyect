@@ -406,7 +406,16 @@ class Leader(ChordNode):
     
     
     
-    def check_election_valid(self,time_=5,wait_election_time:int=10):
+    def check_election_valid(self,time_:float=5,wait_election_time:float=10): # Funcionaba ok con esto time_5   wait_election_time_=10
+        """
+        Chequea si estoy en eleccion para terminarla 
+       
+    
+
+        Args:
+            time_ (float, optional): cada cuanto chequea. Defaults to 0.5.
+            wait_election_time (float, optional): cuanto tiempo se da despues que se sabe que se esta en eleccion. Defaults to 10.
+        """
         while True: # Compruebo si estoy en eleccion
             time.sleep(time_)
             try:
