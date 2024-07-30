@@ -350,13 +350,13 @@ class SyncStoreNode(StoreNode):
         except Exception as e:
             log_message(f"Error reinsenrtando mis llaves", func=self.reinsert_my_keys)
             return False
-    def can_send_to_others_reinsert_documents(self,node:ChordNodeReference)->bool:
+    def can_send_to_others_reinsert_documents(self,node:ChordNodeReference,timeout:float=30)->bool:
         """
         
         Devuelve True o False si puedo enviar al nuevo dueño la data para que se haga cargo
         Args:
             node (ChordNodeReference): _description_
-            
+            timeout (float): tiempo maximo antes de lanzar excepcion default 30
         """
         try:
             log_message(f'El nodo {node} pregunta si está listo para yo enviarle su data que le pertenece',func=self.can_send_to_others_reinsert_documents)
@@ -370,7 +370,9 @@ class SyncStoreNode(StoreNode):
                 func=self.send_file_to_node,
             )
             
-            response=rq.get(url)
+            response=rq.get(url,timeout=timeout)
+            response.raise_for_status()  # Verifica si hay errores HTTP
+        
             
             if response.status_code==200:
                 log_message(f'El nodo {node.id} esta listo para recibir su nueva data',func=self.can_send_to_others_reinsert_documents)
@@ -378,7 +380,9 @@ class SyncStoreNode(StoreNode):
             
             log_message(f'Error: El nodo {node.id} no puede recibir su nueva data ',func=self.can_send_to_others_reinsert_documents)
             return False
-            
+        
+        except rq.exceptions.Timeout as e:
+            log_message(f'Ocurrio un error de timeout maximo {timeout} haciendo get al nodo {node.id} {node.ip} para saber si se puede resincronizar  ',func=self.can_send_to_others_reinsert_documents)   
             
         except Exception as e:
             log_message(f'Ocurrio un error tratando de esperar por enviar sus documentos al nodo {node}',self.can_send_to_others_reinsert_documents)
@@ -496,9 +500,10 @@ class SyncStoreNode(StoreNode):
             )
             return False
 
-    def sync_data(self, intent: int):
+    def sync_data(self, intent: int,time_:float=1):
         """
         Sincronizar mi data
+        time_ Tiempo entre cada iteracion tiene que ser >0
         """
 
         for i in range(intent):
@@ -544,6 +549,7 @@ class SyncStoreNode(StoreNode):
                     f"Ocurrio un error resincronizando la data {e} \n {traceback.format_exc()}",
                     func=self.sync_data,
                 )
+            time.sleep(time_)
         log_message(
             f"En ninguno de los intentos se pudo sincronizar la data ",
             func=self.sync_data,

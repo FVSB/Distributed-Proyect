@@ -447,7 +447,7 @@ class StoreNode(Leader):
         return data
 
     def send_file_to_node(
-        self, node: ChordNodeReference, sub_url: str, data: bytes
+        self, node: ChordNodeReference, sub_url: str, data: bytes,timeout:float=10
     ) -> rq.Response:
         """
          Dado un nodo la suburl del metodo post a enviar y los bytes envia una informaión a un nodo
@@ -456,7 +456,7 @@ class StoreNode(Leader):
             node (ChordNodeReference): _description_
             sub_url (str): _description_
             data (bytes): _description_
-
+            timeout(float): cant de segundos maximos de espera default 10
         Raises:
             Exception: _description_
 
@@ -473,8 +473,13 @@ class StoreNode(Leader):
                 func=self.send_file_to_node,
             )
             file = {"file": data}
-            response = rq.post(url, files=file)
+            response = rq.post(url, files=file,timeout=timeout)
+            response.raise_for_status()  # Levanta una excepción para códigos de estado HTTP 4xx/5xx
             return response
+           
+        except rq.exceptions.Timeout:
+            log_message(f"Se excedió el tiempo de espera de conexion {timeout } con el nodo {node} en la suburl {sub_url}", func=self.send_file_to_node)
+        
         except Exception as e:
             log_message(
                 f"Hubo una exepción enviando un mensaje al nodo {node.id} con la url {url} Error:{e} \n {traceback.format_exc()}",
