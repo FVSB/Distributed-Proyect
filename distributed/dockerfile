@@ -1,5 +1,5 @@
 # Usamos la imagen local cp4 como base
-FROM cp4
+FROM chord_test
 
 # Establecemos el directorio de trabajo dentro del contenedor
 WORKDIR /
@@ -10,8 +10,8 @@ COPY requirements.txt requirements.txt
 # Instalamos las dependencias listadas en requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# En caso de no tener un requirements.txt, puedes instalar Flask y SQLAlchemy directamente:
-# RUN pip install --no-cache-dir Flask SQLAlchemy
+# Instalar el modelo para separar las oraciones:
+RUN python -m spacy download en_core_web_sm
 
 # Copiamos el resto de la aplicación al contenedor
 #COPY . .

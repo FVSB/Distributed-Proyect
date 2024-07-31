@@ -5,3 +5,7 @@ requests==2.31.0
 urllib3==2.2.0
 openai==1.37.0
 numpy==1.26.4
+spacy==3.7.5
+tiktoken==0.7.0
+scikit-learn==1.5.1
+nltk==3.8.1

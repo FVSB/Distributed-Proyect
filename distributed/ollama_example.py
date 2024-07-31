@@ -1,38 +1,12 @@
+import ollama
+from ollama import Options
 import numpy as np
 
+# Configura la conexión al servidor local de Ollama
+client = ollama.Client(host="http://host.docker.internal:11434")
 
-def cosine_similarity(embedding1, embedding2):
-    """
-    Calcula la similitud del coseno entre dos embeddings.
-
-    :param embedding1: Primer embedding (vector).
-    :param embedding2: Segundo embedding (vector).
-    :return: Similitud del coseno entre los dos embeddings.
-    """
-    dot_product = np.dot(embedding1, embedding2)
-    norm_embedding1 = np.linalg.norm(embedding1)
-    norm_embedding2 = np.linalg.norm(embedding2)
-
-    if norm_embedding1 == 0 or norm_embedding2 == 0:
-        return 0.0  # Evitar división por cero
-
-    return dot_product / (norm_embedding1 * norm_embedding2)
-
-
-from openai import OpenAI
-
-client = OpenAI(base_url="http://host.docker.internal:1234/v1", api_key="lm-studio")
-
-
-def get_embedding(text, model="nomic-ai/nomic-embed-text-v1.5-GGUF"):
-    text = text.replace("\n", " ")
-    response=client.embeddings.create(input=[text], model=model)
-    print(response.usage.total_tokens)
-    
-    return response.data[0].embedding
-
-
-text = """
+# Lista de documentos
+prompt="""
 {Es de tipo .txt}
 Fine-Tuning Techniques: Fine-tuning involves extending the capabilities of language models by directly modifying their weights
 and/or architecture. This can be done efficiently without requiring
@@ -831,17 +805,17 @@ visualizations.
 existing text.
 6. Research Assistants: Tools that can search the web for some
 specific information and build semi-structured reports on a given
-
-
 """
 
-# Ejemplo de uso
-embedding_string = np.array(get_embedding(text))  # Embedding del primer string
-embedding_query = np.array(
-    get_embedding(
-        "{Es de tipo .txt}Tecnicas de fine tuning de modelos para chatbots y como se pueden construir las querys"
-    )
-)  # Embedding del segundo string
+# Genera embeddings para cada documento
+a=client.embeddings(model='llama3' ,prompt=prompt,keep_alive=-1)
+print(a)
+print(type(a))
+b=a['embedding']
+print(len(b))
+embeddings = b
 
-similitud = cosine_similarity(embedding_string, embedding_query)
-print(f"La similitud del coseno entre los embeddings es: {similitud}")
+# Convierte los embeddings a un array de NumPy
+embeddings_array = np.array(embeddings)
+
+
