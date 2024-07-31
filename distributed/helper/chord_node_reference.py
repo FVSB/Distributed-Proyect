@@ -151,6 +151,27 @@ class ChordNodeReference:
     #       Añadido nuevo             #
     #                                 #
     ###################################
+    
+    def _check_boolean_option(self,op:int,default_in_except:bool=False)->bool:
+        """
+        Dada una opcion devuelve la respuesta booleana de esta
+        Args:
+            op (int): operacion a ejercert
+            default_in_except (bool, optional): Valor booleano en caso de exepcion . Defaults to False.
+        """
+        try:
+            response: bool = self._send_data(op=op)
+            if not isinstance(response, bool):
+                raise Exception(
+                    f"response debe ser bool no {type(response)} {response}"
+                )
+            return response
+        except Exception as e:
+            log_message(
+                f"No se pudo preguntar al nodo {self.id} por la opción {op} Error:{e} \n {traceback.format_exc()}",
+                func=self.check_network_stability,
+            )
+            return default_in_except
 
     def check_network_stability(self) -> bool:
         """
@@ -160,19 +181,7 @@ class ChordNodeReference:
         Returns:
             bool: True: La red es estable , False: La red no es estable
         """
-        try:
-            response: bool = self._send_data(op=CHECK_NETWORK_STABILITY)
-            if not isinstance(response, bool):
-                raise Exception(
-                    f"response debe ser bool no {type(response)} {response}"
-                )
-            return response
-        except Exception as e:
-            log_message(
-                f"No se pudo preguntar al nodo {self.id} si es estable Error:{e} \n {traceback.format_exc()}",
-                func=self.check_network_stability,
-            )
-            return False
+        self._check_boolean_option(op=CHECK_NETWORK_STABILITY,default_in_except=False)
 
     def check_in_election(self) -> bool:
         """
@@ -181,19 +190,15 @@ class ChordNodeReference:
         Returns:
             bool: True si lo esta False si no
         """
-        try:
-            response: bool = self._send_data(op=CHECK_IN_ELECTION)
-            if not isinstance(response, bool):
-                raise Exception(
-                    f"response debe ser bool no {type(response)} {response}"
-                )
-            return response
-
-        except Exception as e:
-            log_message(
-                f"Error no se le pudo preguntar al predecesor {self.id} si tiene está en eleccion Error:{e} \n {traceback.format_exc()}",
-                func=self.check_in_election,
-            )
+        return self._check_boolean_option(op=CHECK_IN_ELECTION,default_in_except=True)
+    
+    def is_data_sync(self)->bool:
+        """
+        True si tengo la data sincronizada 
+        False en otro caso
+        """      
+        return self._check_boolean_option(op=IS_DATA_SYNC,default_in_except=False)
+    
 
     def __str__(self) -> str:
         return f"ChordNodeReference:{self.id},{self.ip},{self.port}"

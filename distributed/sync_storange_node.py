@@ -43,7 +43,7 @@ class SyncStoreNode(StoreNode):
             f"Se pueden sincronizar los datos {self.can_other_sync_data_with_me}",
             func=self.data_to_print,
         )
-
+    
     @property
     def can_other_sync_data_with_me(self):
         """
@@ -69,13 +69,17 @@ class SyncStoreNode(StoreNode):
     def is_sync_data(self) -> bool:
         """
         Retorna de forma segura entre hilos
-        Si la data esta sincronizada True
-        Si se esta sincronizando False
+        Si la data mia esta sincronizada True
+        Si mi data esta sincronizanda False
+        Si no soy estable en ese momento False
 
         Returns:
             bool: _description_
         """
         with self.is_sync_data_lock_:
+            if not self.is_stable:
+                log_message(f'Se pregunto si la data está sincronizada {self.is_sync_data_} pero la red no es estable',func=self.is_sync_data)
+                self.is_sync_data_=False
             return self.is_sync_data_
 
     @is_sync_data.setter
@@ -570,7 +574,7 @@ class SyncStoreNode(StoreNode):
                     and not self.in_election
                     and self.succ_list_ok
                     and self.is_stable
-                ):  # Si estaba en eleccion, ahora no estoy en elección y la lista de sucesores esta ok
+                ) or not self.is_sync_data:  # Si estaba en eleccion, ahora no estoy en elección y la lista de sucesores esta ok o la data no está sincrinizada
 
                     # Mandar a resincronizar la data
                     self.is_sync_data = False

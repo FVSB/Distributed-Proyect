@@ -63,3 +63,8 @@ En caso de Entrada,Salida (Tb Cubre que se parta la red y resincronize):
 - añadir la capa de seguridad que durante la inserccion en todo momento revise que no se está en eleccion 
 
 -X Hay que hacer el tercer check y añadir el simulador 
+
+
+- En la parte de corregir el sucesor primero convocar elecciones en caso de no verlo
+- No se arreglan todo el tiempo los fingers poner que se tienen que arreglar solo despues de estabilizar
+- Estabilizar es cuando la lista de sucesores y finger table esté estable

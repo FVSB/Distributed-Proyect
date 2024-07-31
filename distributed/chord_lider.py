@@ -341,6 +341,7 @@ class Leader(ChordNode):
     def is_stable(self)->bool:
         """
         Dice si estoy estable o no => que me aseguré que ningun nodo esta en elecciones
+        Seguro ante hilos
         Raises:
             
         Returns:
