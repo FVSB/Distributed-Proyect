@@ -43,7 +43,7 @@ class DocsRecords:
         return str(self)
 class Document:
     def __init__(self, title: str, text: str, max_value=16):
-        self.id = getShaRepr(title, max_value)
+        self.id = getShaRepr(title)#, max_value)
         self.title: str = title
         self.text: str = text
         self.record: DocsRecords = DocsRecords(self.id)

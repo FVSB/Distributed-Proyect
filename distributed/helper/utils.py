@@ -4,7 +4,7 @@ import socket
 import jsonpickle
 import pickle
 import uuid
-
+import threading
 from enum import Enum, auto
 
 
@@ -113,3 +113,64 @@ class CrudCode(Enum):
         if self.__class__ is other.__class__:
             return self.value > other.value
         return NotImplemented
+    
+    
+class ThreadingSet:
+    """
+    Tener un set que no tiene errores ante el crud en hilos
+    
+    """
+    def __init__(self,type_:type=None) -> None:
+        """
+        
+
+        Args:
+            type_ (type): tipo de datos a guardar None para que puedan ser multiples
+        """
+        self._type:type=type_
+        self._set: set[self._type] = set([])
+        self._lock: threading.RLock = threading.RLock()
+        
+        
+    def add_item(self,item)->bool:
+        """
+        Se agrega un valor con seguridad ante hilos
+
+        Args:
+            item (_type_): _description_
+        """
+        if self._type!=None:
+            if not isinstance(item,self._type):
+                raise Exception(f'Item debe ser de tipo {self._type} no de tipo {type(item)} item:{item}')
+        
+        with self._lock:
+            if item in self._set:
+                return False
+            
+            self._set.add(item)
+        return True
+       
+    
+        
+    def contains_item(self,item)->bool:
+        if self._type!=None:
+            if not isinstance(item,self._type):
+                raise Exception(f'Item debe ser de tipo {self._type} no de tipo {type(item)} item:{item}')
+        with self._lock:
+            return item in self._lock
+        
+    
+    def delete_if_exits_item(self,item)->bool:
+        """
+        True si se elimino, False si no existia 
+        """
+        with self._lock:
+            if self.contains_item(item):return False
+            self._set.remove(item)
+            return  True
+        
+        
+        
+        
+            
+        

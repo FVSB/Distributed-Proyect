@@ -5,8 +5,8 @@ url='http://172.18.0.2:8000/upload'
 
 
 
-document='Lo modifique ahora'
-name='hola.txt'
+document='3er archivo'
+name='holakfkfkfmvkfemrk.txt'
 
 data=pickle.dumps((name,document))
 

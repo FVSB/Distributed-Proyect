@@ -44,8 +44,8 @@ class StoreNode(Leader):
         self.setup_routes()
         log_message(f'Inicializar el hilo de del servidor de flask',func=self.start_flask_storange_server)
         threading.Thread(
-            target=lambda: app.run(host=self.ip, port=self.flask_port), daemon=True
-        ).start()  # Iniciar servidor por el puerto 8000
+            target=lambda: app.run(host=self.ip, port=self.flask_port,threaded=False), daemon=True 
+        ).start()  # Iniciar servidor por el puerto 8000  # Si da problemas poner los hilos en False
         
     
     def setup_routes(self):

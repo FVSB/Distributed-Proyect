@@ -57,7 +57,7 @@ def download_file(url, file):
 
 
 if __name__ == "__main__":
-    file_url = "http://172.30.0.5:8000/get_document_by_name"  # URL del servidor Flask
+    file_url = "http://172.18.0.6:8000/get_document_by_name"  # URL del servidor Flask
     file = "hola.txt"  # Nombre del archivo de salida
 
     download_file(file_url, file)
