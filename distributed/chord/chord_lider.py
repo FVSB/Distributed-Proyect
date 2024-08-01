@@ -473,7 +473,7 @@ class Leader(ChordNode):
                 if not self.in_election and self.is_stable: #
                     self.succ_list=succ_list
                     self.succ_list_ok=True # Se puede volver a confiar en la lista de sucesores
-                    check=False
+                    #check=False
             except Exception as e:
                 log_message(f'Ocurrio un error actualizando la lista de sucesores {e} \n {traceback.format_exc()}',func=self.check_succ_list)  
 
