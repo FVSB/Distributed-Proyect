@@ -1,4 +1,4 @@
-from storange_node import *
+from chord.storange_node import *
 
 
 #app = Flask(__name__)
@@ -78,7 +78,7 @@ class SyncStoreNode(StoreNode):
         """
         with self.is_sync_data_lock_:
             if not self.is_stable:
-                log_message(f'Se pregunto si la data está sincronizada {self.is_sync_data_} pero la red no es estable',func=self.is_sync_data)
+                log_message(f'Se pregunto si la data está sincronizada {self.is_sync_data_} pero la red no es estable',func="self.is_sync_data")
                 self.is_sync_data_=False
             return self.is_sync_data_
 
@@ -559,7 +559,18 @@ class SyncStoreNode(StoreNode):
             func=self.sync_data,
         )
         return False
-
+    def wait_to_sync_data(self,time_:float=0.5):
+        """
+        Una vez que se sabe que hay que sincronizar la data espera hasta que sea estable la red para mandar a sincrinizarla
+        """
+        
+        try:
+            while not (self.is_stable and self.succ_list_ok):
+                time.sleep(time_)
+            return self.sync_data(2)
+                        
+        except Exception as e:
+            log_message(f'Ocurrion un error esperando que sea estable para sincrinizar la data, Error:{e} {traceback.format_exc()} ',func=self.wait_to_sync_data)
     def check_need_sync_store_data(self, time_: int = 0.1):
         """
         Este método chequea si se tiene que resincronizar los datos
@@ -571,9 +582,6 @@ class SyncStoreNode(StoreNode):
                 time.sleep(time_)
                 if (
                     was_in_election
-                    and not self.in_election
-                    and self.succ_list_ok
-                    and self.is_stable
                 ) or not self.is_sync_data:  # Si estaba en eleccion, ahora no estoy en elección y la lista de sucesores esta ok o la data no está sincrinizada
 
                     # Mandar a resincronizar la data
@@ -583,7 +591,7 @@ class SyncStoreNode(StoreNode):
                         func=self.check_need_sync_store_data,
                     )
                     
-                    if not self.sync_data(2):
+                    if not self.wait_to_sync_data():
                         log_message(
                             f"No se pudo sincronizar la data",
                             func=self.check_need_sync_store_data,

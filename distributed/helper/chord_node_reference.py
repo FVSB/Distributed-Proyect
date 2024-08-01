@@ -181,7 +181,7 @@ class ChordNodeReference:
         Returns:
             bool: True: La red es estable , False: La red no es estable
         """
-        self._check_boolean_option(op=CHECK_NETWORK_STABILITY,default_in_except=False)
+        return self._check_boolean_option(op=CHECK_NETWORK_STABILITY,default_in_except=False)
 
     def check_in_election(self) -> bool:
         """

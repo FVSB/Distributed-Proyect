@@ -1,4 +1,4 @@
-from chord import *
+from chord.chord import *
 
 
 
@@ -110,7 +110,7 @@ class Leader(ChordNode):
         Returns:
             ChordNodeReference: _description_
         """
-        while not self.is_stable:
+        while not (self.is_stable and self.succ_list_ok):
             time.sleep(1) # mientras no sea estable
             log_message(f'Se mando a buscar la llave {key} pero no es estable la sit ',func=self.find_key_owner)
         return super().find_key_owner(key)
@@ -184,13 +184,13 @@ class Leader(ChordNode):
                     self.is_stable= not (self.pred.check_in_election() or in_election) # Si soy el lider y no estoy solo todo es estable si mi predecesor es estable
                     
                 else:# Si no soy el lider tengo que ver que yo no estoy en elección ni mi predecesor y además el lider sea estable
-                   # log_message(f'Como no soy el lider compruebo si la red es estable {self.leader.check_network_stability()}, Estoy en eleccion {in_election} mi predecesor esta en eleccion {self.pred.check_in_election()}',func=self.check_i_am_stable)
+                  #  log_message(f'Como no soy el lider compruebo si la red es estable {self.leader.check_network_stability()}, Estoy en eleccion {in_election} mi predecesor esta en eleccion {self.pred.check_in_election()}',func=self.check_i_am_stable)
                    
                     is_stable=(not (in_election or self.pred.check_in_election())) and self.leader.check_network_stability()
-                    self.is_stable=is_stable
-              #  log_message(f'Ahora soy estable  {self.is_stable}',func=self.check_i_am_stable)
+                    self.is_stable=is_stable #if isinstance(is_stable,bool) else False
+                  #  log_message(f'Ahora soy estable  {self.is_stable}',func=self.check_i_am_stable)
             except Exception as e:
-                log_message(f'Error en chequear si soy un nodo estable',func=self.is_stable)
+                log_message(f'Error en chequear si soy un nodo estable Error:{e}  {traceback.format_exc()}',func=self.is_stable)
                 self.is_stable=False # Si hay error => No es estable
                 
     def start_threads(self):
@@ -354,6 +354,9 @@ class Leader(ChordNode):
     
     @is_stable.setter
     def is_stable(self,value:bool):
+        if not isinstance(value,bool):
+            log_message(f'Error al setear is estable, is estable es bool, value es {type(value)} {value}',func='is_stable')
+            raise Exception(f'Error al setear is estable, is estable es bool, value es {type(value)} {value}')
         with self.is_stable_lock:
             self.is_stable_=value
         
@@ -445,13 +448,13 @@ class Leader(ChordNode):
             except Exception as e:
                 log_message(f'Error chequeando si hay eleccion {e} \n {traceback.format_exc()}',func=self.check_election_valid)
                     
-    def check_succ_list(self,time_:int=1):
+    def check_succ_list(self,time_:int=0.1):
         check=True # Dice si hay que chequear o no la lista de sucesores
         while True:
             time.sleep(time_)
             try:
 
-                if self.in_election:
+                if self.in_election or not self.is_stable:
                     check=True # Si estoy en eleccion cuando deje de estarlo tengo que chequear
                     self.succ_list_ok=False # No se debe mirar en la lista de sucesores
                 
@@ -470,7 +473,7 @@ class Leader(ChordNode):
                 if not self.in_election and self.is_stable: #
                     self.succ_list=succ_list
                     self.succ_list_ok=True # Se puede volver a confiar en la lista de sucesores
-
+                    check=False
             except Exception as e:
                 log_message(f'Ocurrio un error actualizando la lista de sucesores {e} \n {traceback.format_exc()}',func=self.check_succ_list)  
 

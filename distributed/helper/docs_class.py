@@ -35,7 +35,7 @@ class DocsRecords:
         if self.doc_id != new_doc.doc_id:
             return False
         return (
-            self.last_change <= new_doc.last_change
+            self.last_change < new_doc.last_change
         )  # Si el ultimo cambio es mas reciente se queda el ultimo cambio
     def __str__(self)->str:
         return f'Historial: {self.last_change}'

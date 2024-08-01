@@ -10,7 +10,7 @@ from enum import Enum, auto
 
 def obj_to_bytes(obj:object)->bytes:
     return pickle.dumps(obj)
-def getShaRepr(data: str, max_value: int = 16):
+def getShaRepr(data: str, max_value: int = 120000):
     """Hashea a SHA-1 los datos que entren y lo devuelve en un numero entre 1 y 16
 
     Args:

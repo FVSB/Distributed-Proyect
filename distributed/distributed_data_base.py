@@ -1,4 +1,4 @@
-from sync_storange_node import *
+from chord.sync_storange_node import *
 
 
 class DistributedDataBase(SyncStoreNode):
@@ -7,6 +7,8 @@ class DistributedDataBase(SyncStoreNode):
     #       Lider Region            #
     #                               #
     #################################
+
+
     def _is_all_db_stable(self)->bool:
         """
         Este es un metodo para el lider
@@ -35,6 +37,11 @@ class DistributedDataBase(SyncStoreNode):
             return obj_to_bytes(self._is_all_db_stable())
         
         return super().handle_request(data, option, a)
+    
+    
+    def data_to_print(self):
+        super().data_to_print()
+        log_message(f'Es estable la DB: {self.is_db_stable()}',func=self.data_to_print)
 
     def __init__(self, ip: str, port: int = 8001, flask_port: int = 8000, m: int = 160):
         super().__init__(ip, port, flask_port, m)
@@ -69,7 +76,7 @@ class DistributedDataBase(SyncStoreNode):
             return self.is_sync_data and self.leader.is_data_sync()
         except Exception as e:
             log_message(f'Hubo un error tratando de saber si la db es estable Error:{e} \n {traceback.format_exc()}',func=self.is_db_stable)
-            
+            return False
             
     
    
@@ -81,11 +88,8 @@ class DistributedDataBase(SyncStoreNode):
 
 if __name__ == "__main__":
     log_message("Hello from Sync Storage node")
-    # time.sleep(10)
     ip = socket.gethostbyname(socket.gethostname())
-    node = SyncStoreNode(ip, m=3)
-
-    # node.start_threads()  # Iniciar los nodos
+    node = DistributedDataBase(ip, m=3)
     node.start_node()  # Iniciar el pipeline
 
     while True:
