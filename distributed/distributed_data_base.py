@@ -28,7 +28,7 @@ class DistributedDataBase(SyncStoreNode):
 
     """
     
-    def handle_request(self, data, option: int, a) -> bytes:
+    def handle_request(self, data, option: int, a) -> bytes:#Override
         
         if option==IS_DATA_SYNC:# Manda a comprobar que la data está sincronizada
             return obj_to_bytes(self._is_sub_ring_db_is_stable())
@@ -39,7 +39,7 @@ class DistributedDataBase(SyncStoreNode):
         return super().handle_request(data, option, a)
     
     
-    def data_to_print(self):
+    def data_to_print(self):#Override
         super().data_to_print()
         log_message(f'Es estable la DB: {self.is_db_stable()}',func=self.data_to_print)
 
