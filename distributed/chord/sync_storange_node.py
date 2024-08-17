@@ -10,6 +10,14 @@ from chord.storange_node import *
 
 
 class SyncStoreNode(StoreNode):
+    
+    
+    
+    def handle_request(self, data, option: int, a) -> bytes:
+        if option==CAN_UPDATE_DATA: 
+            return obj_to_bytes(self.is_sync_data) # Retorna si esta o no sincronizada la data
+        
+        return super().handle_request(data, option, a)
     def __init__(self, ip: str, port: int = 8001, flask_port: int = 8000, m: int = 160):
         super().__init__(ip, port, flask_port, m)
         self.is_sync_data_: bool = False
@@ -507,6 +515,7 @@ class SyncStoreNode(StoreNode):
     def sync_data(self, intent: int,time_:float=1):
         """
         Sincronizar mi data
+        
         time_ Tiempo entre cada iteracion tiene que ser >0
         """
 
@@ -524,6 +533,12 @@ class SyncStoreNode(StoreNode):
                 log_message(
                     f"Ya se puede recibir data para sincronizar", func=self.sync_data
                 )
+                
+                # Esperar por el antecesort para sincronizar los datos
+                log_message(f'Esperando por mi antecesor para sincronizar los datos',func=self.sync_data)
+                if not self.can_sync_data():
+                    log_message(f'No se puede mandar a sincronizar pq el antecesor no se sincronizo Soy el lider:{self.i_am_leader}',func=self.wait_to_sync_data)
+                    continue
 
                 # Reinsertar mis datos
                 if not self.reinsert_my_keys(
@@ -559,6 +574,32 @@ class SyncStoreNode(StoreNode):
             func=self.sync_data,
         )
         return False
+    
+    def can_sync_data(self)->bool:
+        """
+        Retorna True si ya puedo sincronizar la data
+        Si soy el lider empiezo a sincronizar sino espero a que mi antecesor lo haga y este en True
+        False si hubo algun error        
+
+        Returns:
+            bool: _description_
+        """
+
+        try:
+            if self.i_am_leader: return True # Si soy el lider comienzo yo a sincronizar
+            for i in range(180):
+                time.sleep(0.5)
+                if not self.is_stable:
+                    log_message(f'La red no es estable por tanto voy a retornar falso',func=self.can_sync_data)
+                    return False
+                
+                if self.pred.can_update_data(): return True
+            log_message(f'El antecesor no sincronizo la data despues de los intentos se devuelve False',func=self.can_sync_data)
+            
+            return False
+        except Exception as e:
+            log_message(f'Ocurrio un problema esperando para saber si ya puedo sincronizar la data mia Error:{e} \n {traceback.format_exc()}',func=self.can_sync_data)
+            return False
     def wait_to_sync_data(self,time_:float=0.5):
         """
         Una vez que se sabe que hay que sincronizar la data espera hasta que sea estable la red para mandar a sincrinizarla
@@ -567,6 +608,7 @@ class SyncStoreNode(StoreNode):
         try:
             while not (self.is_stable and self.succ_list_ok):
                 time.sleep(time_)
+            
             return self.sync_data(2)
                         
         except Exception as e:

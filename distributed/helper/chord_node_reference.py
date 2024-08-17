@@ -199,7 +199,22 @@ class ChordNodeReference:
         """      
         return self._check_boolean_option(op=IS_DATA_SYNC,default_in_except=False)
     
+    
+    ##############################
+    #                            #
+    #     Nuevo ahora para terminar la resincronizacion adecuada #
+    #                            #
+    ###############################
+    
+    def can_update_data(self)->bool:
+        """
+        Retorna True si ya sincronize mi data  se supone que mis antecesores
+        False si ocurrio un errror
 
+        Returns:
+            bool: _description_
+        """
+        return self._check_boolean_option(op=CAN_UPDATE_DATA,default_in_except=False)
     def __str__(self) -> str:
         return f"ChordNodeReference:{self.id},{self.ip},{self.port}"
 
