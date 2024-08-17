@@ -503,6 +503,9 @@ class ChordNode:
         # Si
 
         if node:
+            
+            
+            
             if (
                 self.succ.id == self.id
             ):  # Es pq no tengo sucesor entonces acepto a cualquiera
@@ -518,6 +521,10 @@ class ChordNode:
                     f"Mande a notificar a mi nuevo sucesor :{self.succ.id} para que me haga su predecesor ",
                     func=self.join,
                 )
+            elif  self.pred is None and self.succ.id==node.id  and self.id!=node.id: # Entonces lo acepto como predecesor
+                log_message(f"Voy aceptar como predecesor al nodo {node.id}",func=self.join)
+                self.pred=node
+                node.notify(self.ref)
             else:  # Caso que ya tengo un sucesor
                 # Le pido al nodo el sucesor mio en su anillo
                 log_message(f"Entro aca la peticion del nodo {node.id}", func=self.join)
@@ -665,9 +672,12 @@ class ChordNode:
     def notify(self, node: "ChordNodeReference"):
         """Notify method to INFOrm the node about another node"""
         if node.id == self.id:
-            pass
+            log_message(f"Me llego un notify de mi mismo",func=self.notify)
         if not self.pred or self._inbetween(node.id, self.pred.id, self.id):
             self.pred = node
+        elif self.succ.id==self.id and self.pred.id==node.id:# Es que no tengo sucesor
+            log_message(f"Voy hacer el nodoc {node.id} como mi sucesor dado que solo estamos los dos",func=self.notify)
+            self.succ=node
         else:
             pass  # Enviar mensaje que de no puede y le paso al que tengo como como predecesor de ese id
 
@@ -1022,7 +1032,7 @@ class ChordNode:
             # log_message(f'Llego una notificacion del ip:{ip}',func=ChordNode.start_server)
 
             node: ChordNodeReference = data[1]
-            # log_message(f'LLegado al notify {node}',func=self.start_server)
+            log_message(f'LLegado al notify {node}',func=self.start_server)
             id = node.id
             ip = node.ip
             # log_message(f'Llego una notificacion del ip:{ip}',func=self.start_server)

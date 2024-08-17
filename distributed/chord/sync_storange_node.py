@@ -586,6 +586,7 @@ class SyncStoreNode(StoreNode):
         """
 
         try:
+            #time.sleep(30) Con esto funcionaba
             if self.i_am_leader: return True # Si soy el lider comienzo yo a sincronizar
             for i in range(180):
                 time.sleep(0.5)
