@@ -87,7 +87,7 @@ class DistributedDataBase(SyncStoreNode):
             
 
 if __name__ == "__main__":
-    log_message("Hello from Sync Storage node")
+    log_message("Hello from Distributed Data Base node")
     ip = socket.gethostbyname(socket.gethostname())
     node = DistributedDataBase(ip, m=3)
     node.start_node()  # Iniciar el pipeline

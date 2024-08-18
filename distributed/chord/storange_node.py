@@ -989,9 +989,10 @@ class StoreNode(Leader):
             f"Mandando a eliminar {doc_name} : {doc_id} de mi db y mis replicas",
             func=self.delete_file,
         )
-
+        document=db.get_document_by_id(doc_id)
         try:
-            document = Document(doc_name, None)
+            #document = Document(doc_name, None)
+            document.delete()
             ok_crud, nodes_save = self.Crud_action(
                 document=document,
                 sub_url="update_document_like_replica",

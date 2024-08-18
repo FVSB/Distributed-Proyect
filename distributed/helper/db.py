@@ -33,10 +33,20 @@ class Docs(Base):
     __tablename__ = "docs"
 
     id = Column(Integer, primary_key=True)
+    """
+    Llave primaria
+    """
     title = Column(Text)
-    document = Column(LargeBinary)
+    """
+    Titulo 
+    """
+    extension=Column(Text)
     """
     Tipo de documento osea la extension 
+    """
+    document = Column(LargeBinary)
+    """
+    Documento
     """
     persistent = Column(Boolean, default=False)
     """
@@ -48,6 +58,8 @@ class Docs(Base):
     node_id = Column(Integer)
 
     text=Column(Text)#BOrrar despues
+    
+    
     
 # Crear la tabla si no existe
 Base.metadata.create_all(engine)
@@ -74,7 +86,8 @@ def insert_document(document: Document, node_id: int, persistent: bool = False) 
             node_id=node_id,
             document=serialized_data,
             persistent=persistent,
-            text=document.text
+            text=document.text,
+            extension=document.extension,
         )
         session.add(to_save)
         session.commit()
