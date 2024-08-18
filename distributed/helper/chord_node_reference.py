@@ -200,6 +200,16 @@ class ChordNodeReference:
         return self._check_boolean_option(op=IS_DATA_SYNC,default_in_except=False)
     
     
+    def is_data_base_stable(self)->bool:
+        """
+        True si la database es estable
+        False si no lo es o hubo error
+
+        Returns:
+            bool: _description_
+        """
+        return self._check_boolean_option(op=IS_DB_STABLE,default_in_except=False)
+    
     ##############################
     #                            #
     #     Nuevo ahora para terminar la resincronizacion adecuada #
