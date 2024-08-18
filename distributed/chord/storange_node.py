@@ -688,30 +688,18 @@ class StoreNode(Leader):
                 f"Ocurrio un Error en Crud Action con codigo {crud_code} el documento {document.id} {document.title} a la sub_url {sub_url} Error:{e} \n {traceback.format_exc()}"
             )
             return (False, to_return)
+    def _upload_file(self,hash_name:str,name:str,doc_to_save:Document):
+        """
+        Logica interna para guardar un documento en este nodo
 
-    # Endpoint upload_file
-    def upload_file(self):
-        addr_from = request.remote_addr
-        log_message(
-            f"Se a mandado a guardar un archivo que envio el addr: {addr_from} ",
-            func=self.upload_file,
-        )
-        # Nombre del archivo , str con el archivo
-        doc_to_save = self.get_data_from_request()  # Tomar los bytes de la data
+        Args:
+            hash_name (str): id del documento
+            name (str): nombre del documento
+            doc_to_save (Document): documento
 
-        if doc_to_save is None:  # Es que no se envió nada
-            # Retornar error de no file
-            return (
-                jsonify({"message": 'Bad Request: Parámetro "param" requerido'}),
-                HTTPStatus.BAD_REQUEST,
-            )
-
-        name, doc_to_save = pickle.loads(doc_to_save)
-        log_message(f"La data es {name}{doc_to_save}", func=self.upload_file)
-
-        log_message(f"El archivo tiene nombre {name}", func=self.upload_file)
-        hash_name = getShaRepr(name)  # Hashear el nombre dado que esta sera la llave
-
+        Returns: Response
+            
+        """
         # Mandar a guardar en la base de datos
 
         # Comprobar que no esta en la base de datos
@@ -751,6 +739,7 @@ class StoreNode(Leader):
                     f"Ocurrio un error tratando de insertar el documento con {name} y data {doc_to_save} e id{getShaRepr(name)} se guardo correctamente en los nodos {nodes_save}",
                     func=self.upload_file,
                 )
+                return (jsonify({"message":f"No se pudo guardar el archivo {name}"}),HTTPStatus.INTERNAL_SERVER_ERROR)
 
         except Exception as e:
             log_message(
@@ -764,6 +753,31 @@ class StoreNode(Leader):
                 ),
                 HTTPStatus.INTERNAL_SERVER_ERROR,
             )
+        
+    # Endpoint upload_file
+    def upload_file(self):
+        addr_from = request.remote_addr
+        log_message(
+            f"Se a mandado a guardar un archivo que envio el addr: {addr_from} ",
+            func=self.upload_file,
+        )
+        # Nombre del archivo , str con el archivo
+        doc_to_save = self.get_data_from_request()  # Tomar los bytes de la data
+
+        if doc_to_save is None:  # Es que no se envió nada
+            # Retornar error de no file
+            return (
+                jsonify({"message": 'Bad Request: Parámetro "param" requerido'}),
+                HTTPStatus.BAD_REQUEST,
+            )
+
+        name, doc_to_save = pickle.loads(doc_to_save)
+        log_message(f"La data es {name}{doc_to_save}", func=self.upload_file)
+
+        log_message(f"El archivo tiene nombre {name}", func=self.upload_file)
+        hash_name = getShaRepr(name)  # Hashear el nombre dado que esta sera la llave
+
+        return self._upload_file(hash_name=hash_name,name=name,doc_to_save=doc_to_save)
 
     # EndPoint get_file_by_name
     def get_file_by_name(self):
@@ -864,32 +878,8 @@ class StoreNode(Leader):
                 f" A ocurrido un error {e} tratando de dar en el endpoint de devulver un archivo por nombre {traceback.format_exc()}",
                 func=self.get_file_by_name,
             )
-
-    def update_file(self):
-        addr_from = request.remote_addr
-        log_message(
-            f"Se a mandado a actualizar un archivo que envio el addr: {addr_from} ",
-            func=self.upload_file,
-        )
-        # Nombre del archivo , str con el archivo
-        doc_to_save = self.get_data_from_request()  # Tomar los bytes de la data
-
-        if doc_to_save is None:  # Es que no se envió nada
-            # Retornar error de no file
-            return (
-                jsonify({"message": 'Bad Request: Parámetro "param" requerido'}),
-                HTTPStatus.BAD_REQUEST,
-            )
-
-        name, doc_to_save = pickle.loads(doc_to_save)
-        log_message(f"La data es {name} data:{doc_to_save}", func=self.upload_file)
-
-        log_message(f"El archivo tiene nombre {name}", func=self.upload_file)
-        hash_name: int = getShaRepr(
-            name
-        )  # Hashear el nombre dado que esta sera la llave
-
-        # Comprobar que está en la base de datos
+    def _update_file(self,hash_name:str,name:str,doc_to_save:Document):
+               # Comprobar que está en la base de datos
         if not db.has_document(hash_name):  # Mandar error de que no se envió nada
             return (
                 jsonify(
@@ -918,7 +908,7 @@ class StoreNode(Leader):
                     f"No se pudo actualizar el documento {document.id} se guardo la actualización en los nodos {nodes_save} ",
                     func=self.update_file,
                 )
-
+                return (jsonify({"message":f"No se pudo actualizar el archivo {name}"}),HTTPStatus.INTERNAL_SERVER_ERROR)
             else:
                 log_message(f"Se actualizó el documento {name}", func=self.update_file)
                 return (
@@ -941,27 +931,50 @@ class StoreNode(Leader):
                 HTTPStatus.INTERNAL_SERVER_ERROR,
             )
 
-    def delete_file(self):
+    def update_file(self):
+        """
+        End point de guardar los archivos de flask
+
+        Returns:
+            _type_: _description_
+        """
         addr_from = request.remote_addr
         log_message(
             f"Se a mandado a actualizar un archivo que envio el addr: {addr_from} ",
             func=self.upload_file,
         )
         # Nombre del archivo , str con el archivo
-        data = self.get_data_from_request()  # Tomar los bytes de la data
+        doc_to_save = self.get_data_from_request()  # Tomar los bytes de la data
 
-        if data is None:  # Es que no se envió nada
+        if doc_to_save is None:  # Es que no se envió nada
             # Retornar error de no file
             return (
                 jsonify({"message": 'Bad Request: Parámetro "param" requerido'}),
                 HTTPStatus.BAD_REQUEST,
             )
-        doc_name: str = pickle.loads(data)
-        doc_id = getShaRepr(doc_name)
-        log_message(
-            f"Se ha enviado a eliminar el documento {doc_name} con id {doc_id} ",
-            func=self.delete_file,
-        )
+
+        name, doc_to_save = pickle.loads(doc_to_save)
+        log_message(f"La data es {name} data:{doc_to_save}", func=self.upload_file)
+
+        log_message(f"El archivo tiene nombre {name}", func=self.upload_file)
+        hash_name: int = getShaRepr(
+            name
+        )  # Hashear el nombre dado que esta sera la llave
+        return self._update_file(name=name,hash_name=hash_name,doc_to_save=doc_to_save)
+    
+    
+    def _delete_file(self,doc_id:int,doc_name:str):
+        """
+        Metodo para eliminar en el nodo el documento, Nota solo se eliminan los bytes no el contenido
+
+        Args:
+            doc_id (int): _description_
+            doc_name (str): _description_
+
+        Returns:
+            _type_: _description_
+        """
+        
         # Comprobar que está en la base de datos
         if not db.has_document(doc_id):  # Mandar error de que no se envió nada
             return (
@@ -1012,6 +1025,29 @@ class StoreNode(Leader):
                 ),
                 HTTPStatus.INTERNAL_SERVER_ERROR,
             )
+        
+    def delete_file(self):
+        addr_from = request.remote_addr
+        log_message(
+            f"Se a mandado a actualizar un archivo que envio el addr: {addr_from} ",
+            func=self.upload_file,
+        )
+        # Nombre del archivo , str con el archivo
+        data = self.get_data_from_request()  # Tomar los bytes de la data
+
+        if data is None:  # Es que no se envió nada
+            # Retornar error de no file
+            return (
+                jsonify({"message": 'Bad Request: Parámetro "param" requerido'}),
+                HTTPStatus.BAD_REQUEST,
+            )
+        doc_name: str = pickle.loads(data)
+        doc_id = getShaRepr(doc_name)
+        log_message(
+            f"Se ha enviado a eliminar el documento {doc_name} con id {doc_id} ",
+            func=self.delete_file,
+        )
+        return self._delete_file(doc_id=doc_id,doc_name=doc_name)
 
 
 if __name__ == "__main__":
