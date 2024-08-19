@@ -6,7 +6,7 @@ url=f'http://{ip}:8000/upload'
 
 
 document='Primer archivo'
-name='octavo.txt'
+name='noveno.txt'
 
 data=pickle.dumps((name,document))
 
@@ -14,7 +14,7 @@ files={'file':data}
 
    
 # Envía una solicitud POST con el archivo adjunto
-response = requests.post(url, files=files)
+response = requests.post(url, files=files,timeout=200)
 
 # Imprime la respuesta del servidor
 print(response.status_code)

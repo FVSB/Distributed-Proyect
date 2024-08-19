@@ -77,7 +77,35 @@ class DistributedDataBase(SyncStoreNode):
         except Exception as e:
             log_message(f'Hubo un error tratando de saber si la db es estable Error:{e} \n {traceback.format_exc()}',func=self.is_db_stable)
             return False
-            
+    
+    ########################
+    #                      #
+    #     OVERRIDE ZONE    #
+    #                      #
+    ########################
+    def wait_for_stability(self):
+        """
+        Este metodo espera hasta que la db sea estable para completar cualquier accion
+        """
+        log_message(f"Entrando a chechear la estabilidad",func=self.wait_for_stability)
+        addr_from = request.remote_addr
+        while not self.is_db_stable():
+            log_message(f'Esperando a que la db sea estable para tramitar el post de {addr_from} ',func=self.wait_for_stability)
+            time.sleep(0.5) # Tiempo de espera   
+    def upload_file(self):
+        self.wait_for_stability()
+        return super().upload_file()
+    def update_file(self):
+        self.wait_for_stability()
+        return super().update_file()
+    def delete_file(self):
+        self.wait_for_stability()
+        return super().delete_file()
+    def get_file_by_name(self):
+        self.wait_for_stability()
+        return super().get_file_by_name()
+        
+        
     
    
     
