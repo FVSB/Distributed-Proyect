@@ -1,12 +1,12 @@
 import requests
 import pickle
-ip='172.18.0.2'
+ip='172.18.0.7'
 url=f'http://{ip}:8000/upload'
 
 
 
 document='Primer archivo'
-name='noveno.txt'
+name='primero.txt'
 
 data=pickle.dumps((name,document))
 

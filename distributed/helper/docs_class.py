@@ -1,5 +1,7 @@
 from datetime import datetime
 import pickle
+import tiktoken
+import numpy as np
 from .utils import getShaRepr
 
 
@@ -58,6 +60,27 @@ def obtener_substring_despues_ultimo_punto(cadena:str):
         return ""  # No hay punto en la cadena
     return cadena[posicion_ultimo_punto + 1:]
 
+
+def dividir_texto(texto, modelo='gpt-3.5-turbo', max_tokens=512):
+    # Cargar el codificador para el modelo especificado
+    enc = tiktoken.encoding_for_model(modelo)
+    
+    # Codificar el texto en tokens
+    tokens = enc.encode(texto)
+    
+    # Dividir los tokens en trozos de tamaño máximo
+    trozos = [tokens[i:i + max_tokens] for i in range(0, len(tokens), max_tokens)]
+    
+    # Decodificar los trozos de tokens de vuelta a texto
+    trozos_texto = [enc.decode(trozo) for trozo in trozos]
+    
+    return trozos_texto, len(tokens)
+
+# Ejemplo de uso
+texto = "Este es un texto de ejemplo que vamos a dividir en varios pedazos según el límite de tokens."
+trozos, num_tokens = dividir_texto(texto, max_tokens=1900)
+
+
 class Document:
     def _get_extention(self,title)->str:
         """
@@ -70,7 +93,10 @@ class Document:
             str: _description_
         """
         ext=obtener_substring_despues_ultimo_punto(title)
+        
         return ext if ext!="" else 'PlainText'
+    
+    
     def __init__(self, title: str, text: str, max_value=16):
         self.id = getShaRepr(title)#, max_value)
         self.title: str = title
@@ -123,10 +149,33 @@ def get_document_from_bytes(data:bytes)->Document:
         Document: _description_
     """
     doc= pickle.loads(data)
-    if  not isinstance(doc,Document):
+    if  not issubclass(doc,Document):
         raise Exception(f'los bytes deben contener un document pero contienen un {type(doc) } {doc}')
     return doc
 
 
+class EmbeddingDocument(Document):
+    def __init__(self, title: str, text: str,embedding_list:list[np.array],embedding_title_list:list[np.array], max_value=16):
+        super().__init__(title, text, max_value)
+        self.embedding_title_list:list[np.array]=embedding_title_list
+        self.embedding_list:list[np.array]=embedding_list
+        
+        
+    def delete(self):
+        self.embedding_list=None
+        self.embedding_title_list=None
+        super().delete()
+        
+    def update(self, other: "EmbeddingDocument") -> bool:
+        if not isinstance(other,EmbeddingDocument):
+            raise Exception(f"Pther debe ser de tipo Embedding Document no de tipo {type(other)}")
+        if super().update(other):
+            self.embedding_list=other.embedding_list
+            self.embedding_title_list=other.embedding_title_list
+            return True
+        return False
+    
+    
+    
 if __name__ == "__main__":
     pass

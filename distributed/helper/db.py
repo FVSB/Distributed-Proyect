@@ -245,6 +245,31 @@ def get_document_by_id(id_document: int) -> Document:
     session.close()
     return data
 
+def get_all_documents_by_extension(extensions:list[str],node_id:int)->list[Document]:
+    """
+    Dado una lista de extensiones puede ser vacia, y el id de un nodo
+    devuelve todos los archivos con esas coincidencias
+
+    Args:
+        extensions (list[str]): _description_
+        node_id (int): _description_
+
+    Returns:
+        list[Document]: _description_
+    """
+    session = Session()
+    response:list[str]=[]
+    docs:list[Docs]=None
+    if len(extensions)==0:
+        docs=session.query(Docs).filter(Docs.node_id == node_id).all()
+    else: # Si hay extensiones
+        docs=session.query(Docs).filter(Docs.extension.in_(extensions),Docs.node_id==node_id).all()
+    if docs is None:
+        return response
+    for doc in docs:
+        data:Document=pickle.loads(doc.document)
+        response.append(data)
+    return response
 
 def get_node_id_owner_by_doc_id(id_document: int) -> int:
     """

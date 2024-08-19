@@ -692,7 +692,19 @@ class StoreNode(Leader):
                 f"Ocurrio un Error en Crud Action con codigo {crud_code} el documento {document.id} {document.title} a la sub_url {sub_url} Error:{e} \n {traceback.format_exc()}"
             )
             return (False, to_return)
-    
+    def create_document(self,title:str,text:str,max_value:int=16)->Document:
+        """
+        Funcion que crea un documento
+
+        Args:
+            title (str): _description_
+            text (str): _description_
+            max_value (int, optional): _description_. Defaults to 16.
+
+        Returns:
+            Document: _description_
+        """
+        return Document(title=title,text=text,max_value=max_value)
     def redirect_request(self,name:str,hash_name:int):
         """
         Este metodo se encarga de saber si hay que redireccionar a otro nodo el request
@@ -786,8 +798,10 @@ class StoreNode(Leader):
 
         # Guardar en la base de datos
         try:
+            
             ok_crud, nodes_save = self.Crud_action(
-                Document(name, doc_to_save),
+                #Document(name, doc_to_save),
+                self.create_document(name, doc_to_save),
                 "save_document_like_replica",
                 CrudCode.Insert,
             )
@@ -950,7 +964,7 @@ class StoreNode(Leader):
             f"Se va a tratar de actualizar el documento {name}", func=self.update_file
         )
         try:
-            document = Document(name, doc_to_save)
+            document = self.create_document(name,doc_to_save)#Document(name, doc_to_save)
             ok_crud, nodes_save = self.Crud_action(
                 document=document,
                 sub_url="update_document_like_replica",
@@ -1024,7 +1038,7 @@ class StoreNode(Leader):
         )
         document=db.get_document_by_id(doc_id)
         try:
-            #document = Document(doc_name, None)
+            
             document.delete()
             ok_crud, nodes_save = self.Crud_action(
                 document=document,

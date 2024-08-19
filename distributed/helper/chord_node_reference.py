@@ -49,7 +49,7 @@ class ChordNodeReference:
         except Exception as e:
             # print(f"ERROR sending data: {e} al nodo con id {self.id} e ip {self.ip}")
             log_message(
-                f"ERROR sending data: {e} al nodo con id {self.id} en la opcion {op} e ip {self.ip} y tiene una dimension de data{len(new_data)} ,Error:{str(traceback.format_exc())}",
+                f"ERROR sending data: {e} al nodo con id {self.id} en la opcion {op} e ip {self.ip} ,Error:{str(traceback.format_exc())}",
                 level="ERROR",
             )
             # logger.info()

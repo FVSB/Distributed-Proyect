@@ -153,6 +153,18 @@ class ThreadingSet:
     
         
     def contains_item(self,item)->bool:
+        """
+        Dice si el elemento esta o no con seguridad ante hilos
+
+        Args:
+            item (_type_): _description_
+
+        Raises:
+            Exception: _description_
+
+        Returns:
+            bool: _description_
+        """
         if self._type!=None:
             if not isinstance(item,self._type):
                 raise Exception(f'Item debe ser de tipo {self._type} no de tipo {type(item)} item:{item}')
