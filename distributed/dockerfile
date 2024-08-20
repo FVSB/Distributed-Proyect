@@ -14,7 +14,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN python -m spacy download en_core_web_sm
 # instalar dependencias
 RUN pip install pyro5 rabbitpy pyzmq rpyc
-
+# Instalar streamlit
+RUN pip install streamlit
 # Copiamos el resto de la aplicación al contenedor
 #COPY . .
 
