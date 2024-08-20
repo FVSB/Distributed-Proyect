@@ -73,6 +73,10 @@ class DistributedDataBase(SyncStoreNode):
             bool: _description_
         """
         try:# Un and entre si yo soy estable y si el antecesor del lider es
+            if self.i_am_alone :
+                log_message(f"Como soy un solo nodo la db es estable <=> soy estable y la data esta sincronizada",func=self.is_db_stable)
+                return self.is_stable and self.is_sync_data
+                
             return self.is_sync_data and self.leader.is_data_base_stable()
         except Exception as e:
             log_message(f'Hubo un error tratando de saber si la db es estable Error:{e} \n {traceback.format_exc()}',func=self.is_db_stable)
