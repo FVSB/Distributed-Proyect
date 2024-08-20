@@ -6,7 +6,7 @@ url=f'http://{ip}:8000/upload'
 
 
 document='Primer archivo'
-name='segundo.txt'
+name='tyrion'
 
 data=pickle.dumps((name,document))
 

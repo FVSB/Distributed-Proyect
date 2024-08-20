@@ -144,7 +144,7 @@ class DistributedSearcher(DistributedDataBase):
         Returns:
             QueryHandle: _description_
         """
-        
+        log_message(f"Las posibles extensiones de la query son {query_handle.posibles_extensions}",func=self.resolve_query)
         docs:list[EmbeddingDocument]=db.get_all_documents_by_extension(query_handle.posibles_extensions,self.id)
         
         for doc in docs:

@@ -12,8 +12,8 @@ url_query=f'http://{ip}:8000/query'
 name="novero primer archivo"
 max_results=10
 min_score=0
-posibles_extensions=[".txt"]
-params={"query":name,"max_results":max_results,"min_score":min_score,"posibles_extensions":posibles_extensions}
+posibles_extensions=["txt"]
+params={"query":name,"max_results":max_results,"min_score":min_score,"extensions":posibles_extensions}
 
 
 # Realizar la solicitud GET con los parámetros
@@ -28,3 +28,4 @@ print(data)
 # O leer la respuesta como texto
 text = response.text
 #print(text)
+print(len(data['results']))
