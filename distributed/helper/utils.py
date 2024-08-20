@@ -169,7 +169,7 @@ class ThreadingSet:
             if not isinstance(item,self._type):
                 raise Exception(f'Item debe ser de tipo {self._type} no de tipo {type(item)} item:{item}')
         with self._lock:
-            return item in self._lock
+            return item in self._set
         
     
     def delete_if_exits_item(self,item)->bool:

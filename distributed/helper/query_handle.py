@@ -21,26 +21,26 @@ class DocsClassification:
 class MaxHeap:
     def __init__(self):
         self.heap = []
-        self.lock = threading.RLock()
+        #self.lock = threading.RLock()
 
     def push(self, item: DocsClassification):
-        with self.lock:
+        #with self.lock:
             heapq.heappush(self.heap, item)
 
     def pop(self) -> DocsClassification:
-        with self.lock:
+        #with self.lock:
             return heapq.heappop(self.heap)
 
     def top(self) -> DocsClassification:
-        with self.lock:
+        #with self.lock:
             return self.heap[0]
 
     def __len__(self):
-        with self.lock:
+        #with self.lock:
             return len(self.heap)
     
     def is_empty(self) -> bool:
-        with self.lock:
+        #with self.lock:
             return len(self.heap) == 0
 
 
@@ -111,7 +111,7 @@ class QueryHandle:
         """
         title_embedding=doc.embedding_title_list
         # Hallar el score con respecto al titulo
-        title_score,_=self._get_best_embeddings_compare_score(doc.embedding_title_list,[doc.title for _ in range(doc.embedding_title_list)])
+        title_score,_=self._get_best_embeddings_compare_score(doc.embedding_title_list,[doc.title for _ in range(len(doc.embedding_title_list))])
         # Hallar con respecto al texto y buscar el mejor fragmento
         
         text_score,text_chunk=self._get_best_embeddings_compare_score(doc.embedding_list,doc.text_chunks)

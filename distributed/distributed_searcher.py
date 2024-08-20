@@ -19,7 +19,17 @@ class DistributedSearcher(DistributedDataBase):
             "/query",
             view_func=self.query,
             methods=["GET"],
-        )# Metodo para hacer una query 
+        )# Metodo para hacer una query
+        
+        super().setup_routes()
+        app.add_url_rule(
+            "/process_query_handle",
+            view_func=self._process_query_handle,
+            methods=["POST"],
+        )# Metodo para hacer una query
+        
+        
+        
     def create_document(self,title: str, text: str, max_value: int = 16) -> Document:
         """
         crea el embeeding document apartir del titulo y texto
@@ -36,12 +46,7 @@ class DistributedSearcher(DistributedDataBase):
         embedding_title_list,_=self.query_gestor.create_embedding(title)
         return EmbeddingDocument(title=title,text=text,max_value=max_value,embedding_text_list=embedding_text_list,embedding_title_list=embedding_title_list,text_chunks=chunks_text)
 
-    def handle_request(self, data, option: int, a) -> bytes:
-        
-        if option==PROCESS_QUERY: # ME llamo mi predecesor para que la procese
-            query_handle=pickle.loads(data)
-            return obj_to_bytes(self._process_query_handle(query_handle))
-        return super().handle_request(data, option, a)
+    
     
     def __init__(self, ip: str,query_gestor:QueryGestor, port: int = 8001, flask_port: int = 8000, m: int = 160):
         super().__init__(ip, port, flask_port, m)
@@ -51,12 +56,9 @@ class DistributedSearcher(DistributedDataBase):
         Clase factory para los handles de las querys
         """
         
-       
-       
-    def _process_query_handle(self,query_handle:QueryHandle):
+    def return_query_helper(self,query_handle:QueryHandle):
         """
-        Metodo al que llamar cuando recibo una peticion por un chordnodereference de mi predecesor
-        Si me llega a mi por mi predecesor y yo soy el dueño no lo voy a procesar
+        Helper para dado un query handle envie la respuesta a mi predecesor 
 
         Args:
             query_handle (QueryHandle): _description_
@@ -64,21 +66,73 @@ class DistributedSearcher(DistributedDataBase):
         Returns:
             _type_: _description_
         """
-        if not self.is_db_stable():# Si la db no es estable devuelvo la query sin procesarla
-            query_handle.db_is_not_stable()
-            return query_handle
-        
-        if not self.query_gestor.can_process_this_query(query_handle):
-            return query_handle
-        
-        query_handle=self.pred.process_query(query_handle)
-        
-        if not self.is_db_stable():# Si la db no es estable devuelvo la query sin procesarla
-            query_handle.db_is_not_stable()
-            return query_handle
-        
-        return self.resolve_query(query_handle)
+        #return jsonify({"file":obj_to_bytes(query_handle)}),HTTPStatus.OK
+        return jsonpickle.encode(query_handle),HTTPStatus.OK
     
+    def call_succ_to_process_query(self,query_handle:QueryHandle)->QueryHandle:
+        try:
+            # Llamar al sucesor y decirle lo que hay 
+            response=self.send_file_to_node(node=self.succ,
+                                   data=obj_to_bytes(query_handle),
+                                   sub_url="process_query_handle",
+                                   timeout=10
+                                   )
+
+            if response.status_code!=200:
+                log_message(f"Hubo un error tratando de comunicar con el sucesor para que resolviera su parte de la query por tanto voy a finalizar query",func=self.call_succ_to_process_query)
+                query_handle.db_is_not_stable()
+                return query_handle
+            #response_json=response.json()
+            #file_content=response_json['file']
+            #new_query_handle:QueryHandle=pickle.loads(file_content)
+            new_query_handle:QueryHandle=jsonpickle.decode(response.text)
+            log_message(f"Mi sucesor me envio el query handle de {new_query_handle.guid} Es activo {new_query_handle.is_stable_response()}",func=self.call_succ_to_process_query)
+            return new_query_handle
+        except Exception as e:
+            log_message(f"Ocurrio un error tratando de hacer que el sucesor procese la query Error:{e} \n {traceback.format_exc()}",func=self.call_succ_to_process_query)
+            query_handle.db_is_not_stable()
+            return query_handle
+    def _process_query_handle(self):
+        """
+        Es un end_point
+        Metodo al que llamar cuando recibo una peticion  de mi predecesor
+        Si me llega a mi por mi predecesor y yo soy el dueño no lo voy a procesar
+
+        Args:
+            
+
+        Returns:
+            _type_: _description_
+        """
+       
+        try:
+            addr_from = request.remote_addr  # La direccion desde donde se envia la petición
+            
+            log_message(f"Se a recibido una peticion de procesar una query desde {addr_from}")
+            data=self.get_data_from_request()
+            
+            query_handle:QueryHandle=pickle.loads(data)
+            
+            log_message(f"Se va a procesar la query {query_handle.guid} desde la ip {addr_from}",func=self._process_query_handle)
+                    
+            if not self.is_db_stable():# Si la db no es estable devuelvo la query sin procesarla
+                query_handle.db_is_not_stable()
+                #return query_handle
+                return self.return_query_helper(query_handle)
+            if not self.query_gestor.can_process_this_query(query_handle):
+                return self.return_query_helper(query_handle)
+
+            #query_handle=self.pred.process_query(query_handle)
+            query_handle=self.call_succ_to_process_query(query_handle=query_handle)
+            if not self.is_db_stable():# Si la db no es estable devuelvo la query sin procesarla
+                query_handle.db_is_not_stable()
+                return self.return_query_helper(query_handle)
+
+            #return self.resolve_query(query_handle)
+            return self.return_query_helper(self.resolve_query(query_handle))
+        except Exception as e:
+            log_message(f"Error al tratar de procesar la query con guid {query_handle.guid} Error: {e}  \n {traceback.format_exc()}",func=self._process_query_handle)
+            raise Exception(e)
     def resolve_query(self,query_handle:QueryHandle)->QueryHandle:
         """
         Dada el query_handle y las posibles extensiones los añade al queryhandle
@@ -121,9 +175,10 @@ class DistributedSearcher(DistributedDataBase):
         self.wait_for_stability()
         log_message(f"Se a mandado a realizar una consulta donde yo soy el dueño de la query {query}",func=self.process_query_like_owner)
         
-        query_handle=self.pred.process_query(query_handle)# Primero mando a que se procesen
+        #query_handle=self.pred.process_query(query_handle)# Primero mando a que se procesen
+        query_handle=self.call_succ_to_process_query(query_handle=query_handle)#Primero mando a mi sucesores a que lo hagan
         
-        if not self.is_db_stable():
+        if not self.is_db_stable():# Si no es estable se anula la query
             log_message(f"Como la db es inestable aunque se halla procesado de los demas la query vuelvo a mandar a procesarla",func=self.process_query_like_owner)
             self.query_gestor.end_query(query)
             return self.process_query_like_owner(query=query,
@@ -132,15 +187,16 @@ class DistributedSearcher(DistributedDataBase):
                                                  min_score=min_score,
                                                  i=i)
             
-        if not query_handle.is_stable_response():
+        if not query_handle.is_stable_response():# Si no es estable la respuesta se anula la query
             log_message(f"Se va a volver a procesar la respuesta pq la respuesta de la query {query} con guid: {query_handle.guid} en la iteracion {i}",func=self.process_query_like_owner)
-            self.query_gestor.end_query(query)
+            self.query_gestor.end_query(query_handle)
             return self.process_query_like_owner(query=query,
                                                  posibles_extensions=posibles_extensions,
                                                  max_results=max_results,
                                                  min_score=min_score,
                                                  i=i+1)
-    
+        query_handle=self.resolve_query(query_handle)
+        return query_handle
     def query(self):# Endpoint para hacer una query
         addr_from = request.remote_addr  # La direccion desde donde se envia la petición
 
@@ -148,12 +204,12 @@ class DistributedSearcher(DistributedDataBase):
         
         log_message(
             f"Se a recibido una petición de GET para el para resolver una query desde la direccion: {addr_from}",
-            func=self.get_file_by_name,
+            func=self.query,
         )
         try:
-            query:str=str(request.arg.get("name",""))
-            max_results:int=int(request.arg.get("max_results",20))
-            min_score:float=float(request.arg.get("min_score",0))
+            query:str=str(request.args.get("query",""))
+            max_results:int=int(request.args.get("max_results",20))
+            min_score:float=float(request.args.get("min_score",0))
             posibles_extensions:list[str]=request.args.getlist("extensions")
             
             self.wait_for_stability()
