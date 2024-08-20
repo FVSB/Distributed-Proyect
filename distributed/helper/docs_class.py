@@ -155,11 +155,11 @@ def get_document_from_bytes(data:bytes)->Document:
 
 
 class EmbeddingDocument(Document):
-    def __init__(self, title: str, text: str,embedding_list:list[np.array],embedding_title_list:list[np.array], max_value=16):
+    def __init__(self, title: str, text: str,embedding_text_list:list[np.array],embedding_title_list:list[np.array],text_chunks:list[str], max_value=16):
         super().__init__(title, text, max_value)
         self.embedding_title_list:list[np.array]=embedding_title_list
-        self.embedding_list:list[np.array]=embedding_list
-        
+        self.embedding_list:list[np.array]=embedding_text_list
+        self.text_chunks:list[str]=text_chunks
         
     def delete(self):
         self.embedding_list=None

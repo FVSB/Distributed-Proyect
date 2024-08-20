@@ -36,3 +36,4 @@ CHECK_IN_ELECTION=23 # EN ChordLider chequea si el predecesor está en elección
 IS_DATA_SYNC=24 # En distributed_data_base dicta si el tengo mi data actualizada
 IS_DB_STABLE=25 # Es para el lider y dice True O False si la db es estable para el CRUD o no 
 CAN_UPDATE_DATA=26 #Aca dice si ya sincronize los datos que tenia a sus nuevos duennos
+PROCESS_QUERY=27 # Aca es para que mi sucesor procese tb la query

@@ -4,9 +4,11 @@ import logging
 from helper.protocol_codes import *
 from helper.logguer import log_message
 from helper.utils import getShaRepr
+from helper.query_handle import QueryHandle
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 import zmq
 import pickle
+
 # Class to reference a Chord node
 class ChordNodeReference:
     """
@@ -225,6 +227,29 @@ class ChordNodeReference:
             bool: _description_
         """
         return self._check_boolean_option(op=CAN_UPDATE_DATA,default_in_except=False)
+    
+    #############################################
+    #                                           #
+    #    Nuevo esto es para procesar las querys #
+    #                                           #
+    #############################################
+    def process_query(self,query_handle:QueryHandle)->QueryHandle:
+        """
+        Metodo para llamar el sucesor si tengo y decir que procese esta query para tener la de toda las db
+
+        Args:
+            query_handle (QueryHandle): _description_
+
+        Returns:
+            QueryHandle: _description_
+        """
+        try:
+            response=self._send_data(op=PROCESS_QUERY,data=query_handle)
+            return response
+        except Exception as e:
+            log_message(f"Ocurrio un error tratando de enviar a que procese la query al nodo {self.id} con ip {self.ip} Error: {e}  \n {traceback.format_exc()}",func=self.process_query)
+            return query_handle.db_is_not_stable()
+    
     def __str__(self) -> str:
         return f"ChordNodeReference:{self.id},{self.ip},{self.port}"
 
