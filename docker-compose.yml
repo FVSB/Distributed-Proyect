@@ -77,3 +77,14 @@ services:
     command: /bin/bash
     tty: true
     stdin_open: true
+
+  container_8:
+    image: chord_test
+    container_name: client_1
+    volumes:
+        - ${PWD}/client:/app/code
+        - ${PWD}/logs/client_1:/app/logs
+        - ${PWD}/databases/client_1:/app/database
+    command: /bin/bash
+    tty: true
+    stdin_open: true
