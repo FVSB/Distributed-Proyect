@@ -132,6 +132,8 @@ class Leader(ChordNode):
         
         log_message(f'El lider es {self.leader.id}',func=self.show)
         
+        log_message(f"Soy el lider {self.i_am_leader}",func=self.data_to_print)
+        
         log_message(f'La lista de sucesores es {self.succ_list}',func=self.show)
         
         log_message(f'Se puede confiar en la lista de sucesores {self.succ_list_ok}',func=self.show)
