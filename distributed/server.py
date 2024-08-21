@@ -1,4 +1,5 @@
 
+
 from distributed_searcher import *
 import Pyro5.api
 import subprocess
@@ -16,11 +17,13 @@ def register_url(object,url:str,daemon:Pyro5.server.Daemon,ns=None)->bool:
         if ns is None:
             ns=Pyro5.api.locate_ns()
         
-        # Registrar los objetos remotos en el servidor de no
+        # Registrar los objetos remotos en el servidor de nombres
         uri1 = daemon.register(object)
         ns.register(url, uri1)
         log_message(f'Registrada la url {url}',func=register_url)
         return True
+
+@Pyro5.api.expose
 class SearcherServer(DistributedSearcher):
     """
     En esta clase añadimos el controlador de pyro
@@ -36,6 +39,14 @@ class SearcherServer(DistributedSearcher):
     def data_to_print(self):#Override
         super().data_to_print()
         log_message(f"Soy el duenno del server {self.i_am_name_server_owner}",func=self.data_to_print)
+    
+    
+    def broadcast_handle(self, op: int, message: tuple[int, ChordNodeReference], address: str):
+        
+        if op==FIND_NODES:
+            log_message(f"El cliente con direccion {address} ha pedido que le envie info")
+            return self.response_network_to_client(address)
+        return super().broadcast_handle(op, message, address)
     def __init__(self, ip: str, query_gestor: QueryGestor, port: int = 8001, flask_port: int = 8000, m: int = 160,url:str="search.search"):
         super().__init__(ip, query_gestor, port, flask_port, m)
         self.url:str=url
@@ -61,11 +72,31 @@ class SearcherServer(DistributedSearcher):
         Esto es para tener un deamon de pyro5
         """
         
+    def response_network_to_client(self,addr:str):
+        try:
+            nodes=self.get_nodes_ips()
+            self._send_data(addr,obj_to_bytes(nodes))
+            log_message(f"Respondido al cliente {addr}",func=self.response_network_to_client)
+        except Exception as e:
+            log_message(f"No se pudo responder al cliente {addr} Por el error Error: {e} \n {traceback.format_exc()}",func=self.response_network_to_client)
     
     
-  
-    
-    
+    def get_nodes_ips(self)->list[str]:
+        """
+        Devuelve una lista de ips 
+        """
+        log_message(f"Me han llamado para dar las ips ",func=self.get_nodes_ips)
+        lis:list[ChordNodeReference]=[self.ip]
+        try:
+            succ=self.succ
+            while succ.id!=self.id:
+                lis.append(succ.ip)
+                succ=succ.succ
+            return lis
+        except Exception as e:
+            log_message(f"Ocurrio un error tratando de capturar todas las ips de la red Error: {e} \n {traceback.format_exc()}",func=self.get_nodes_ips)
+            return lis
+        
     def clear_nameserver(self):
         """
         Limpia el nameserver
@@ -160,8 +191,9 @@ class SearcherServer(DistributedSearcher):
             return False
     
     def check_name_server(self,time_:float=2):
-        try:
-            while True:
+        while True:
+            try:
+            
                 time.sleep(time_)
                 if self.is_stable and self.i_am_leader:# Debo tener levantado el nameserver
                     if self.is_active_name_server() : 
@@ -174,6 +206,9 @@ class SearcherServer(DistributedSearcher):
                     log_message(f"Voy a registrar mi url",func=self.check_name_server)
                     if register_url(self,self.url,self.daemon):
                         log_message(f"Se a registrado correctamente la url: {self.url}",func=self.check_name_server)
+                        #Comantar esto si da problemas
+                        threading.Thread(target=self.daemon.requestLoop,daemon=True).start()
+                        log_message(f'Corriendo hilo del demonio de pyro para el url',func=self.check_name_server)
                     else:# Si hubo un error
                         log_message(f"No se registro correctamente la url",func=self.check_name_server)
                         
@@ -183,8 +218,8 @@ class SearcherServer(DistributedSearcher):
                         log_message(f"Se apago correctamente el name server",func=self.check_name_server)
                     else: 
                         log_message(f"No se pudo apagar correctmante el nameserver Soy el duenno del nameserver {self.i_am_name_server_owner}",func=self.check_name_server)
-        except Exception as e:
-            log_message(f"Ha ocurrido un error chequeando el nameserver Error: {e} \n {traceback.format_exc()}",func=self.check_name_server)
+            except Exception as e:
+                log_message(f"Ha ocurrido un error chequeando el nameserver Error: {e} \n {traceback.format_exc()}",func=self.check_name_server)
 
     
         

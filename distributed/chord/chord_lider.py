@@ -449,7 +449,24 @@ class Leader(ChordNode):
                                       
             except Exception as e:
                 log_message(f'Error chequeando si hay eleccion {e} \n {traceback.format_exc()}',func=self.check_election_valid)
-                    
+    
+    def _get_k_succ(self,k:int)->list[ChordNodeReference]:
+        """
+        Dado el factor k devuelve una lista con las referencias a los k sucesores
+
+        Args:
+            k (int): _description_
+
+        Returns:
+            list[ChordNodeReference]: _description_
+        """
+        succ:ChordNodeReference=self.succ # Pongo primero a mi sucesor
+        succ_list:list[ChordNodeReference]=self.succ_list # Capto la anterior primero
+        for i in range(k): # Iterar por la cant de nodos que tenemos 
+            succ_list[i]=succ
+            succ=succ.succ # Ahora el sucesor es el sucesor de mi sucesor
+        return succ_list
+    
     def check_succ_list(self,time_:int=0.1):
         check=True # Dice si hay que chequear o no la lista de sucesores
         while True:
@@ -465,13 +482,14 @@ class Leader(ChordNode):
                 
                 if not self.is_stable:# Si no se está estable esperar a estar estable
                     continue
+                #Esto funcionaba
+                #succ:ChordNodeReference=self.succ # Pongo primero a mi sucesor
+                #succ_list:list[ChordNodeReference]=self.succ_list # Capto la anterior primero
+                #for i in range(self.succ_list_count_): # Iterar por la cant de nodos que tenemos 
+                #    succ_list[i]=succ
+                #    succ=succ.succ # Ahora el sucesor es el sucesor de mi sucesor
                 
-                succ:ChordNodeReference=self.succ # Pongo primero a mi sucesor
-                succ_list:list[ChordNodeReference]=self.succ_list # Capto la anterior primero
-                for i in range(self.succ_list_count_): # Iterar por la cant de nodos que tenemos 
-                    succ_list[i]=succ
-                    succ=succ.succ # Ahora el sucesor es el sucesor de mi sucesor
-
+                succ_list:list[ChordNodeReference]=self._get_k_succ(self.succ_list_count_)
                 if not self.in_election and self.is_stable: #
                     self.succ_list=succ_list
                     self.succ_list_ok=True # Se puede volver a confiar en la lista de sucesores

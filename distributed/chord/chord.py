@@ -24,6 +24,40 @@ import pickle
 
 # Class representing a Chord node
 class ChordNode:
+    
+    import socket
+
+    def _send_data(self,ip: str, data: bytes,port:int=8001) -> bool:
+        """metodo para enviar data
+
+        Args:
+            addr (str): _description_
+            data (bytes): _description_
+
+        Returns:
+            bool: _description_
+        """
+        try:
+           
+
+            # Crear el socket del cliente
+            client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+            # Conectar al servidor
+            client_socket.connect((ip, port))
+
+            # Enviar los datos
+            client_socket.sendall(data)
+
+            # Cerrar la conexión
+            client_socket.close()
+            log_message(f"Enviado la data al addr {(ip,port)}",func=self._send_data)
+            return True
+        except Exception as e:
+            log_message(f"Error enviando data al addr {(ip,port)} Error: {e} \n {traceback.format_exc()}",func=self._send_data)
+            return False
+
+
 
     def start_node(self):
         """
@@ -314,7 +348,7 @@ class ChordNode:
 
             self.join(node)
 
-    def _recive_broadcastt(self):
+    def _recive_broadcastt(self,time_:float=1):
         try:
             # with self._broadcast_lock:
             client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -365,7 +399,7 @@ class ChordNode:
                         )
                         self.broadcast_handle(op, message, address[0])
 
-                    time.sleep(1)  # FUncionaba ok con 3
+                    time.sleep(time_)  # FUncionaba ok con 3
                 except:
                     log_message(
                         f"Error en el while True del recv broadcast Error: {traceback.format_exc()}",
