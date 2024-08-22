@@ -38,6 +38,11 @@ def download_file(url, file):
 
         # Realizar la solicitud GET con los parámetros
         response = requests.get(url, params=params, stream=True)
+        print(response.status_code)
+        if response.status_code==409:
+            print(response.json()['message'])
+            
+            return
         response.raise_for_status()
 
         with open(save_path, "ab" if file_exists else "wb") as f:
@@ -57,8 +62,8 @@ def download_file(url, file):
 
 
 if __name__ == "__main__":
-    ip='172.18.0.3'
+    ip='172.18.0.7'
     file_url = f"http://{ip}:8000/get_document_by_name"  # URL del servidor Flask
-    file = "noveno.txt"  # Nombre del archivo de salida
+    file = "rn"  # Nombre del archivo de salida
 
     download_file(file_url, file)

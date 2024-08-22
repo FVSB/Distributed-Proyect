@@ -1,6 +1,6 @@
 import requests
 import pickle
-ip='172.18.0.3'
+ip='172.18.0.7'
 url=f'http://{ip}:8000/upload'
 
 

@@ -85,6 +85,8 @@ services:
         - ${PWD}/client:/app/code
         - ${PWD}/logs/client_1:/app/logs
         - ${PWD}/databases/client_1:/app/database
+    ports:
+      - "8501:8501"  # Expone el puerto de Streamlit
     command: /bin/bash
     tty: true
     stdin_open: true

@@ -906,8 +906,8 @@ class StoreNode(Leader):
                     {
                         "message": f"El documento con nombre {name} no se encuentra en la base de datos"
                     },
-                    409,
-                )
+                    
+                ),409
 
             log_message(
                 f"Se a recuperado exitosamente el documento {doc.title} dado que se habia pedido el {name} desde el paquete {start}",

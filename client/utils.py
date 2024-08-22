@@ -6,7 +6,7 @@ import threading
 import time
 import threading
 import Pyro5.api
-
+import random
 class ThreadingList:
     def __init__(self) -> None:
         self.lock_:threading.RLock=threading.RLock()
@@ -56,6 +56,19 @@ class SearchServers:
     def get_servers_ip(self)->list[str]:
         return self.list_.get_list()
     
+    def get_random_server_ip(self)->str:
+        """
+        Retorna la ip de un nodo del servidor
+        
+
+        Returns:
+            str: _description_
+        """
+        lis=self.list_.get_list()
+        while len(lis)==0:
+            time.sleep(1)
+            lis=self.list_.get_list()
+        return random.choice(lis)
     def handle_client(self,client_socket):
         try:
             while True:
