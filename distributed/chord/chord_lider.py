@@ -185,12 +185,14 @@ class Leader(ChordNode):
                     #log_message(f'Soy el lider pero no estoy solo por tanto mi predecesor es estable {self.pred.check_in_election()} y estoy en eleccion {in_election}',func=self.check_i_am_stable)
                     self.is_stable= not (self.pred.check_in_election() or in_election) # Si soy el lider y no estoy solo todo es estable si mi predecesor es estable
                     
-                else:# Si no soy el lider tengo que ver que yo no estoy en elección ni mi predecesor y además el lider sea estable
+                elif not self.i_am_alone:# Si no soy el lider tengo que ver que yo no estoy en elección ni mi predecesor y además el lider sea estable
                   #  log_message(f'Como no soy el lider compruebo si la red es estable {self.leader.check_network_stability()}, Estoy en eleccion {in_election} mi predecesor esta en eleccion {self.pred.check_in_election()}',func=self.check_i_am_stable)
-                   
+                    
                     is_stable=(not (in_election or self.pred.check_in_election())) and self.leader.check_network_stability()
                     self.is_stable=is_stable #if isinstance(is_stable,bool) else False
                   #  log_message(f'Ahora soy estable  {self.is_stable}',func=self.check_i_am_stable)
+                else:
+                    self.is_stable= not self.in_election
             except Exception as e:
                 log_message(f'Error en chequear si soy un nodo estable Error:{e}  {traceback.format_exc()}',func=self.is_stable)
                 self.is_stable=False # Si hay error => No es estable
@@ -394,6 +396,8 @@ class Leader(ChordNode):
     @leader.setter
     def leader(self,value):
         if not isinstance(value,ChordNodeReference):
+            self.leader_=self.ref
+            log_message(f'value:{value} no es de tipo ChordNodeReference es de tipo:{type(value)}',func="self.leader")
             raise Exception(f'value:{value} no es de tipo ChordNodeReference es de tipo:{type(value)}') 
         with self.leader_lock:
             self.leader_=value  

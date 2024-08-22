@@ -846,7 +846,7 @@ class StoreNode(Leader):
         """
         return self.get_request(self._upload_file)
         
-
+    
     # EndPoint get_file_by_name
     def get_file_by_name(self):
         """
@@ -933,8 +933,10 @@ class StoreNode(Leader):
                 for i in range(0, total_length, chunk_size):
                     chunk = data_bytes[i : i + chunk_size]
                     if part_number >= start:
-                        paquete = Paquete(part_number, chunk, False)
-                        yield paquete.serialize()
+                        #paquete = Paquete(part_number, chunk, False)
+                        #yield paquete.serialize()
+                        paquete=(part_number,chunk,False)
+                        yield obj_to_bytes(paquete)
                     part_number += 1
 
             log_message(
@@ -1037,7 +1039,14 @@ class StoreNode(Leader):
             func=self.delete_file,
         )
         document=db.get_document_by_id(doc_id)
+        
+        # Comprobar que el documento no este ya eliminado
+        
         try:
+            
+            if document.record.is_delete:
+                log_message(f"El documento {doc_name} esta ya eliminado",self._delete_file)
+                return jsonify({"message":f"El documento {doc_name} esta ya eliminado"}),HTTPStatus.OK
             
             document.delete()
             ok_crud, nodes_save = self.Crud_action(
@@ -1065,7 +1074,7 @@ class StoreNode(Leader):
         except Exception as e:
             log_message(
                 f"Hubo un problema tratanto de eliminar el archivo {doc_name} Error:{e} \n {traceback.format_exc()}",
-                func=self.update_file,
+                func=self._delete_file,
             )
             return (
                 jsonify(
@@ -1076,32 +1085,38 @@ class StoreNode(Leader):
         
     def delete_file(self):
         addr_from = request.remote_addr
-        log_message(
-            f"Se a mandado a actualizar un archivo que envio el addr: {addr_from} ",
-            func=self.upload_file,
-        )
-        # Nombre del archivo , str con el archivo
-        data = self.get_data_from_request()  # Tomar los bytes de la data
-
-        if data is None:  # Es que no se envió nada
-            # Retornar error de no file
-            return (
-                jsonify({"message": 'Bad Request: Parámetro "param" requerido'}),
-                HTTPStatus.BAD_REQUEST,
+        try:
+            log_message(
+                f"Se a mandado a eliminar un archivo que envio el addr: {addr_from} ",
+                func=self.delete_file,
             )
-        doc_name: str = pickle.loads(data)
-        doc_id = getShaRepr(doc_name)
-        
-        redirection=self.redirect_request(name=doc_name,hash_name=doc_id)
-        if redirection is not None:
-            log_message(f"Se va a redireccionar la peticion de eliminar el archivo {doc_name} con id: {doc_id}",func=self.delete_file)
-            return redirection
-        log_message(
-            f"Se ha enviado a eliminar el documento {doc_name} con id {doc_id} ",
-            func=self.delete_file,
-        )
-        return self._delete_file(doc_id=doc_id,doc_name=doc_name)
+            # Nombre del archivo , str con el archivo
+            data = self.get_data_from_request()  # Tomar los bytes de la data
 
+            if data is None:  # Es que no se envió nada
+                # Retornar error de no file
+                log_message(f"No llega data desde el addr{addr_from}",func=self.delete_file)
+                return (
+                    jsonify({"message": 'Bad Request: Parámetro "param" requerido'}),
+                    HTTPStatus.BAD_REQUEST,
+                )
+            doc_name: str = pickle.loads(data)
+            
+            log_message(f"El documento a eliminar es {doc_name} de tipo {type(doc_name)}",func=self.delete_file)
+            doc_id = getShaRepr(doc_name)
+
+            redirection=self.redirect_request(name=doc_name,hash_name=doc_id)
+            if redirection is not None:
+                log_message(f"Se va a redireccionar la peticion de eliminar el archivo {doc_name} con id: {doc_id}",func=self.delete_file)
+                return redirection
+            log_message(
+                f"Se ha enviado a eliminar el documento {doc_name} con id {doc_id} ",
+                func=self.delete_file,
+            )
+
+            return self._delete_file(doc_id=doc_id,doc_name=doc_name)
+        except Exception as e:
+            log_message(f'Huboi un problema eliminando un archivo Error: {e} \n {traceback.format_exc()}',func=self.delete_file)
 
 if __name__ == "__main__":
     print("Hello from Storage node")

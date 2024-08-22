@@ -66,6 +66,7 @@ def make_crud_post(server_ip:str,sub_route:str,data:object)->dict:
     """
   
     try:
+        log_message(f"Se va a enviar al servidor {server_ip} el sub_route {sub_route} con data {data}")
         data_bytes=pickle.dumps(data)
     
         files={'file':data_bytes}
@@ -79,14 +80,14 @@ def make_crud_post(server_ip:str,sub_route:str,data:object)->dict:
         if response.status_code in [i for i in range(499,600,1)]+[404]:
             raise Exception(f'La respuesta tuvo un codigo {response.status_code}')
         # Imprime la respuesta del servidor
-        data=response.json()
+        data_response=response.json()
         if response.status_code==301:
-            log_message(f"Se mando a redirigir, {data}, \n {type(data)}")
-            new_ip=data['ip']
+            log_message(f"Se mando a redirigir, {data_response}, \n {type(data_response)}")
+            new_ip=data_response['ip']
             log_message(f"Se va a redireccionar la peticion de la data {data} a la ip {new_ip}")
             return make_crud_post(server_ip=new_ip,sub_route=sub_route,data=data)
         
-        return data
+        return data_response
     except Exception as e:# Si hubo un error pq el nodo se cayo o algo retorno none
         log_message(f"Ocurrio un error tratando de ejecutar un crud action Error: {e} \n {traceback.format_exc()}")
         return None
@@ -260,9 +261,10 @@ def _download_file(url,file)->str:
                 
                 if chunk:
                     
-                    paquete = Paquete.deserialize(chunk)
-                    
-                    a: str = pickle.loads(paquete.bytes_datos)
+                    #paquete = Paquete.deserialize(chunk)
+                    paquete=pickle.loads(chunk)
+                    #a: str = pickle.loads(paquete.bytes_datos)
+                    a:str=pickle.loads(paquete[1])
                     text+=a
                    
         
