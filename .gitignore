@@ -1,6 +1,7 @@
 
 /test
 /logs
-
+/databases
+/client/_pycache_
 /distributed/app/logs
 /distributed/logs
