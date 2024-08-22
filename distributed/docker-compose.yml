@@ -1,0 +1,79 @@
+version: '3'
+
+services:
+  container_1:
+    image: chord_test
+    container_name: node_1
+    volumes:
+      - ${PWD}/distributed:/app/code
+      - ${PWD}/logs/container_1:/app/logs
+      - ${PWD}/databases/container_1:/app/database
+    command: /bin/bash
+    tty: true
+    stdin_open: true
+
+  container_2:
+    image: chord_test
+    container_name: node_2
+    volumes:
+      - ${PWD}/distributed:/app/code
+      - ${PWD}/logs/container_2:/app/logs
+      - ${PWD}/databases/container_2:/app/database
+    command: /bin/bash
+    tty: true
+    stdin_open: true
+
+  container_3:
+    image: chord_test
+    container_name: node_3
+    volumes:
+      - ${PWD}/distributed:/app/code
+      - ${PWD}/logs/container_3:/app/logs
+      - ${PWD}/databases/container_3:/app/database
+    command: /bin/bash
+    tty: true
+    stdin_open: true
+
+  container_4:
+    image: chord_test
+    container_name: node_4
+    volumes:
+      - ${PWD}/distributed:/app/code
+      - ${PWD}/logs/container_4:/app/logs
+      - ${PWD}/databases/container_4:/app/database
+    command: /bin/bash
+    tty: true
+    stdin_open: true
+
+  container_5:
+    image: chord_test
+    container_name: node_5
+    volumes:
+      - ${PWD}/distributed:/app/code
+      - ${PWD}/logs/container_5:/app/logs
+      - ${PWD}/databases/container_5:/app/database
+    command: /bin/bash
+    tty: true
+    stdin_open: true
+
+  container_6:
+    image: chord_test
+    container_name: node_6
+    volumes:
+      - ${PWD}/distributed:/app/code
+      - ${PWD}/logs/container_6:/app/logs
+      - ${PWD}/databases/container_6:/app/database
+    command: /bin/bash
+    tty: true
+    stdin_open: true
+
+  container_7:
+    image: chord_test
+    container_name: node_7
+    volumes:
+      - ${PWD}/distributed:/app/code
+      - ${PWD}/logs/container_7:/app/logs
+      - ${PWD}/databases/container_7:/app/database
+    command: /bin/bash
+    tty: true
+    stdin_open: true

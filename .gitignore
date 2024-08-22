@@ -5,3 +5,7 @@
 /client/_pycache_
 /distributed/app/logs
 /distributed/logs
+
+databases/
+old/
+examples/

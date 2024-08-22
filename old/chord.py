@@ -337,7 +337,6 @@ class ChordNode:
             self.pred = node
         else:
             pass # Enviar mensaje que de no puede y le paso al que tengo como como predecesor de ese id
-
     # Fix fingers method to periodically update the finger table
     def fix_fingers(self):
         """Fix fingers method to periodically update the finger table
