@@ -265,7 +265,10 @@ def _download_file(url,file)->str:
                     paquete=pickle.loads(chunk)
                     #a: str = pickle.loads(paquete.bytes_datos)
                     a:str=pickle.loads(paquete[1])
-                    text+=a
+                    if a is None:
+                        log_message(f'a es None')
+                    else:
+                        text+=a
                    
         
         return text
