@@ -7,6 +7,7 @@ import time
 import threading
 import Pyro5.api
 import random
+from logguer import log_message
 class ThreadingList:
     def __init__(self) -> None:
         self.lock_:threading.RLock=threading.RLock()
@@ -16,11 +17,11 @@ class ThreadingList:
     def update(self,item:list[str]):
         with self.lock_:
             
-            self.lis=item
+            self.lis_=item
     
     def get_list(self)->list[str]:
         with self.lock_:
-            return self.lis
+            return self.lis_
         
     
     
@@ -33,9 +34,9 @@ class SearchServers:
             url (str): _description_
         """
         ns = Pyro5.api.locate_ns()
-        print("Esta activo")
+        #log_message("Esta activo")
         uri = ns.lookup(url)
-        print("Encontro la uri")
+        #log_message("Encontro la uri")
         if proxy is None:
             return  Pyro5.api.Proxy(uri)
             
@@ -44,7 +45,8 @@ class SearchServers:
 
 
     def start(self):
-        self.start_server()
+        threading.Thread(target=self.start_server,daemon=True).start()
+        #self.start_server()
         threading.Thread(target=self.broadcast,daemon=True).start()
         
     def __init__(self,ip:str,port:int) -> None:
@@ -67,6 +69,7 @@ class SearchServers:
         lis=self.list_.get_list()
         while len(lis)==0:
             time.sleep(1)
+            log_message(f"Esperando que la lista se vacie")
             lis=self.list_.get_list()
         return random.choice(lis)
     def handle_client(self,client_socket):
@@ -80,10 +83,10 @@ class SearchServers:
                 if not isinstance(lis,list):
                     raise Exception(f"debe recibir una lista de str no un {type(lis)}")
                 
-                print("Mensaje recibido:", )
+                #log_message(f"Mensaje recibido: {lis}", )
                 self.list_.update(lis)
         except Exception as e:
-            print(f"Error al recibir datos: {e}")
+            log_message(f"Error al recibir datos: {e}")
         finally:
             client_socket.close()
 
@@ -93,17 +96,17 @@ class SearchServers:
         port=self.port
         server_socket.bind((host, port))
         server_socket.listen(1)
-        print(f"Escuchando en {host}:{port}")
+        log_message(f"Escuchando en {host}:{port}")
 
         while True:
             client_socket, addr = server_socket.accept()
-            print(f"Conexión aceptada desde {addr}")
+            #log_message(f"Conexión aceptada desde {addr}")
             # Crear un nuevo hilo para manejar el cliente
             client_thread = threading.Thread(target=self.handle_client, args=(client_socket,))
             client_thread.start()
 
 
-    def broadcast(time_:float=2):
+    def broadcast(self,time_:float=2):
         while True :
             try:     
                 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -118,7 +121,7 @@ class SearchServers:
                 s.close()
                 time.sleep(time_)
             except:
-                print("Ocurrio un error al enviar el broadcast")
+                log_message("Ocurrio un error al enviar el broadcast")
 
 
 

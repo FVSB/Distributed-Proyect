@@ -1,6 +1,9 @@
 import streamlit as st
-
+from client import *
+from logguer import log_message
 # Simulación de documentos con score
+log_message(f"Iniciado")
+
 def obtener_documentos():
     return [
         {
@@ -28,7 +31,7 @@ def obtener_documentos():
 
 # Función para realizar la búsqueda
 def realizar_busqueda(query, extensiones):
-    documentos = obtener_documentos()
+    documentos = make_query(query=query,posibles_extensions=extensiones)
     return documentos
     # Filtrar por query (simulado)
     documentos_filtrados = [doc for doc in documentos if query.lower() in doc['titulo'].lower()]
@@ -47,8 +50,19 @@ st.title("🔍 Motor de Búsqueda Personalizado")
 query = st.text_input("Introduce tu consulta:")
 
 # Entrada de extensiones
-extensiones = st.text_input("Introduce extensiones posibles separadas por comas:")
+extensiones:str = st.text_input("Introduce extensiones posibles separadas por comas:")
 
+extensiones=extensiones.replace(',',' ')
+
+extensiones=extensiones.split(' ')
+
+temp=[]
+
+for ext in extensiones:
+    if ext not in ['', ' ']:
+        temp.append(ext)
+
+extensiones=temp
 # Botón para realizar la búsqueda
 if st.button("Realizar Búsqueda"):
     if query:
@@ -56,10 +70,11 @@ if st.button("Realizar Búsqueda"):
         
         if resultados:
             for doc in resultados:
-                with st.expander(f"{doc['titulo']} (Score: {doc['score']})"):
-                    st.write(doc["snippet"])
-                    if st.button(f"Mostrar contenido completo de {doc['titulo']}", key=doc['id']):
-                        st.write(doc["contenido"])
+                #{"id":result.id,"title":result.title,"snipet":result.snippet,"score":result.score}
+                with st.expander(f"{doc['title']} (Score: {doc['score']})"):
+                    st.write(doc["snipet"])
+                    if st.button(f"Mostrar contenido completo de {doc['title']}", key=doc['id']):
+                        st.write(doc["snipet"])
         else:
             st.info("No se encontraron documentos que coincidan con la consulta.")
     else:

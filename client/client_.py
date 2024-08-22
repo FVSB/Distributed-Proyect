@@ -4,10 +4,13 @@ import requests
 import time
 import pickle
 import os
+import traceback
+from logguer import log_message
+
 ip = socket.gethostbyname(socket.gethostname())
 servers=SearchServers(ip=ip,port=8001)
-
-def get_query_from_server(server_ip:str,params:dict):
+log_message(f"activo el server de escucha")
+def _get_query_from_server(server_ip:str,params:dict):
     try:
             # Realizar la solicitud GET con los parámetros
             url_query=f'http://{server_ip}:8000/query'
@@ -19,24 +22,31 @@ def get_query_from_server(server_ip:str,params:dict):
             if response.status_code==200:
                 #{"id":result.id,"title":result.title,"snipet":result.snippet,"score":result.score}
                 return response.json()
-    except:
+    except Exception as e:
+            log_message(f"Ocurrio un error pidiendo una query desde el server codigo {response.status_code} Error:{e} \n {traceback.format_exc()}")
             return None
 
 def make_query(query:str,posibles_extensions:list[str],max_results:int=10,min_score:float=0,):
     
-    
+    """Metodo a llamar para hacer la query
+
+    Returns:
+        _type_: _description_
+    """
     
     while True:
         server_ip:str=servers.get_random_server_ip()
             
         params={"query":query,"max_results":max_results,"min_score":min_score,"extensions":posibles_extensions}
         
-        response:dict=get_query_from_server(server_ip,params=params)
+        response:dict=_get_query_from_server(server_ip,params=params)
         
         if response is None:
+            log_message(f"No hubo respuesta desde el nodo {server_ip} para la query {query}")
+            time.sleep(1)
             continue
-        
-        return response
+        log_message(f'La respuesta es {response}')
+        return response['results']
     
 def make_crud_post(server_ip:str,sub_route:str,data:object)->dict:
     """
@@ -64,17 +74,21 @@ def make_crud_post(server_ip:str,sub_route:str,data:object)->dict:
         
         response = requests.post(url, files=files,timeout=200)
         
-        if response.status_code in [404,i for i in range(499,600,1)]:
+        log_message(f"La respuesta crud al nodo {server_ip} con ruta {sub_route} fue {response.status_code}")
+        
+        if response.status_code in [i for i in range(499,600,1)]+[404]:
             raise Exception(f'La respuesta tuvo un codigo {response.status_code}')
         # Imprime la respuesta del servidor
         data=response.json()
         if response.status_code==301:
-            
+            log_message(f"Se mando a redirigir, {data}, \n {type(data)}")
             new_ip=data['ip']
-            return make_crud_post(server_ip=new_ip,sub_route=sub_route,files=files)
+            log_message(f"Se va a redireccionar la peticion de la data {data} a la ip {new_ip}")
+            return make_crud_post(server_ip=new_ip,sub_route=sub_route,data=data)
         
         return data
     except Exception as e:# Si hubo un error pq el nodo se cayo o algo retorno none
+        log_message(f"Ocurrio un error tratando de ejecutar un crud action Error: {e} \n {traceback.format_exc()}")
         return None
     
 def _insert_update_helper(title:str,text:str,is_insert:bool)->str:
@@ -140,11 +154,12 @@ def delete_document(title:str)->str:
     Returns:
         str: _description_
     """
+    log_message(f"se llamo a eliminar el documento {title}")
     server_ip:str=servers.get_random_server_ip()  
-    
+    log_message(f'Se va a enviar a eliminar el documento {title}')
     resp=make_crud_post(server_ip=server_ip,sub_route='delete_file',data=title)
     
-   
+    log_message(f"Se recibio la respuesta {resp} para eliminar {title}")
     if resp is None:
         return f"Ocurrio un error Eliminando: {title}"
     
@@ -189,11 +204,11 @@ def _download_file_and_download(url, file)->str:
                 blocks_count += 1
 
                 # Imprime el número total de bloques de 1024 bytes
-            print(blocks_count)
+            log_message(blocks_count)
             start_part = blocks_count + 1
 
     try:
-        print(f"La start_part es {start_part}")
+        log_message(f"La start_part es {start_part}")
         # Definir los parámetros de la solicitud
         params = {"start": start_part, "name": file}
 
@@ -205,13 +220,13 @@ def _download_file_and_download(url, file)->str:
         response.raise_for_status()
         text=""
         with open(save_path, "ab" if file_exists else "wb") as f:
-            #print("aca")
+            #log_message("aca")
             for chunk in response.iter_content(chunk_size=None):
-                #print("acaaa")
+                #log_message("acaaa")
                 if chunk:
                     # f.write(chunk)
                     paquete = Paquete.deserialize(chunk)
-                    #print("ff")
+                    #log_message("ff")
                     a: str = pickle.loads(paquete.bytes_datos)
                     text+=a
                     f.write(a.encode())
@@ -230,7 +245,7 @@ def _download_file(url,file)->str:
     save_path = os.path.join(folder, file)
     file_exists = os.path.exists(save_path)
     try:
-        print(f"La start_part es {start_part}")
+        log_message(f"La start_part es {start_part}")
         # Definir los parámetros de la solicitud
         params = {"start": start_part, "name": file}
 
@@ -267,3 +282,5 @@ def download_file(title:str,save_file:bool=False)->str:
 
     
 
+if __name__ == "__main__":
+    log_message("Hello client")

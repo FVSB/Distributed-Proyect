@@ -103,7 +103,6 @@ class Document:
         self.extension:str=self._get_extention(title)
         self.text: str = text
         self.record: DocsRecords = DocsRecords(self.id)
-
     def get_in_bytes(self) -> bytes:
         return pickle.dumps(self)
 

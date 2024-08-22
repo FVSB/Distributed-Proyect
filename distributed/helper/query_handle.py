@@ -1,5 +1,6 @@
 import heapq
 import threading
+from helper.logguer import log_message
 from helper.docs_class import EmbeddingDocument
 from typing import Callable
 from helper.utils import get_guid,ThreadingSet
@@ -109,6 +110,14 @@ class QueryHandle:
         Args:
             doc (EmbeddingDocument): _description_
         """
+        
+        if doc is None:
+            log_message(f"Aca hay un objeto None y no deberia ser",func=self.add_document)
+        
+        if doc.record.is_delete:
+            log_message(f"El documento {doc.id} esta eliminado",func=self.add_document)
+            return
+        
         title_embedding=doc.embedding_title_list
         # Hallar el score con respecto al titulo
         title_score,_=self._get_best_embeddings_compare_score(doc.embedding_title_list,[doc.title for _ in range(len(doc.embedding_title_list))])
