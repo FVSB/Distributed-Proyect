@@ -521,7 +521,7 @@ class SyncStoreNode(StoreNode):
 
         for i in range(intent):
             try:
-
+                time.sleep(time_)
                 log_message(
                     f"Tratando de sincronizar la data despues de una eleccion intento {i+1}",
                     func=self.sync_data,

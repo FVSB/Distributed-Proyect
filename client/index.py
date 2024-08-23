@@ -66,15 +66,28 @@ extensiones=temp
 # Botón para realizar la búsqueda
 if st.button("Realizar Búsqueda"):
     if query:
-        resultados = realizar_busqueda(query, extensiones)
+        resultados:list = realizar_busqueda(query, extensiones)
         
-        if resultados:
+        if resultados and len(resultados) > 0:
             for doc in resultados:
-                #{"id":result.id,"title":result.title,"snipet":result.snippet,"score":result.score}
-                with st.expander(f"{doc['title']} (Score: {doc['score']})"):
-                    st.write(doc["snipet"])
-                    if st.button(f"Mostrar contenido completo de {doc['title']}", key=doc['id']):
-                        st.write(doc["snipet"])
+                title = doc['title']
+                snippet = doc["snipet"]
+                id_ = doc["id"]
+                score = doc["score"]
+        
+                with st.expander(f"{title} (Score: {score})"):
+                    st.write(snippet)
+                    
+                    # Crear una clave única para cada botón
+                    button_key = f"button_{id_}"
+                    if st.button(f"Mostrar contenido completo de {title}", key=button_key):
+                        st.session_state[button_key] = True
+        
+                    # Mostrar el contenido completo si se presionó el botón
+                    if st.session_state.get(button_key):
+                        st.write(f"Buscando el documento completo de {title}")
+                        text = download_file(title, True)
+                        st.write(text)
         else:
             st.info("No se encontraron documentos que coincidan con la consulta.")
     else:

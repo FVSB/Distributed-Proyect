@@ -113,8 +113,16 @@ class Leader(ChordNode):
         while not (self.is_stable and self.succ_list_ok):
             time.sleep(1) # mientras no sea estable
             log_message(f'Se mando a buscar la llave {key} pero no es estable la sit ',func=self.find_key_owner)
-        return super().find_key_owner(key)
-                      
+        
+        for i in range(5):
+            try:
+                return super().find_key_owner(key)
+            except Exception as e:
+                log_message(f"No se puede recuperar el duenno del la llave {key } en el intento {i}", func=self.find_key_owner)
+                time.sleep(i*2)
+        
+        log_message(f"Como se ha superado el maximo numero de intentos voy a devolverme a mi mismo",func=self.find_key_owner)
+        return self.ref
     def data_to_print(self):
         """Para poder añadir cosas a pintar"""
         log_message(f'Mi predecesor es {self.pred.id if self.pred else None} con ip {self.pred.ip if self.pred else None} ',level='INFO')
