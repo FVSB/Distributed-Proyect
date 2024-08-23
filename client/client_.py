@@ -257,6 +257,7 @@ def _download_file(url,file)->str:
             return res['message']
         response.raise_for_status()
         text=""
+        in_bytes=b""
         for chunk in response.iter_content(chunk_size=None):
                 
                 if chunk:
@@ -264,13 +265,14 @@ def _download_file(url,file)->str:
                     #paquete = Paquete.deserialize(chunk)
                     paquete=pickle.loads(chunk)
                     #a: str = pickle.loads(paquete.bytes_datos)
-                    a:str=pickle.loads(paquete[1])
-                    if a is None:
+                   
+                    if paquete is None:
                         log_message(f'a es None')
                     else:
-                        text+=a
+                        #text+=a
+                        in_bytes+=paquete[1]
                    
-        
+        text=pickle.loads(in_bytes)
         return text
     except requests.exceptions.RequestException as e:
         return f"An error occurred: {e}"

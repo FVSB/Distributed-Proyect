@@ -1045,7 +1045,7 @@ class StoreNode(Leader):
         try:
             
             if document.record.is_delete:
-                log_message(f"El documento {doc_name} esta ya eliminado",self._delete_file)
+                log_message(f"El documento {doc_name} esta ya eliminado",func=self._delete_file)
                 return jsonify({"message":f"El documento {doc_name} esta ya eliminado"}),HTTPStatus.OK
             
             document.delete()
@@ -1074,7 +1074,7 @@ class StoreNode(Leader):
         except Exception as e:
             log_message(
                 f"Hubo un problema tratanto de eliminar el archivo {doc_name} Error:{e} \n {traceback.format_exc()}",
-                func=self._delete_file,
+                func="_delete_file",
             )
             return (
                 jsonify(

@@ -69,7 +69,7 @@ class SearchServers:
         lis=self.list_.get_list()
         while len(lis)==0:
             time.sleep(1)
-            log_message(f"Esperando que la lista se vacie")
+            log_message(f"Esperando que la lista no este vacia")
             lis=self.list_.get_list()
         return random.choice(lis)
     def handle_client(self,client_socket):
