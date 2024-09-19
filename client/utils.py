@@ -8,21 +8,7 @@ import threading
 import Pyro5.api
 import random
 from logguer import log_message
-class ThreadingList:
-    def __init__(self) -> None:
-        self.lock_:threading.RLock=threading.RLock()
-        self.lis_:list[str]=[]
-    
-        
-    def update(self,item:list[str]):
-        with self.lock_:
-            
-            self.lis_=item
-    
-    def get_list(self)->list[str]:
-        with self.lock_:
-            return self.lis_
-        
+
     
     
 

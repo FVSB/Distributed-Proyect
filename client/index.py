@@ -1,7 +1,7 @@
 import streamlit as st
 from client_ import *
 from logguer import log_message
-
+import threading
 # Simulación de documentos con score
 log_message(f"Iniciado")
 
@@ -145,3 +145,19 @@ elif  pagina== "Eliminar un archivo":
     response=delete_document(nombre_archivo)
     
     st.write(f"Respuesta \n {response}")
+
+class ThreadingList:
+    def __init__(self) -> None:
+        self.lock_:threading.RLock=threading.RLock()
+        self.lis_:list[str]=[]
+    
+        
+    def update(self,item:list[str]):
+        with self.lock_:
+            
+            self.lis_=item
+    
+    def get_list(self)->list[str]:
+        with self.lock_:
+            return self.lis_
+        
