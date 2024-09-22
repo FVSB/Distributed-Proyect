@@ -2,7 +2,15 @@ Para correr el proyecto
 
 - Construir la imagen de docker 
 - Levantar el docker compose
+  - ``` docker-compose up -d ```
+  
 - levantar los nodos
+    - ```docker exec -it  node_{$i}  bin
+/bash
+```
+    - ```python app/code/server.py```
+    - levantar cliente ```docker exec -it  client_1  b
+in/bash```
 - Se recomienda 3  o mas para garantizar resistencia >=2
 - en el cliente ```streamlit run app/code/index.py```
 - en los contenedores server ```python app/code/server.py```
