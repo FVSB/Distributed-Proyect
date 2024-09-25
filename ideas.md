@@ -1,3 +1,5 @@
+
+
 # Server:
 - Cada nodo de la red Chord es un servidor SRI Completo.
 - Se hace la elección de lider por bagging o proof of work bagging preferentemente para que el nodo con menor id sea el lider con el fin de evitar los problemas de reconexión,
@@ -68,3 +70,7 @@ En caso de Entrada,Salida (Tb Cubre que se parta la red y resincronize):
 - En la parte de corregir el sucesor primero convocar elecciones en caso de no verlo
 - No se arreglan todo el tiempo los fingers poner que se tienen que arreglar solo despues de estabilizar
 - Estabilizar es cuando la lista de sucesores y finger table esté estable
+
+
+### NOta:
+- Chequear que el lider del pred sea el mismo que el mio se guia que el pred no este en eleccion

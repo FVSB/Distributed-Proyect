@@ -38,3 +38,4 @@ IS_DB_STABLE=25 # Es para el lider y dice True O False si la db es estable para 
 CAN_UPDATE_DATA=26 #Aca dice si ya sincronize los datos que tenia a sus nuevos duennos
 PROCESS_QUERY=27 # Aca es para que mi sucesor procese tb la query
 FIND_NODES=28
+GET_LEADER=29

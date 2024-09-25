@@ -97,6 +97,10 @@ class ChordNodeReference:
     def pred(self) -> "ChordNodeReference":
         response = self._send_data(GET_PREDECESSOR)
         return response
+    
+    @property
+    def leader(self)->"ChordNodeReference":
+        response=self._send_data(GET_LEADER)
 
     # Method to notify the current node about another node
     def notify(self, node: "ChordNodeReference"):
@@ -171,7 +175,7 @@ class ChordNodeReference:
         except Exception as e:
             log_message(
                 f"No se pudo preguntar al nodo {self.id} por la opción {op} Error:{e} \n {traceback.format_exc()}",
-                func=self.check_network_stability,
+                func=self._check_boolean_option,
             )
             return default_in_except
 
