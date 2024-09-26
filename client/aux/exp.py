@@ -67,38 +67,7 @@ class ChordNode:
         self.start_threads()
         log_message(f"Levantado los hilos")
 
-    def start_threads(self):
-        """Levanta los hilos"""
-        # Start background threads for stabilization, fixing fingers, and checking predecessor
-        threading.Thread(
-           target=self.stabilize, daemon=True  
-        ).start()  # Start stabilize thread
-        threading.Thread(
-            target=self.fix_fingers, daemon=True
-        ).start()  # Start fix fingers thread
-        threading.Thread(
-            target=self.check_predecessor, daemon=True
-        ).start()  # Start check predecessor thread
-        threading.Thread(
-            target=self.start_server, daemon=True
-        ).start()  # Start server thread
-        threading.Thread(
-            target=self.show, daemon=True
-        ).start()  # Start funcion que se esta printeando todo el tipo cada n segundos
-        threading.Thread(
-            target=self._search_successor,
-            daemon=True,
-            args=(
-                JOIN,
-                self.ref,
-            ),
-        ).start()  # Enviar broadcast cuando no tengo sucesor
-        threading.Thread(
-            target=self._recive_broadcastt, daemon=True
-        ).start()  # Recibir continuamente broadcast
-        threading.Thread(target=self.stabilize_finger, daemon=True).start()
-
-    # threading.Thread(target=self.search_test,daemon=True).start()
+    
 
     def __init__(self, ip: str, port: int = 8001, m: int = 160):  # m=160
         """
