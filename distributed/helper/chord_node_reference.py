@@ -101,6 +101,7 @@ class ChordNodeReference:
     @property
     def leader(self)->"ChordNodeReference":
         response=self._send_data(GET_LEADER)
+        return response
 
     # Method to notify the current node about another node
     def notify(self, node: "ChordNodeReference"):

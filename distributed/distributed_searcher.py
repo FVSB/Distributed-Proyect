@@ -1,9 +1,11 @@
 
 
 from chord.distributed_data_base import *
+from helper.utils import CrudCode
 from helper.docs_class import EmbeddingDocument
 from helper.embedding_generator import create_embedding,cosine_similarity
 from helper.query_handle import DocsClassification, QueryHandle,QueryGestor
+from helper.document_gestor import DocumentProgressTracker
 from typing import Callable
 
 
@@ -20,7 +22,12 @@ class DistributedSearcher(DistributedDataBase):
             view_func=self.query,
             methods=["GET"],
         )# Metodo para hacer una query
-        
+        app.add_url_rule(
+            "/progress_document",
+            view_func=self.progress_document,
+            methods=["GET"],
+            
+        )#Funcion para conocer el progreso despues de insertar o actualizar un documento
         super().setup_routes()
         app.add_url_rule(
             "/process_query_handle",
@@ -30,7 +37,7 @@ class DistributedSearcher(DistributedDataBase):
         
         
         
-    def create_document(self,title: str, text: str, max_value: int = 16) -> Document:
+    def create_document(self,guid:str,title: str, text: str, max_value: int = 16) -> Document:
         """
         crea el embeeding document apartir del titulo y texto
 
@@ -42,18 +49,44 @@ class DistributedSearcher(DistributedDataBase):
         Returns:
             Document: _description_
         """
+        log_message(f"Se llamo al metodo de create document ",func=self.create_document)
         embedding_text_list,chunks_text=self.query_gestor.create_embedding(text)
+        log_message(f"Se creo correctamente el embedding del documento {title} con guid {guid}",func=self.create_document)
+        self.document_tracker_gestor.update_progress(guid=guid,porcent=0.25)
         embedding_title_list,_=self.query_gestor.create_embedding(title)
+        log_message(f"Se creo correctamente el embedding del titulo de {title} con guid {guid}",func=self.create_document)
+        self.document_tracker_gestor.update_progress(guid=guid,porcent=0.95)
         return EmbeddingDocument(title=title,text=text,max_value=max_value,embedding_text_list=embedding_text_list,embedding_title_list=embedding_title_list,text_chunks=chunks_text)
 
+    def _process_to_save_document(self, guid: str, name: str, doc_to_save: str, sub_url: str, crud_code: CrudCode):
+        #Crear el tracker para ese documento
+        log_message(f"Inicializar track para el documento {name} con guid{guid}",func=self._process_to_save_document)
+        self.document_tracker_gestor.init_track(guid=guid)
+        log_message(f"Se inicializo track para el documento {name} con guid{guid}",func=self._process_to_save_document)
+        super()._process_to_save_document(guid, name, doc_to_save, sub_url, crud_code)
     
-    
+    def _create_and_save_document(self, guid: str, name: str, doc_to_save: str, sub_url: str, crud_code: CrudCode):
+        ok_crud, nodes_save= super()._create_and_save_document(guid, name, doc_to_save, sub_url, crud_code)
+        # Añadir esto para utilzar el track de por donde va.
+        
+        if ok_crud:
+            self.document_tracker_gestor.end_track(guid=guid,end_msg=f"Se guardo satisfactoriamente en los nodos {nodes_save}")
+            log_message(f"Se guardo correctamente el documento {name} con guid {guid} en los nodos {nodes_save}",func=self._create_and_save_document)
+        else:
+            self.document_tracker_gestor.error_track(guid=guid,error_mg=f"Ocurrio un error tratando de guardar {guid} se guardo en {nodes_save}")
+            log_message(f"Hubo un error guardando el documento {name} con guid {guid} en los nodos {nodes_save}",func=self._create_and_save_document)
+        return ok_crud,nodes_save
     def __init__(self, ip: str,query_gestor:QueryGestor, port: int = 8001, flask_port: int = 8000, m: int = 160):
         super().__init__(ip, port, flask_port, m)
         
         self.query_gestor:QueryGestor=query_gestor
         """
         Clase factory para los handles de las querys
+        """
+        
+        self.document_tracker_gestor:DocumentProgressTracker=DocumentProgressTracker(time_to_delete=10)
+        """
+        Gestor que se encarga para saber como va el proceso de subir un documento
         """
         
     def return_query_helper(self,query_handle:QueryHandle):
@@ -236,7 +269,25 @@ class DistributedSearcher(DistributedDataBase):
             return jsonify({"message":"A ocurrido un error en la peticion"}),500
         
 
+    def progress_document(self):
+        """
+        Endpoint para conocer el progreso de un documento
+        """
+        addr_from = request.remote_addr  # La direccion desde donde se envia la petición
 
+        log_message(f"Se a recibido una petición de GET para el para conocer el progreso en guardar o actualizar un documento desde la direccion: {addr_from}",
+            func=self.progress_document)
+        
+        try:
+            guid:str=str(request.args.get("guid",""))
+            if not self.document_tracker_gestor.contains_guid(guid=guid):
+                return (jsonify({"message":f"El guid {guid} no se encuentra disponible"}),HTTPStatus.NOT_FOUND)
+            tracker=self.document_tracker_gestor.get_progress(guid)
+            
+            return(jsonify({"message":tracker.message,"porcent":tracker.progress_porcent,"is_error":tracker.is_error,"is_finish":tracker.is_finish}),HTTPStatus.OK)
+        except Exception as e:
+            log_message(f"A ocurrido un error en la peticion del addr{addr_from} para conocer el estado de un documento Error:{e} \n {traceback.format_exc()}",func=self.progress_document)
+            return jsonify({"message":"A ocurrido un error en la peticion"}),500
 if __name__ == "__main__":
     log_message("Hello from Distribued Seacher node")
     ip = socket.gethostbyname(socket.gethostname())

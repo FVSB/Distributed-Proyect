@@ -8,6 +8,7 @@ import traceback
 from typing import Callable
 
 
+
 class DeleteHandle:
     """
     Clase que irá en el heap para decir que tipo de documentos se deben eliminar pq no se recibió respuesta del dueño
@@ -174,8 +175,200 @@ class Set:
                 f"Se a eliminado del set el guid {guid}", func=self.delete_guid_if_exist
             )
             return True
+        
+class SimulatorTimeGestor:
+    def __init__(self) -> None:
+        self.heap = MinHeap([])
+        """
+        Heap de mínimos
+        """
+        self.time_now_: int = 0
+        """
+        Tiempo actual
+        """
+        self._time_lock: threading.RLock = threading.RLock()
+        """
+        Lock para que no haya problemas con los hilos
+        
+        """
+        threading.Thread(target=self._loop, daemon=False).start()  # Inicializar el Hilo
+        
+    @property
+    def time_now(self) -> int:
+        """
+        Tiempo actual del heap
+        Returns:
+            int: _description_
+        """
+        with self._time_lock:
+            return self.time_now_
+    @time_now.setter
+    def time_now(self, value: int):
+        if not isinstance(value, int):
+            raise Exception(f"Value debe ser entero no {type(value)} {value}")
+        with self._time_lock:
+            self.time_now_ = value
+    def _increment_time(self):
+        """
+        Incrementa el tiempo actual en 1
+        """
+        with self._time_lock:
+            self.time_now_ += 1
+            
+            
+    def _loop(self, time_waiting: int = 1):
+        while True:
+            try:
+                time.sleep(time_waiting)  # Esperar un segundo
+                to_make = (
+                    self.pop_from_heap_and_execute()
+                )  # Toma los valores que deben ejecutarse
+                log_message(
+                    f"Se acabo el tiempo para estos contratos {to_make}",
+                    func=self._loop,
+                )
+                self._increment_time()  # Incrementado el tiempo en Uno
+            except Exception as e:
+                log_message(
+                    f"Error al ejecutar el loop del gestor de evento en el tiempo {self.time_now} Error:{e} \n {traceback.format_exc()}",
+                    func=self._loop,
+                )
+            
+    def pop_from_heap_and_execute(self):
+        pass
+     
+class TimeDeleteHandle:
+     
+    def __init__(
+        self,
+        time_: int,
+        guid:str):
+        self.time_=time_
+        self.guid_=guid
+        
+        
+        
+    def __eq__(self, value: "TimeDeleteHandle") -> bool:
+        if not isinstance(value, TimeDeleteHandle):
+            log_message(
+                f"El valor de value no es de tipo TimeDeleteHandle es de tipo {type(value)}, {value}",
+                func=self.__eq__,
+            )
+            raise Exception(
+                f"El valor de value no es de tipo TimeDeleteHandle es de tipo {type(value)}, {value}"
+            )
+        return self.time_ == value.time_
 
+    def __lt__(self, other: "TimeDeleteHandle"):
 
+        if not isinstance(other, TimeDeleteHandle):
+            log_message(
+                f"El valor de other no es de tipo TimeDeleteHandle es de tipo {type(other)}, {other}",
+                func=self.__lt__,
+            )
+            raise Exception(
+                f"El valor de other no es de tipo TimeDeleteHandle es de tipo {type(other)}, {other}"
+            )
+
+        return self.time_ < other.time_
+    
+class DocumentProgessTrackerNode:
+    """
+    Nodo para conocer cuanto se ha subido del documento ese
+    """
+    def __init__(self,guid) -> None:
+        self.guid_=guid
+        self.progress_porcent:float=0
+        self.is_error:bool=False
+        self.message:str=""
+        self.is_finish:bool=False
+    
+    def update_progress(self,progress_porcent:float):
+        if self.progress_porcent>progress_porcent:
+            raise Exception(f"El porcentaje actual debe ser menor que el que se propone") 
+        self.progress_porcent=progress_porcent
+    def end_track(self,msg):
+        self.is_finish=True
+        self.message=msg
+    def error(self,error_msg):
+        self.is_error=True
+        self.end_track(error_msg)
+        
+        
+class DocumentProgressTracker(SimulatorTimeGestor):
+    """
+    Esta clase es para guardar el progreso de un documento en si inserccion y actualizacion
+    """
+    def __init__(self,time_to_delete:float=10) -> None:
+        super().__init__()
+        self.dic_lock_:threading.RLock=threading.RLock()
+        self.dicc_:dict[str,DocumentProgessTrackerNode]=dict()
+        self.time_to_delete=time_to_delete
+        
+    def init_track(self,guid):
+        with self.dic_lock_:
+            self.dicc_[guid]=DocumentProgessTrackerNode(guid)
+    
+    def update_progress(self,guid:str,porcent:float):
+        with self.dic_lock_: 
+            if not guid in self.dicc_:
+                raise Exception(f"El guid {guid}  no esta en el dicc {self.dicc_}" )
+            tracker=self.dicc_[guid]
+            tracker.update_progress(porcent)
+            self.dicc_[guid]=tracker
+    def _create_delete_order(self,guid:str):
+        """
+        Mandar a crear una orden de eliminacion
+
+        Args:
+            guid (str): _description_
+        """
+        time_=self.time_now+self.time_to_delete
+        self.heap.push(TimeDeleteHandle(time_=time_,guid=guid))
+        
+    def end_track(self,guid:str,end_msg:str):
+        with self.dic_lock_: 
+            if not guid in self.dicc_:
+                raise Exception(f"El guid {guid} no esta en el dicc {self.dicc_}" )
+            tracker=self.dicc_[guid]
+            tracker.end_track(end_msg)
+            self.dicc_[guid]=tracker
+            self._create_delete_order(guid)
+    def error_track(self,guid:str,error_mg:str):
+        with self.dic_lock_: 
+            if not guid in self.dicc_:
+                raise Exception(f"El guid {guid} no esta en el dicc {self.dicc_}" )
+            tracker=self.dicc_[guid]
+            tracker.error(error_msg=error_mg)
+            self.dicc_[guid]=tracker
+            self._create_delete_order(guid)
+    
+    def get_progress(self,guid:str):
+        with self.dic_lock_:
+            if not guid in self.dicc_:
+                raise Exception(f"El guid {guid} no esta en el dicc {self.dicc_}" )
+            return self.dicc_[guid]
+        
+    def contains_guid(self,guid:str):
+        with self.dic_lock_:
+            return  guid in self.dicc_ 
+    
+    def pop_from_heap_and_execute(self):
+        """
+        No llamar desde fuera de la clase
+        """
+        while  (
+                not self.heap.is_empty() and self.heap.peek().time_ <= self.time_now
+            ):  # Si no está vacio y ademas el que esta en la puenta su vencimiento es menor o igual al tiempo actual
+                try:
+                    item = self.heap.pop()
+                    guid=item.guid
+                    with self.dic_lock_:
+                        if not guid in self.dicc_:continue
+                        del self.dicc_[guid]
+                except Exception as e:
+                    log_message(f"Ocurrio un error tratando de elimniar del heap el guid {guid} en el tracker de documentosd",func=self.pop_from_heap_and_execute)
+            
 class DataReplicatedGestor:
     def __init__(self) -> None:
         self.heap = MinHeap([])

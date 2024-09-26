@@ -191,6 +191,7 @@ class QueryGestor:
         """
         Set resistente ante hilos para saber cuales peticiones estoy tratando ahora 
         """
+        
     
     def create_embedding(self,text:str)->tuple[list, list[str]]:
         """

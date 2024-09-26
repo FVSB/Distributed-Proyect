@@ -692,7 +692,7 @@ class StoreNode(Leader):
                 f"Ocurrio un Error en Crud Action con codigo {crud_code} el documento {document.id} {document.title} a la sub_url {sub_url} Error:{e} \n {traceback.format_exc()}"
             )
             return (False, to_return)
-    def create_document(self,title:str,text:str,max_value:int=16)->Document:
+    def create_document(self,guid:str,title:str,text:str,max_value:int=16)->Document:
         """
         Funcion que crea un documento
 
@@ -731,7 +731,7 @@ class StoreNode(Leader):
     
     def get_request(self,func_to_do_if_i_owner):
         """
-        Se encarga de ls peticiones de upload y delete
+        Se encarga de ls peticiones de upload y update
 
         Args:
             func_to_do_if_i_owner (_type_): funcion que se hace si soy el dueño
@@ -764,9 +764,56 @@ class StoreNode(Leader):
         if redirection is not None:
             log_message(f"Se va a redirigir la peticion del archivo {name} del add: {addr_from}",func=self.get_request)
             return redirection
-        return func_to_do_if_i_owner(hash_name=hash_name,name=name,doc_to_save=doc_to_save)
-        
-    def _upload_file(self,hash_name:str,name:str,doc_to_save:Document):
+        return func_to_do_if_i_owner(guid=get_guid(),hash_name=hash_name,name=name,doc_to_save=doc_to_save)
+    
+    def _create_and_save_document(self,guid:str,name:str,doc_to_save:str,sub_url:str,crud_code:CrudCode):
+        """
+        Handle necesario para despues utilizarlo para decirle al cliente si se subió correctamente el documento
+        """
+        log_message(f"Se mando a crear y salvar el documento {name} con guid {guid} ",func=self._create_and_save_document)
+        ok_crud, nodes_save = self.Crud_action(
+                #Document(name, doc_to_save),
+                self.create_document(guid=guid,title=name, text=doc_to_save),
+                sub_url,
+                crud_code=crud_code,
+            )
+        log_message(f"Se guardo correctmanete el documento {name} {ok_crud} en los nodos {nodes_save}")
+        if not ok_crud:
+             log_message(
+                    f"Ocurrio un error tratando de insertar el documento con {name} y data {doc_to_save} e id{getShaRepr(name)} se guardo correctamente en los nodos {nodes_save}",
+                    func=self._process_to_save_document,
+                )
+        return ok_crud,nodes_save
+    
+    def _process_to_save_document_thread(self,guid:str,name:str,doc_to_save:str,sub_url:str,crud_code:CrudCode):
+        """
+        Es el hilo que llama el metodo analogo
+        De este es el que hay que heredar despues
+        """
+        try:
+            log_message(f"Se va mandar a guardar el documento {name}",func=self._process_to_save_document)
+            ok_crud,nodes_save=self._create_and_save_document(guid=guid, name=name,doc_to_save=doc_to_save,sub_url=sub_url,crud_code=crud_code)
+            if ok_crud:
+                 log_message(f'Se procesó el documento {name} con guid {guid} y suburl{sub_url} con resultado {ok_crud} en los nodos {nodes_save}',func=self._process_to_save_document)
+            else:
+                 log_message(f'Ocurrio un error procesando el documento {name} con guid {guid} y suburl{sub_url} con resultado {ok_crud} en los nodos {nodes_save}',func=self._process_to_save_document)
+        except Exception as e:
+            log_message(f"Error tratando de iniciar el hilo para salvar el documento {name} con guid {guid} Error: {e} \n {traceback.format_exc()}",func=self._process_to_save_document_thread)
+
+    def _process_to_save_document(self,guid:str,name:str,doc_to_save:str,sub_url:str,crud_code:CrudCode):
+        """
+        Aca se manda el guid que se le dio al cliente como de procesamiento y el nombre del archivo y el archivo
+        para añadirlo a la cola de espera.
+        """
+        try:
+            log_message(f"Voy a mandar a crear el hilo para el documento {name} con guid {guid}",func=self._process_to_save_document)
+            args=(guid,name,doc_to_save,sub_url,crud_code)
+            threading.Thread(target=self._process_to_save_document_thread,args=args,daemon=True).start()
+            log_message(f"Se creo correctamente el hilo para el documento {name} con guid {guid}",func=self._process_to_save_document)
+        except Exception as e:
+            log_message(f"Error tratando de guardar el documento {name} con guid {guid} Error:{e} \n {traceback.format_exc()}",func=self._process_to_save_document)   
+    
+    def _upload_file(self,guid:str,hash_name:str,name:str,doc_to_save:Document):
         """
         Logica interna para guardar un documento en este nodo
 
@@ -799,27 +846,34 @@ class StoreNode(Leader):
         # Guardar en la base de datos
         try:
             
-            ok_crud, nodes_save = self.Crud_action(
-                #Document(name, doc_to_save),
-                self.create_document(name, doc_to_save),
-                "save_document_like_replica",
-                CrudCode.Insert,
-            )
-            if ok_crud:  # Si se realizó todo en orden
-                return (
-                    jsonify(
-                        {
-                            "message": f"El documento con nombre {name} se guardo correctamente"
-                        }
-                    ),
-                    HTTPStatus.OK,
-                )
-            else:  # Es que ocurrio un error
-                log_message(
-                    f"Ocurrio un error tratando de insertar el documento con {name} y data {doc_to_save} e id{getShaRepr(name)} se guardo correctamente en los nodos {nodes_save}",
-                    func=self.upload_file,
-                )
-                return (jsonify({"message":f"No se pudo guardar el archivo {name}"}),HTTPStatus.INTERNAL_SERVER_ERROR)
+            #ok_crud, nodes_save = self.Crud_action(
+            #    #Document(name, doc_to_save),
+            #    self.create_document(name, doc_to_save),
+            #    "save_document_like_replica",
+            #    CrudCode.Insert,
+            #)
+            log_message(f"Mandando a procesar el documento {name}",func=self._update_file)
+            self._process_to_save_document(guid=guid,name=name,doc_to_save=doc_to_save,sub_url="save_document_like_replica",crud_code=CrudCode.Insert)
+            
+            log_message(f"Se llamo el metodo para el documento {name } se va a mandar el guid {guid} ",func=self._update_file)
+            return (jsonify({"guid":guid}),HTTPStatus.OK)
+            #self._process_to_save_document(guid=guid,name=name,doc_to_save=doc_to_save,sub_url="save_document_like_replica")
+            
+            #if ok_crud:  # Si se realizó todo en orden
+            #    return (
+            #        jsonify(
+            #            {
+            #                "message": f"El documento con nombre {name} se guardo correctamente"
+            #            }
+            #        ),
+            #        HTTPStatus.OK,
+            #    )
+            #else:  # Es que ocurrio un error
+            #    log_message(
+            #        f"Ocurrio un error tratando de insertar el documento con {name} y data {doc_to_save} e id{getShaRepr(name)} se guardo correctamente en los nodos {nodes_save}",
+            #        func=self.upload_file,
+            #    )
+            #    return (jsonify({"message":f"No se pudo guardar el archivo {name}"}),HTTPStatus.INTERNAL_SERVER_ERROR)
 
         except Exception as e:
             log_message(

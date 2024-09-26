@@ -45,7 +45,8 @@ class Leader(ChordNode):
         """Convoco hacer elecciones
         """
         log_message(f'Mandando hacer eleccion',func=self.make_election)
-        self.in_election=True
+        with self.in_election_lock:
+            self.in_election_=True
         log_message(f"Como estamos en eleccion me propongo yo de lider inicialmente")
         self.leader=self.ref
         self._send_broadcast(ELECTION,self.ref) # Enviar a todos que yo Convoco Elecciones
@@ -61,6 +62,7 @@ class Leader(ChordNode):
                     self.in_election_=False
                 log_message(f"Como estoy solo voy hacer yo el lider",func=self.check_i_am_alone)
                 self.leader=self.ref
+                
                 self.i_am_leader=True
                 
             except Exception as e:
@@ -433,11 +435,11 @@ class Leader(ChordNode):
             self.i_am_leader_=self.leader==self.ref
             return self.i_am_leader_
     
-    #@i_am_leader.setter
-    #def i_am_leader(self,value):
-    #    if not isinstance(value,bool):
-    #        raise Exception(f'Value es de tipo {type(value)} no de tipo bool value:{value}')
-    #    self.i_am_leader_=value
+    @i_am_leader.setter
+    def i_am_leader(self,value):
+        if not isinstance(value,bool):
+            raise Exception(f'Value es de tipo {type(value)} no de tipo bool value:{value}')
+        self.i_am_leader_=value
     
     
     
