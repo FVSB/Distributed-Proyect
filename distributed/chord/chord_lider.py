@@ -433,11 +433,11 @@ class Leader(ChordNode):
             self.i_am_leader_=self.leader==self.ref
             return self.i_am_leader_
     
-    #@i_am_leader.setter
-    #def i_am_leader(self,value):
-    #    if not isinstance(value,bool):
-    #        raise Exception(f'Value es de tipo {type(value)} no de tipo bool value:{value}')
-    #    self.i_am_leader_=value
+    @i_am_leader.setter
+    def i_am_leader(self,value):
+        if not isinstance(value,bool):
+            raise Exception(f'Value es de tipo {type(value)} no de tipo bool value:{value}')
+        self.i_am_leader_=value
     
     
     
