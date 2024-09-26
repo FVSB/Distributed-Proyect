@@ -59,14 +59,7 @@ class ChordNode:
 
 
 
-    def start_node(self):
-        """
-        Llamar despues de inicializar para poder iniciar todo
-        """
-        log_message(f"Inicializando los hilos", func=self.start_node)
-        self.start_threads()
-        log_message(f"Levantado los hilos")
-
+    
     def start_threads(self):
         """Levanta los hilos"""
         # Start background threads for stabilization, fixing fingers, and checking predecessor
