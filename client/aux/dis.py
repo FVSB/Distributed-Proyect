@@ -13,22 +13,7 @@ from typing import Callable
     
 
 class DistributedSearcher(DistributedDataBase):
-    def setup_routes(self):
-        super().setup_routes()
-        app.add_url_rule(
-            "/query",
-            view_func=self.query,
-            methods=["GET"],
-        )# Metodo para hacer una query
-        
-        super().setup_routes()
-        app.add_url_rule(
-            "/process_query_handle",
-            view_func=self._process_query_handle,
-            methods=["POST"],
-        )# Metodo para hacer una query
-        
-        
+    
         
     def create_document(self,title: str, text: str, max_value: int = 16) -> Document:
         """
