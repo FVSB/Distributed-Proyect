@@ -183,28 +183,7 @@ class ChordNode:
         """
         return self._key_range
 
-    def search_test(self):
-
-        while True:
-            try:
-                time.sleep(3)
-                log_message("%" * 20, level="INFO")
-                # with ThreadPoolExecutor(max_workers=3) as executor:
-                #    for i in range(0,20):
-                #        future=executor.submit(self.find_succ,i) # Meterlo en el pool de hilos
-                #        node=future.result(timeout=10)
-                #
-                #        log_message(f'El nodo que le pertenece el id {i} es el nodo con id {node.id}')
-                for i in range(0, 20):
-                    node = self.find_succ(i)
-                    log_message(
-                        f"El nodo que le pertenece el id {i} es el nodo con id {node.id}"
-                    )
-
-                log_message("+" * 20, level="INFO")
-            except Exception as e:
-                log_message(f"Error buscando informacion {e}", self.search_test)
-
+    
     def show(self, time_: int = 3):
         """
         Show my ip and id and mi predecessor and succesors ips and ids
