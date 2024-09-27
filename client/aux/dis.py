@@ -15,22 +15,7 @@ from typing import Callable
 class DistributedSearcher(DistributedDataBase):
     
         
-    def create_document(self,title: str, text: str, max_value: int = 16) -> Document:
-        """
-        crea el embeeding document apartir del titulo y texto
-
-        Args:
-            title (str): _description_
-            text (str): _description_
-            max_value (int, optional): _description_. Defaults to 16.
-
-        Returns:
-            Document: _description_
-        """
-        embedding_text_list,chunks_text=self.query_gestor.create_embedding(text)
-        embedding_title_list,_=self.query_gestor.create_embedding(title)
-        return EmbeddingDocument(title=title,text=text,max_value=max_value,embedding_text_list=embedding_text_list,embedding_title_list=embedding_title_list,text_chunks=chunks_text)
-
+    
     
     
     def __init__(self, ip: str,query_gestor:QueryGestor, port: int = 8001, flask_port: int = 8000, m: int = 160):
