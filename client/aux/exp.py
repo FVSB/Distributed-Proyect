@@ -185,28 +185,7 @@ class ChordNode:
 
     
     
-    def _send_broadcast(self, op: int, data: ChordNodeReference, time_=1):
-        with self._broadcast_lock:
-            log_message(
-                f"Voy a enviar un broadcast con op {op} y data {data}",
-                func=self._send_broadcast,
-            )
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-            to_send = pickle.dumps(
-                (op, data)
-            )  # Serializar el objeto para poder enviarlo
-            s.sendto(
-                to_send, (str(socket.INADDR_BROADCAST), self.port)
-            )  # Enviar el broadcast
-            log_message(f"Enviado el broadcast", func=self._search_successor)
-            s.close()
-            time.sleep(time_)
-            log_message(
-                f"Acabo de enviar un broadcast con op: {op} y data {data}",
-                func=self._send_broadcast,
-            )
-
+    
     def broadcast_handle(
         self, op: int, message: tuple[int, ChordNodeReference], address: str
     ):
