@@ -146,18 +146,3 @@ elif  pagina== "Eliminar un archivo":
     
     st.write(f"Respuesta \n {response}")
 
-class ThreadingList:
-    def __init__(self) -> None:
-        self.lock_:threading.RLock=threading.RLock()
-        self.lis_:list[str]=[]
-    
-        
-    def update(self,item:list[str]):
-        with self.lock_:
-            
-            self.lis_=item
-    
-    def get_list(self)->list[str]:
-        with self.lock_:
-            return self.lis_
-        
