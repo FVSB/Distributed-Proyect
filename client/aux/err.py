@@ -959,24 +959,4 @@ class ChordNode:
         )
         return (node.id, key)
 
-    def client_retrieve_key(self, key: int):
-        """_summary_
-
-        Args:
-            key (int): _description_
-
-        Returns:
-            tuple(int,int,obj): Id nodo que la tenia, llave a buscar, valor guardado
-        """
-        log_message(
-            f"El cliente ha mandado a tomar lo que guarda la llave {key}",
-            func=self.client_retrieve_key,
-        )
-        node, key, value = self.retrieve_key(key)
-        log_message(
-            f"El nodo que tenia la llave:{key}, tiene id:{node.id}, el valor es {value} de tipo{type(value)}",
-            func=self.client_retrieve_key,
-        )
-        return (node.id, key, value)
-
-    
+   
