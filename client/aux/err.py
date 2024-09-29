@@ -881,21 +881,4 @@ class ChordNode:
         )
         return self.succ.find_key_owner(key)
 
-    def store_key(self, key: int, value) -> ChordNodeReference:
-        log_message(
-            f"Me han llamado a guardar la llave {key}, con el value {value} de tipo {type(value)}",
-            func=self.store_key,
-        )
-
-        node_to_store = self.find_key_owner(key)  # Buscar quien debe tener la llave
-        if self.id == node_to_store.id:  # Yo debo guardar la llave
-            self.data.setdefault(key, value)
-            return self.ref
-
-        log_message(
-            f"Enviando al nodo {node_to_store.id} la llave {key} y valor {value} para que la guarden",
-            func=self.store_key,
-        )
-        return node_to_store.store_key(key, value)
-
     
