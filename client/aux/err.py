@@ -942,21 +942,6 @@ class ChordNode:
                 func=self.retrieve_key,
             )
 
-    def client_store_key(self, key: int, value) -> tuple[int, int]:
-        """Es paraa que el cliente temporal de chord meta una llave
-
-        Args:
-            key (int): _description_
-            value (_type_): _description_
-
-        Returns:
-            tuple(int,int): (id nodo que lo guardo , llave guardada)
-        """
-        node = self.store_key(key, value)
-        log_message(
-            f"El nodo encargado de guardar la llace {key } es {node.id}",
-            func=self.client_store_key,
-        )
-        return (node.id, key)
+    
 
    
