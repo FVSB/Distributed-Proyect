@@ -813,93 +813,7 @@ class StoreNode(Leader):
         except Exception as e:
             log_message(f"Error tratando de guardar el documento {name} con guid {guid} Error:{e} \n {traceback.format_exc()}",func=self._process_to_save_document)   
     
-    def _upload_file(self,guid:str,hash_name:str,name:str,doc_to_save:Document):
-        """
-        Logica interna para guardar un documento en este nodo
-
-        Args:
-            hash_name (str): id del documento
-            name (str): nombre del documento
-            doc_to_save (Document): documento
-
-        Returns: Response
-            
-        """
-        # Mandar a guardar en la base de datos
-
-        # Comprobar que no esta en la base de datos
-
-        doc = db.get_document_by_id(hash_name)
-        log_message(f"El tipo de doc es {type(doc)}", func=self.upload_file)
-        if doc is not None:
-            log_message(
-                f"El documento con nombre {name} ya estaba guardado ",
-                func=self.upload_file,
-            )
-            return (
-                jsonify(
-                    {"message": f"Conflict: El archivo {name} ya existe en el servidor"}
-                ),
-                409,
-            )
-
-        # Guardar en la base de datos
-        try:
-            
-            #ok_crud, nodes_save = self.Crud_action(
-            #    #Document(name, doc_to_save),
-            #    self.create_document(name, doc_to_save),
-            #    "save_document_like_replica",
-            #    CrudCode.Insert,
-            #)
-            log_message(f"Mandando a procesar el documento {name}",func=self._update_file)
-            self._process_to_save_document(guid=guid,name=name,doc_to_save=doc_to_save,sub_url="save_document_like_replica",crud_code=CrudCode.Insert)
-            
-            log_message(f"Se llamo el metodo para el documento {name } se va a mandar el guid {guid} ",func=self._update_file)
-            return (jsonify({"guid":guid}),HTTPStatus.OK)
-            #self._process_to_save_document(guid=guid,name=name,doc_to_save=doc_to_save,sub_url="save_document_like_replica")
-            
-            #if ok_crud:  # Si se realizó todo en orden
-            #    return (
-            #        jsonify(
-            #            {
-            #                "message": f"El documento con nombre {name} se guardo correctamente"
-            #            }
-            #        ),
-            #        HTTPStatus.OK,
-            #    )
-            #else:  # Es que ocurrio un error
-            #    log_message(
-            #        f"Ocurrio un error tratando de insertar el documento con {name} y data {doc_to_save} e id{getShaRepr(name)} se guardo correctamente en los nodos {nodes_save}",
-            #        func=self.upload_file,
-            #    )
-            #    return (jsonify({"message":f"No se pudo guardar el archivo {name}"}),HTTPStatus.INTERNAL_SERVER_ERROR)
-
-        except Exception as e:
-            log_message(
-                f" Hubo un error tratando de guardar el archivo {name} \n {e} \n {traceback.format_exc()}",
-                func=self.upload_file,
-            )
-
-            return (
-                jsonify(
-                    {"message": f"Ocurrio un problema guardando el documento {name}"}
-                ),
-                HTTPStatus.INTERNAL_SERVER_ERROR,
-            )
-            
-    
-        
-    # Endpoint upload_file
-    def upload_file(self):
-        """
-         Endpoint upload_file
-
-        Returns:
-            _type_: _description_
-        """
-        return self.get_request(self._upload_file)
-        
+   
     
     # EndPoint get_file_by_name
     def get_file_by_name(self):
@@ -1003,7 +917,81 @@ class StoreNode(Leader):
                 f" A ocurrido un error {e} tratando de dar en el endpoint de devulver un archivo por nombre {traceback.format_exc()}",
                 func=self.get_file_by_name,
             )
-    def _update_file(self,hash_name:str,name:str,doc_to_save:Document):
+            
+            
+            
+            
+            
+            
+    def _upload_file(self,guid:str,hash_name:str,name:str,doc_to_save:Document):
+        """
+        Logica interna para guardar un documento en este nodo
+
+        Args:
+            hash_name (str): id del documento
+            name (str): nombre del documento
+            doc_to_save (Document): documento
+
+        Returns: Response
+            
+        """
+        # Mandar a guardar en la base de datos
+
+        # Comprobar que no esta en la base de datos
+
+        doc = db.get_document_by_id(hash_name)
+        log_message(f"El tipo de doc es {type(doc)}", func=self.upload_file)
+        if doc is not None:
+            log_message(
+                f"El documento con nombre {name} ya estaba guardado ",
+                func=self.upload_file,
+            )
+            return (
+                jsonify(
+                    {"message": f"Conflict: El archivo {name} ya existe en el servidor"}
+                ),
+                409,
+            )
+
+        # Guardar en la base de datos
+        try:
+        
+            log_message(f"Mandando a procesar el documento {name}",func=self._upload_file)
+            self._process_to_save_document(guid=guid,name=name,doc_to_save=doc_to_save,sub_url="save_document_like_replica",crud_code=CrudCode.Insert)
+            log_message(f"Se llamo el metodo para el documento {name } se va a mandar el guid {guid} ",func=self._upload_file)
+            return (jsonify({"guid":guid}),HTTPStatus.OK)
+
+        except Exception as e:
+            log_message(
+                f" Hubo un error tratando de guardar el archivo {name} \n {e} \n {traceback.format_exc()}",
+                func=self.upload_file,
+            )
+
+            return (
+                jsonify(
+                    {"message": f"Ocurrio un problema guardando el documento {name}"}
+                ),
+                HTTPStatus.INTERNAL_SERVER_ERROR,
+            )
+            
+    
+        
+    # Endpoint upload_file
+    def upload_file(self):
+        """
+         Endpoint upload_file
+
+        Returns:
+            _type_: _description_
+        """
+        return self.get_request(self._upload_file)
+                
+            
+            
+            
+            
+            
+    def _update_file(self,guid:str,hash_name:str,name:str,doc_to_save:Document):
                # Comprobar que está en la base de datos
         if not db.has_document(hash_name):  # Mandar error de que no se envió nada
             return (
@@ -1020,30 +1008,13 @@ class StoreNode(Leader):
             f"Se va a tratar de actualizar el documento {name}", func=self.update_file
         )
         try:
-            document = self.create_document(name,doc_to_save)#Document(name, doc_to_save)
-            ok_crud, nodes_save = self.Crud_action(
-                document=document,
-                sub_url="update_document_like_replica",
-                crud_code=CrudCode.Update,
-            )
-            if (
-                not ok_crud
-            ):  # Si se pudo guardar en las replicas => que se guarda en la db
-                log_message(
-                    f"No se pudo actualizar el documento {document.id} se guardo la actualización en los nodos {nodes_save} ",
-                    func=self.update_file,
-                )
-                return (jsonify({"message":f"No se pudo actualizar el archivo {name}"}),HTTPStatus.INTERNAL_SERVER_ERROR)
-            else:
-                log_message(f"Se actualizó el documento {name}", func=self.update_file)
-                return (
-                    jsonify(
-                        {
-                            "message": f"Se actualizó correctamente el documento {name} {doc_to_save}"
-                        }
-                    ),
-                    HTTPStatus.OK,
-                )
+            log_message(f"Mandando a procesar el documento para actualizar {name}",func=self._update_file)
+            self._process_to_save_document(guid=guid,name=name,doc_to_save=doc_to_save,sub_url="update_document_like_replica",crud_code=CrudCode.Update)
+            
+            log_message(f"Se llamo el metodo de salvar los cambios desde actualizar documentos para el documento {name } se va a mandar el guid {guid} ",func=self._update_file)
+            return (jsonify({"guid":guid}),HTTPStatus.OK)
+            
+        
         except Exception as e:
             log_message(
                 f"Hubo un problema tratanto de actualizar el archivo {name} Error:{e} \n {traceback.format_exc()}",

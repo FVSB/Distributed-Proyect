@@ -1,7 +1,7 @@
 
 from client_ import make_query,delete_document,insert_document,update_document,download_file
 from logguer import log_message
-log_message(insert_document(f"jnruicnar.txt","Tyrion es patriota"))
+log_message(insert_document(f"hola_mundo_1.txt","Tyrion es patriota"))
 #log_message(make_query('txt',[]))
 #log_message(delete_document('tyrion'))
 #log_message(insert_document("primero.txt",'primer documento'))

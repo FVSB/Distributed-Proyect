@@ -332,6 +332,7 @@ class DocumentProgressTracker(SimulatorTimeGestor):
                 raise Exception(f"El guid {guid} no esta en el dicc {self.dicc_}" )
             tracker=self.dicc_[guid]
             tracker.end_track(end_msg)
+            tracker.update_progress(1.0)
             self.dicc_[guid]=tracker
             self._create_delete_order(guid)
     def error_track(self,guid:str,error_mg:str):

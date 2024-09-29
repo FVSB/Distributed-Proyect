@@ -67,7 +67,7 @@ def make_query(query:str,posibles_extensions:list[str],max_results:int=10,min_sc
         log_message(f'La respuesta es {response}')
         return response['results']
     
-def make_crud_post(server_ip:str,sub_route:str,data:object)->dict:
+def make_crud_post(server_ip:str,sub_route:str,data:object)->tuple[dict,str]:
     """
     dado el ip de un server la subruta y la data a enviar, se encarga de hacerle una peticion al server
     se encarga de redirigir devuelve el dicc si todo fue ok y None si hubo algun error
@@ -81,7 +81,8 @@ def make_crud_post(server_ip:str,sub_route:str,data:object)->dict:
         Exception: _description_
 
     Returns:
-        dict: _description_
+        dict: Lo que envia el servidor
+        str: la ip del nodo dueño
     """
   
     try:
@@ -106,7 +107,7 @@ def make_crud_post(server_ip:str,sub_route:str,data:object)->dict:
             log_message(f"Se va a redireccionar la peticion de la data {data} a la ip {new_ip}")
             return make_crud_post(server_ip=new_ip,sub_route=sub_route,data=data)
         
-        return data_response
+        return data_response,server_ip
     except Exception as e:# Si hubo un error pq el nodo se cayo o algo retorno none
         log_message(f"Ocurrio un error tratando de ejecutar un crud action Error: {e} \n {traceback.format_exc()}")
         return None
@@ -125,7 +126,7 @@ def _insert_update_helper(title:str,text:str,is_insert:bool)->str:
     """
     server_ip:str=servers.get_random_server_ip()  
     sub_route="upload" if is_insert else "update"
-    resp=make_crud_post(server_ip=server_ip,sub_route=sub_route,data=(title,text))
+    resp,ip=make_crud_post(server_ip=server_ip,sub_route=sub_route,data=(title,text))
     
     a='insertando' if is_insert else 'actualizando'
     if resp is None:
@@ -137,7 +138,7 @@ def _insert_update_helper(title:str,text:str,is_insert:bool)->str:
     time.sleep(1)
     while True:
         time.sleep(1)
-        resp=_make_get_ask_to_server(server_ip=server_ip,params={"guid":guid},sub_url="progress_document")
+        resp=_make_get_ask_to_server(server_ip=ip,params={"guid":guid},sub_url="progress_document")
         if resp is None:return {"message":"No se encuentra disponible "}
         if resp["is_finish"] or resp["is_error"]: break
     return resp
@@ -186,7 +187,7 @@ def delete_document(title:str)->str:
     log_message(f"se llamo a eliminar el documento {title}")
     server_ip:str=servers.get_random_server_ip()  
     log_message(f'Se va a enviar a eliminar el documento {title}')
-    resp=make_crud_post(server_ip=server_ip,sub_route='delete_file',data=title)
+    resp,ip=make_crud_post(server_ip=server_ip,sub_route='delete_file',data=title)
     
     log_message(f"Se recibio la respuesta {resp} para eliminar {title}")
     if resp is None:
