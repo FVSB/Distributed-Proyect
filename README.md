@@ -7,7 +7,7 @@ Para correr el proyecto
 - levantar los nodos
     - 
     ```
-    docker exec -it  node_{$i}  bin
+    docker exec -it  node_{$i}  bin/bash
 
     ```
     - 
