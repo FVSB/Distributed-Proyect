@@ -291,6 +291,8 @@ class Leader(ChordNode):
         
         self.is_stable_lock:threading.RLock=threading.RLock()
         
+        
+        
         self.succ_list_count_:int=succ_lis_count
         """
         Dice cuantos es la lista de sucesores
@@ -460,7 +462,8 @@ class Leader(ChordNode):
             time.sleep(time_)
             try:
                 log_message(f'Chequeando si estoy en eleccion',func=self.check_election_valid)                   
-                with self.in_election_lock:# Desbloqueando 
+                with self.in_election_lock:# Desbloqueando
+                     
                     log_message(f'Comprobando si estoy en eleccion {self.in_election_}')
                     if  not self.in_election_:
                         log_message(f'No estoy en eleccion',func=self.check_election_valid)

@@ -213,7 +213,7 @@ class DistributedSearcher(DistributedDataBase):
         
         if not self.is_db_stable():# Si no es estable se anula la query
             log_message(f"Como la db es inestable aunque se halla procesado de los demas la query vuelvo a mandar a procesarla",func=self.process_query_like_owner)
-            self.query_gestor.end_query(query)
+            self.query_gestor.end_query(query_handle)
             return self.process_query_like_owner(query=query,
                                                  posibles_extensions=posibles_extensions,
                                                  max_results=max_results,
