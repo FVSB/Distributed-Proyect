@@ -155,38 +155,7 @@ class ChordNode:
     
     
     
-    def show(self, time_: int = 3):
-        """
-        Show my ip and id and mi predecessor and succesors ips and ids
-        """
-        while True:
-            log_message("-" * 20, level="INFO")
-            log_message(
-                f"Mi predecesor es {self.pred.id if self.pred else None} con ip {self.pred.ip if self.pred else None} ",
-                level="INFO",
-            )
-            log_message(f"Yo soy id:{self.id},con ip:{self.ip} ", level="INFO")
-            if self.succ.id == self.id:
-                if self.succ.ip != self.ip:
-                    log_message(
-                        "El sucesor tiene igual ID pero no tiene igual ip", level="INFO"
-                    )
-                log_message(f"Todavia no tengo sucesor", level="INFO"),
-            else:
-                log_message(
-                    f"Mi sucesor es {self.succ.id if self.succ else None} con ip {self.succ.ip  if self.succ else None}",
-                    level="INFO",
-                )
-
-            log_message(
-                f"La finger table es {self.finger} y está en estado {self.fingers_ok}",
-                func=self.show,
-            )
-
-            log_message("*" * 20, level="INFO")
-
-            time.sleep(time_)  # Se presenta cada 10 segundos
-
+    
     def _search_successor(self, op: int, data: str = None, time_: float = 0.5) -> bytes:
         """Busca un sucesor si no tengo o si mi pred es None
 
