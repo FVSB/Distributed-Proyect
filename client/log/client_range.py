@@ -153,30 +153,7 @@ class ChordNode:
     
 
     
-    @pred.setter
-    def pred(self, value: ChordNodeReference | None):
-        """
-        Modificar el valor del predecesor
-
-        Args:
-            value (_type_): _description_
-
-
-
-        Returns:
-            _type_: _description_
-        """
-        with self.pred_lock_:
-            self.pred_ = value
-
-    @property
-    def key_range(self):
-        """
-        The key range of the chrod node [a,b) b is the id of this node
-
-        """
-        return self._key_range
-
+    
     def search_test(self):
 
         while True:
