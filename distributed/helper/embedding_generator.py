@@ -2,6 +2,7 @@ from openai import OpenAI
 from helper.logguer import log_message
 import tiktoken
 import numpy as np
+from typing import Callable
 
 def cosine_similarity(embedding1, embedding2):
     """
@@ -30,9 +31,28 @@ def get_embedding(text, model="nomic-ai/nomic-embed-text-v1.5-GGUF"):
     
     return response.data[0].embedding
 
-
+def get_tokenizer(model_default:str='gpt-3.5-turbo'):
+    try:
+        # Load the encoder for the specified model
+        enc = tiktoken.encoding_for_model(model_default)
+        
+        # Retornar la funcion que codifica los tokens
+        tokens = enc.encode
+        return tokens
+    except Exception as e: # Hubo algun error tratando de dar el tokenizador por defecto por tanto se utilizara dividir por espacios
+        def tokenizer(text:str)->list[str]:
+            """
+            Retorna un tokenizador simple por espacios
+            """
+            r=str.replace(text,","," ")
+            r=str.replace(r,"."," ")
+            a=str.split(r)
+            return a
+        return tokenizer
+        
 
 def split_text(text, model='gpt-3.5-turbo', max_tokens=512):
+    
     # Load the encoder for the specified model
     enc = tiktoken.encoding_for_model(model)
     
@@ -41,7 +61,7 @@ def split_text(text, model='gpt-3.5-turbo', max_tokens=512):
     
     # Split the tokens into chunks of maximum size
     chunks = [tokens[i:i + max_tokens] for i in range(0, len(tokens), max_tokens)]
-    
+    log_message(f'Estos son los chunks {chunks}')
     # Decode the token chunks back into text
     text_chunks = [enc.decode(chunk) for chunk in chunks]
     
@@ -60,6 +80,8 @@ def create_embedding(text:str)->tuple[list[np.array],list[str]]:
       tuple[list[np.array],list[str]] : lista que tiene en cada indice los embeddings dd los chunks y los pedazos del embedding
     """
     log_message(f'Se va crear el embedding del {text}',func=create_embedding)
+    #Ahora lo que voy hacer es tomar el tokenizador
+    
     chunks,len_tokens=split_text(text,max_tokens=1950)
     log_message(f"El embedding del {text} tiene {len_tokens} tokens",func=create_embedding)
     lis=[]

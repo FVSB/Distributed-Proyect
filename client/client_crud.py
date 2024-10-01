@@ -1,7 +1,7 @@
 
 from client_ import make_query,delete_document,insert_document,update_document,download_file
 from logguer import log_message
-log_message(insert_document(f"tyrion.txt","Tyrion es patriota"))
+log_message(insert_document(f"hola_mundo_1.txt","Tyrion es patriota"))
 #log_message(make_query('txt',[]))
 #log_message(delete_document('tyrion'))
 #log_message(insert_document("primero.txt",'primer documento'))
@@ -11,6 +11,6 @@ log_message(insert_document(f"tyrion.txt","Tyrion es patriota"))
 #log_message(insert_document("quinto.pdf",'quinto documento'))
 #log_message(update_document("t.txt",'tyrion y valentina'))
 #log_message(download_file("tyrion.txt"))
-log_message(download_file("tyrion.txt"))
+log_message(download_file("tyriojjn.txt"))
 log_message('Realizado')
 
