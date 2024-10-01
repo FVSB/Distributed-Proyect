@@ -1193,7 +1193,7 @@ class ChordNode:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             s.bind((self.ip, self.port))
-            s.listen(10)
+            s.listen(50) # Con 10 iba bien
             pool = ThreadPoolExecutor(max_workers=40)
             while True:
 

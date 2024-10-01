@@ -175,7 +175,7 @@ class Leader(ChordNode):
     
             except Exception as e:
                 log_message(f'Ocurrio un error {e} Printeando SHow {traceback.format_exc()}',func=self.show)
-    def check_i_am_stable(self,time_=0.5):
+    def check_i_am_stable(self,time_=0.5):#Antes 0.5
         """
         Chequea contantemente si estoy estable o no 
 
