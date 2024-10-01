@@ -150,18 +150,7 @@ class ChordNode:
         )  # Lock para saber si puedo o no cambiar el valor de is succ
         # self.Is_Search_Succ_:bool=False #
 
-    @property
-    def succ(self) -> ChordNodeReference:
-        """
-        Retorna con seguridad de hilos al sucesor
-
-        Returns:
-            ChordNodeReference: _description_
-        """
-        with self.succ_lock_:
-            if self.succ_ is None:
-                self.succ_ = self.ref
-            return self.succ_
+    
 
     @succ.setter
     def succ(self, value: ChordNodeReference):
