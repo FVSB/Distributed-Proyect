@@ -368,7 +368,7 @@ class DocumentProgressTracker(SimulatorTimeGestor):
                         if not guid in self.dicc_:continue
                         del self.dicc_[guid]
                 except Exception as e:
-                    log_message(f"Ocurrio un error tratando de elimniar del heap el guid {guid} en el tracker de documentosd",func=self.pop_from_heap_and_execute)
+                    log_message(f"Ocurrio un error tratando de elimniar del heap el guid {guid} en el tracker de documentosd Error:{e} \n {traceback.format_exc()}",func=self.pop_from_heap_and_execute)
             
 class DataReplicatedGestor:
     def __init__(self) -> None:

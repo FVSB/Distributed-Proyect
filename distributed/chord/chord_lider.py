@@ -266,7 +266,10 @@ class Leader(ChordNode):
 
             return self.in_election or self.pred.check_in_election()
         except Exception as e:
-            log_message(f'Ocurrio un error tratando de comprobar si el subanillo esta en eleccion Error:{e} \n {traceback.format_exc()}',func=self._check_sub_ring_in_election())
+            time_=3
+            log_message(f'Ocurrio un error tratando de comprobar si el subanillo esta en eleccion Error:{e} \n {traceback.format_exc()}',func=self._check_sub_ring_in_election)
+            #time.sleep(time_) # Esto se añadio ahora antes funcionaba sin ello
+            #log_message(f"Sali del tiempo de espera {time_} por el Error:{e} ",func=self._check_sub_ring_in_election)
             return True # Si ocurre un error devuelvo True
 
     
