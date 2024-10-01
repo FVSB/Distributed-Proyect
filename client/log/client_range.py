@@ -152,33 +152,7 @@ class ChordNode:
 
     
 
-    @succ.setter
-    def succ(self, value: ChordNodeReference):
-        """
-        Guarda con seguridad de hilos el nuevo valor del sucesor
-
-        Args:
-            value (_type_): _description_
-
-        Returns:
-            _type_: _description_
-        """
-        with self.succ_lock_:
-            self.succ_ = value
-
-    @property
-    def pred(self) -> ChordNodeReference:
-        """
-        Retorna con seguridad entre hilos la referencia del predecesor
-
-
-
-        Returns:
-            ChordNodeReference: _description_
-        """
-        with self.pred_lock_:
-            return self.pred_
-
+    
     @pred.setter
     def pred(self, value: ChordNodeReference | None):
         """
