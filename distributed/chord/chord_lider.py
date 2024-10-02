@@ -481,7 +481,7 @@ class Leader(ChordNode):
     
     
     
-    def check_election_valid(self,time_:float=5,wait_election_time:float=10): # Funcionaba ok con esto time_5   wait_election_time_=10
+    def check_election_valid(self,time_:float=0.5,wait_election_time:float=10): # Funcionaba ok con esto time_5   wait_election_time_=10
         """
         Chequea si estoy en eleccion para terminarla 
        
@@ -633,8 +633,8 @@ class Leader(ChordNode):
                 if self.pred and self.pred.id<self.id: # Si tengo predecesor momentaneamente este es mi lider
                     self.leader=self.pred
                 else: # Si no tengo predecesor voy a proponerme de lider
-                    self.leader=self.ref
-            
+                    #self.leader=self.ref
+                    self.make_election()
         if node_propose.id<self.leader.id:# Si el nodo que se propuso es menor que el nodo que tengo como lider
             self.leader=node_propose # Actualizo mi lider
             log_message(f'Mi nuevo lider es {self.leader.id}',func=self.Election_handler)

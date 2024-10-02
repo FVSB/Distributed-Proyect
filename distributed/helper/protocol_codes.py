@@ -40,3 +40,4 @@ PROCESS_QUERY=27 # Aca es para que mi sucesor procese tb la query
 FIND_NODES=28
 GET_LEADER=29
 PING=30 #Aca chequeo que estoy vivo
+I_AM_LEADER=31# Dice si soy el lider o no

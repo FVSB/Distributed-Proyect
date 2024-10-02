@@ -241,6 +241,9 @@ class ChordNodeReference:
     def ping(self)->bool:
         return self._check_boolean_option(op=PING,default_in_except=False)
     
+    def i_am_leader(self)->bool:
+        return self._check_boolean_option(op=I_AM_LEADER,default_in_except=False)
+    
     def __str__(self) -> str:
         return f"ChordNodeReference:{self.id},{self.ip},{self.port}"
 
