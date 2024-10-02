@@ -1150,6 +1150,9 @@ class ChordNode:
                 f"El que debe tener la llave {a}, {type(a)} es {data_resp.id} de tipo {type(data_resp)}",
                 func=self.server_handle,
             )
+        elif option == PING:#Para saber si estoy vivo
+            log_message(f"Se me ha llamado hacer ping",func=self.server_handle)
+            data_resp=True
 
         if data_resp:
 

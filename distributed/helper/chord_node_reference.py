@@ -197,6 +197,7 @@ class ChordNodeReference:
         Returns:
             bool: True si lo esta False si no
         """
+        log_message(f"Voy a preguntar al nodo {self.id} si esta en eleccion",func=self.check_in_election)
         return self._check_boolean_option(op=CHECK_IN_ELECTION,default_in_except=True)
     
     def is_data_sync(self)->bool:
@@ -232,8 +233,13 @@ class ChordNodeReference:
             bool: _description_
         """
         return self._check_boolean_option(op=CAN_UPDATE_DATA,default_in_except=False)
-    
-   
+    #######################
+    #
+    # Nuevo para comprobar que estoy vivo
+    #
+    ##########################
+    def ping(self)->bool:
+        return self._check_boolean_option(op=PING,default_in_except=False)
     
     def __str__(self) -> str:
         return f"ChordNodeReference:{self.id},{self.ip},{self.port}"

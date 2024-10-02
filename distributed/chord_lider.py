@@ -1,5 +1,5 @@
 from chord.chord import *
-
+from helper.utils import ThreadingSet
 
 
 class ChordNodeLiderReference(ChordNodeReference):
@@ -175,7 +175,7 @@ class Leader(ChordNode):
     
             except Exception as e:
                 log_message(f'Ocurrio un error {e} Printeando SHow {traceback.format_exc()}',func=self.show)
-    def check_i_am_stable(self,time_=0.5):#Antes 0.5
+    def check_i_am_stable(self,time_=2):#Antes 0.5
         """
         Chequea contantemente si estoy estable o no 
 
@@ -183,17 +183,25 @@ class Leader(ChordNode):
             time_ (int, optional): _description_. Defaults to 2.
         """
         while True:
-            #log_message(f'Se va a comprobar si soy estable hasta ahora soy estable {self.is_stable}',func=self.check_i_am_stable)
+            log_message(f'Se va a comprobar si soy estable hasta ahora soy estable {self.is_stable}',func=self.check_i_am_stable)
             time.sleep(time_)
             try:
                 in_election=self.in_election
                 
                         
                 if in_election:
-                   # log_message(f'Como estoy en eleccion no puedo ser estable ',func=self.check_i_am_stable)
+                    log_message(f'Como estoy en eleccion no puedo ser estable ',func=self.check_i_am_stable)
                     self.is_stable=False
                     continue
                 
+                if  self.i_am_alone and self.i_am_leader:# SI no tengo predecesor => estoy solo
+                        log_message(f'Como estoy solo entonces soy estable si y solo si no estoy en elección {self.in_election}',func=self.check_i_am_stable)
+                        self.is_stable=not in_election
+                        continue
+                is_pred_stable=self.pred.check_in_election()
+                log_message(f"Mi predecesor es estable {is_pred_stable} el predecesor es {self.pred}",func=self.check_i_am_stable)
+                is_network_stable=self.leader.check_network_stability()
+                log_message(f"Mi lider si la red es estable {is_network_stable} el lider es {self.leader}",func=self.check_i_am_stable)
                 if self.i_am_leader:#Si soy el lider digo que soy estable Si no estoy en elección y mi predecesor es estable
                     log_message(f'COmo soy el lider entonces compruebo si puedo ser estable',func=self.check_i_am_stable)
                     if  self.i_am_alone:# SI no tengo predecesor => estoy solo
@@ -201,13 +209,14 @@ class Leader(ChordNode):
                         self.is_stable=not in_election
                         continue
                     # Si no estoy solo => tengo predecesor
-                    log_message(f'Soy el lider pero no estoy solo por tanto mi predecesor es estable {self.pred.check_in_election()} y estoy en eleccion {in_election}',func=self.check_i_am_stable)
-                    self.is_stable= not (self.pred.check_in_election() or in_election) # Si soy el lider y no estoy solo todo es estable si mi predecesor es estable
+                    
+                    log_message(f'Soy el lider pero no estoy solo por tanto mi predecesor es estable {is_pred_stable} y estoy en eleccion {in_election}',func=self.check_i_am_stable)
+                    self.is_stable= not (is_pred_stable or in_election) # Si soy el lider y no estoy solo todo es estable si mi predecesor es estable
                     
                 elif not self.i_am_alone:# Si no soy el lider tengo que ver que yo no estoy en elección ni mi predecesor y además el lider sea estable
-                    log_message(f'Como no soy el lider compruebo si la red es estable {self.leader.check_network_stability()}, Estoy en eleccion {in_election} mi predecesor esta en eleccion {self.pred.check_in_election()}',func=self.check_i_am_stable)
+                    log_message(f'Como no soy el lider compruebo si la red es estable {is_network_stable}, Estoy en eleccion {in_election} mi predecesor esta en eleccion {is_pred_stable}',func=self.check_i_am_stable)
                     
-                    is_stable=(not (in_election or self.pred.check_in_election())) and self.leader.check_network_stability()
+                    is_stable=(not (in_election or is_pred_stable)) and is_network_stable
                     self.is_stable=is_stable #if isinstance(is_stable,bool) else False
                     log_message(f'Ahora soy estable  {self.is_stable}',func=self.check_i_am_stable)
                 else:
@@ -215,6 +224,7 @@ class Leader(ChordNode):
             except Exception as e:
                 log_message(f'Error en chequear si soy un nodo estable Error:{e}  {traceback.format_exc()}',func=self.is_stable)
                 self.is_stable=False # Si hay error => No es estable
+                time.sleep(4)
                 
     def start_threads(self):
         super().start_threads()
@@ -225,13 +235,28 @@ class Leader(ChordNode):
         threading.Thread(target=self.check_i_am_stable,daemon=True).start()# Chequeo constantemente si soy un nodo estable
         threading.Thread(target=self.check_succ_list,daemon=True).start() # Chequeo de que la lista de sucesores este actualizada
         threading.Thread(target=self.check_correct_leader,daemon=True).start()#Chequeo que cuando no esté en elección mi lider y el de atras coincidan
+    
+    
+    
     def handle_request(self, data, option:int, a)->bytes:
         if option==CHECK_IN_ELECTION: # Se quiere comprobar que se está en elección
-            return pickle.dumps(self._check_sub_ring_in_election())
+            log_message(F"Se quiere saber la opcion {CHECK_IN_ELECTION} CHECK_IN_ELECTION ",func=self.handle_request)
+            r=self._check_sub_ring_in_election()
+            b=pickle.dumps(r)
+            log_message(F"La respuesta  la opcion {CHECK_IN_ELECTION} CHECK_IN_ELECTION  es {r} en bytes {b}",func=self.handle_request)
+            return b
         if option==CHECK_NETWORK_STABILITY:# Esto solo lo responde el lider, Responde si su predecesor no esta en eleccion ni el tampoco
-            return pickle.dumps(self._check_network_stability())# Retorna True si la red es estable False si no lo es
+            log_message(F"Se quiere saber la opcion {CHECK_NETWORK_STABILITY} CHECK_NETWORK_STABILITY ",func=self.handle_request)
+            r=self._check_network_stability()
+            b=pickle.dumps(r)
+            log_message(F"La respuesta  la opcion {CHECK_NETWORK_STABILITY} CHECK_NETWORK_STABILITY  es {r} en bytes {b}",func=self.handle_request)
+            return b # Retorna True si la red es estable False si no lo es
         if option==GET_LEADER:# Quiere que devuelvas el lider
-            return pickle.dumps(self.leader)
+            log_message(F"Se quiere saber la opcion {GET_LEADER} GET_LEADER ",func=self.handle_request)
+            r=self.leader
+            b=pickle.dumps(r)
+            log_message(F"La respuesta  la opcion {GET_LEADER} GET_LEADER  es {r} en bytes {b}",func=self.handle_request)
+            return b
         return super().handle_request(data,option,a)
     
     def _check_network_stability(self)->bool:
@@ -263,7 +288,14 @@ class Leader(ChordNode):
         try:
             if self.i_am_leader: #SI soy el lider solo depende de que yo no este en elección
                 return  self.in_election
-
+            log_message(f"Aca compruebo si el pred esta en eleccion mi lider es {self.leader}",func=self._check_make_election)
+            leader_ping= self.leader.ping()
+            log_message(f"Se le hizo ping al lider y dio {leader_ping}",func=self._check_sub_ring_in_election)
+            
+            if not leader_ping:# Comprobar que exista un lider sino en caso de dos nodos se satura la red 
+                log_message(f"Como no hay lider elegido dibgo que la subred esta en eleccion esta vivo el lider {leader_ping}",func=self._check_sub_ring_in_election)
+                return True
+            
             return self.in_election or self.pred.check_in_election()
         except Exception as e:
             time_=3
@@ -272,6 +304,7 @@ class Leader(ChordNode):
             #log_message(f"Sali del tiempo de espera {time_} por el Error:{e} ",func=self._check_sub_ring_in_election)
             return True # Si ocurre un error devuelvo True
 
+    
     
     def __init__(self, ip: str, port: int = 8001, m: int = 160,succ_lis_count:int=2):
         super().__init__(ip, port, m)
@@ -311,6 +344,7 @@ class Leader(ChordNode):
         """
         self.succ_list_ok_lock:threading.RLock=threading.RLock()        
         
+        self.last_pretendientes_lider:ThreadingSet=ThreadingSet()
 
         
         #Threads
@@ -480,18 +514,38 @@ class Leader(ChordNode):
                                       
             except Exception as e:
                 log_message(f'Error chequeando si hay eleccion {e} \n {traceback.format_exc()}',func=self.check_election_valid)
-    def check_correct_leader(self,time_:float=10):
+    def check_correct_leader(self,time_:float=1):# Antes 10
         """Comprobar que el lider este sincronizado correctamente en toda la red"""
         while True:
             time.sleep(time_)
             try:
-                if self.in_election: continue #Si estoy en eleccion pregunto cuando no esté
-                if self.i_am_alone or self.pred is None:continue
-                if self.pred.check_in_election():continue
+                log_message(f"Comprobando el lider correcto",func=self.check_correct_leader)
+                if self.in_election:
+                    log_message(f"Como estoy en eleccion espero",func=self.check_correct_leader)
+                    continue #Si estoy en eleccion pregunto cuando no esté
+                if self.i_am_alone or self.pred is None:
+                    log_message(f"Como estoy solo continuo ",func=self.check_correct_leader)
+                    continue
+                
+                
+                log_message(f"Voy a mandar hacer ping al supuesto lider {self.leader}",func=self.check_correct_leader)
+                leader_ping=self.leader.ping()
+                log_message(f"Lider actual {self.leader} ping {leader_ping}",func=self.check_correct_leader)
+                if  not leader_ping:
+                    log_message(f"COmo el lider {self.leader} no está vivo convoco elecciones",func=self.check_correct_leader)
+                    self.make_election()
+                    continue
+                
+                
+                if self.pred.check_in_election():
+                    log_message(f"Como mi predecesor esta en eleccion continuo",func=self.check_correct_leader)
+                    continue
                 pred_leader=self.pred.leader
-                if self.leader!=pred_leader:
+                
+                if self.leader!=pred_leader :
                     log_message(f"Como el lider del predecesor es {pred_leader} y el mio es {self.leader} mando hacer eleccion",func=self.check_correct_leader)
                     self.make_election()
+                    continue
             except Exception as e:
                 log_message(f"Ocurrio un error tratando de ver si es el mismo lider de mi pred que el mio Error{e}\n {traceback.format_exc()}",func=self.check_correct_leader)
             
