@@ -125,11 +125,120 @@ class SyncStoreNode(StoreNode):
         
         app.add_url_rule("/can_recive_update_documents",view_func=self.can_recive_update_documents,
             methods=["GET"]) # Saber si puedo o no recibir documentos como resincronización
+        
+        
+        app.add_url_rule(
+            "/re_update_document_like_replica_after_sync",
+            view_func=self.re_update_document_like_replica_after_sync,
+            methods=["POST"]
+        )# Este endpoint es para resincronizar la data y que no se sobrescriban mal los datos
+        
         ###########################
         #                         #
         #       Endpoints         #
         #                         #
         ###########################
+        
+    #Endpoint para que llame desde los nuevos dueños para que no haya sobreescritura defectuosa    
+    def re_update_document_like_replica_after_sync(self):
+        """
+        Endpoint para cuando se resincronize la red 
+        """
+        try:
+            addr_from = request.remote_addr
+            log_message(
+                f"Se a mandado actualizar un archivo como replica que envio el addr: {addr_from} ",
+                func=self.re_update_document_like_replica_after_sync,
+            )
+            
+            
+            
+            data = self.get_data_from_request()  # Retornar los bytes con la data
+            if data is None:  # Es que no se envió nada
+                # Retornar error de no file
+                log_message(
+                    f"La data no puede ser null", func=self.get_data_from_request
+                )
+                return (
+                    jsonify({"message": 'Bad Request: Parámetro "param" requerido'}),
+                    HTTPStatus.BAD_REQUEST,
+                )
+                
+            node, new_doc = pickle.loads(data)
+            new_doc: Document = new_doc
+            node: ChordNodeReference = node
+            doc_id = new_doc.id
+            
+            if not db.has_document(doc_id):
+                log_message(f"No se tenia el documento {new_doc.title} , id: {doc_id} en la db por tanto se va a añadir ",func=self.re_update_document_like_replica_after_sync)
+                db.insert_document(
+                    new_doc, node.id, False
+                )  # Se añade en la base de datos y decimos que ahora no es persistente, esperamos confirmación
+                log_message(
+                    f"Se inserto correctamente el documento {new_doc.id} que es dueño el nodo {node.id}",
+                    func=self.re_update_document_like_replica_after_sync,
+                )
+                guid = self.data_replicate_gestor.add_document_to_the_queue(
+                    new_doc, self._delete_document_replica_if_no_check_response
+                )  # Añadir al gestor de eventos por si no es persistente que lo elimine
+
+                log_message(
+                    f"Listo para enviar respuesta al nodo {addr_from} del documento {doc_id} con guid {guid}",
+                    func=self.re_update_document_like_replica_after_sync,
+                )
+                
+                return Response(
+                    pickle.dumps((SAVE_DOC_WAITING_OK, guid)),
+                    status=HTTPStatus.OK,
+                )
+            else: # Si está el documento en la db
+                 # Tomar el documento ahora
+                old_doc = db.get_document_by_id(doc_id)  # Tomar el nodo
+                if old_doc is None:
+                    raise Exception(
+                        f"El documento con id {doc_id} no está en la db y deberia estar"
+                    )
+
+                
+                if not old_doc.record.can_update(new_doc.record):
+                    log_message(
+                        f"El documento {doc_id} a update es mas viejo {new_doc.record} que el que se tenia {old_doc.record}",
+                        func=self.re_update_document_like_replica_after_sync,
+                    )
+                    return Response(
+                        pickle.dumps((ERROR_THIS_IS_NOT_THE_LASTED_VERSION, doc_id)),
+                        HTTPStatus.OK,
+                    )
+                old_owner = db.get_node_id_owner_by_doc_id(
+                    doc_id
+                )  # dueño de documento antes del update
+
+                if not db.update_document(  # Actualizar el documento
+                    doc_id, new_doc, node.id, True
+                ):  # SI no se completo es pq no existia el documento como fila
+                    raise Exception(
+                        f"El documento con id {doc_id} no está en la db y deberia estar"
+                    )
+                guid = self.data_replicate_gestor.update_document(
+                    new_doc, old_doc, old_owner, self._revoke_update_actions, 10
+                )
+
+                log_message(
+                    f"Se guardo exitosamente el documento {doc_id} dueño {node.id} event {guid}",
+                    func=self.re_update_document_like_replica_after_sync,
+                )
+
+                return Response(
+                    pickle.dumps((SAVE_DOC_WAITING_UPDATED, guid)), status=HTTPStatus.OK
+                )
+                
+            
+        except Exception as e:
+            log_message(
+                f"Ocurrio un error tratando de sincronizar despues de resincronizar en la replica Error: {e} \n{traceback.format_exc()}",
+                func=self.re_update_document_like_replica_after_sync,
+            )
+    
 
     # Endpoint can_recive_update_documents
     def can_recive_update_documents(self):
@@ -201,6 +310,7 @@ class SyncStoreNode(StoreNode):
             tup: tuple[ChordNodeReference, Document] = pickle.loads(data)
             node, document = tup
             doc_id = document.id
+            log_message(f"El nodo {node} ha mandado a que me haga cargo del documento {document.title} texto: {document.text}",func=self.sync_keys_from_others)
             # Verificar si ya lo tengo en la db
             if db.has_document(
                 doc_id
@@ -335,9 +445,10 @@ class SyncStoreNode(StoreNode):
                         document = db.get_document_by_id(key)
                         log_message(f'Se va a reinsertar en mis replicas el documento {document.id} {document.record} {document.text}',func=self.reinsert_my_keys)
                         ok_, replica = self.Crud_action(
-                            document,
-                            "save_document_like_replica",
-                            CrudCode.ReInsertSelf,
+                            document=document,
+                          # sub_url= "save_document_like_replica",
+                           sub_url="re_update_document_like_replica_after_sync",
+                           crud_code= CrudCode.ReInsertSelf,
                         )  # El va a reinsertar el documento
                         a = self.succ_list
                         a += [self.ref]
