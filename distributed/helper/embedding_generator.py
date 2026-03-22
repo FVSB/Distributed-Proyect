@@ -1,8 +1,12 @@
 from openai import OpenAI
 from shared.logger import log_message
+from config import EMBEDDING_BASE_URL, EMBEDDING_API_KEY, EMBEDDING_MODEL
 import tiktoken
 import numpy as np
 from typing import Callable
+
+client = OpenAI(base_url=EMBEDDING_BASE_URL, api_key=EMBEDDING_API_KEY)
+
 
 def cosine_similarity(embedding1, embedding2):
     """
@@ -21,10 +25,10 @@ def cosine_similarity(embedding1, embedding2):
 
     return dot_product / (norm_embedding1 * norm_embedding2)
 
-client = OpenAI(base_url="http://host.docker.internal:1234/v1", api_key="lm-studio")
 
-
-def get_embedding(text, model="nomic-ai/nomic-embed-text-v1.5-GGUF"):
+def get_embedding(text, model=EMBEDDING_MODEL):
+    if model is None:
+        model = EMBEDDING_MODEL
     text = text.replace("\n", " ")
     response=client.embeddings.create(input=[text], model=model)
     print(response.usage.total_tokens)

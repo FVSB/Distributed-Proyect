@@ -1,4 +1,5 @@
 from utils import SearchServers
+from config import CHORD_PORT, HTTP_PORT
 import socket
 import requests
 import time
@@ -7,14 +8,20 @@ import os
 import traceback
 from shared.logger import log_message
 
-ip = socket.gethostbyname(socket.gethostname())
-servers=SearchServers(ip=ip,port=8001)
-log_message(f"activo el server de escucha")
+_servers: SearchServers = None
+
+def _get_servers() -> SearchServers:
+    global _servers
+    if _servers is None:
+        ip = socket.gethostbyname(socket.gethostname())
+        _servers = SearchServers(ip=ip, port=CHORD_PORT)
+        log_message("activo el server de escucha")
+    return _servers
 
 def _make_get_ask_to_server(server_ip:str,sub_url:str,params:dict):
     try:
             # Realizar la solicitud GET con los parámetros
-            url_query=f'http://{server_ip}:8000/{sub_url}'
+            url_query=f'http://{server_ip}:{HTTP_PORT}/{sub_url}'
             response = requests.get(url_query, params=params, stream=True)
             response.raise_for_status()
 
@@ -30,7 +37,7 @@ def _make_get_ask_to_server(server_ip:str,sub_url:str,params:dict):
 def _get_query_from_server(server_ip:str,params:dict):
     #try:
     #        # Realizar la solicitud GET con los parámetros
-    #        url_query=f'http://{server_ip}:8000/query'
+    #        url_query=f'http://{server_ip}:{HTTP_PORT}/query'
     #        response = requests.get(url_query, params=params, stream=True)
     #        response.raise_for_status()
 #
@@ -54,7 +61,7 @@ def make_query(query:str,posibles_extensions:list[str],max_results:int=10,min_sc
     """
     
     while True:
-        server_ip:str=servers.get_random_server_ip()
+        server_ip:str=_get_servers().get_random_server_ip()
             
         params={"query":query,"max_results":max_results,"min_score":min_score,"extensions":posibles_extensions}
         
@@ -91,7 +98,7 @@ def make_crud_post(server_ip:str,sub_route:str,data:object)->tuple[dict,str]:
     
         files={'file':data_bytes}
 
-        url=f'http://{server_ip}:8000/{sub_route}'
+        url=f'http://{server_ip}:{HTTP_PORT}/{sub_route}'
         
         response = requests.post(url, files=files,timeout=200)
         
@@ -124,7 +131,7 @@ def _insert_update_helper(title:str,text:str,is_insert:bool)->str:
     Returns:
         str: _description_
     """
-    server_ip:str=servers.get_random_server_ip()  
+    server_ip:str=_get_servers().get_random_server_ip()  
     sub_route="upload" if is_insert else "update"
     resp,ip=make_crud_post(server_ip=server_ip,sub_route=sub_route,data=(title,text))
     
@@ -185,7 +192,7 @@ def delete_document(title:str)->str:
         str: _description_
     """
     log_message(f"se llamo a eliminar el documento {title}")
-    server_ip:str=servers.get_random_server_ip()  
+    server_ip:str=_get_servers().get_random_server_ip()  
     log_message(f'Se va a enviar a eliminar el documento {title}')
     resp,ip=make_crud_post(server_ip=server_ip,sub_route='delete_file',data=title)
     
@@ -310,8 +317,8 @@ def _download_file(url,file)->str:
     
 def download_file(title:str,save_file:bool=False)->str:
     
-    ip=servers.get_random_server_ip()
-    file_url = f"http://{ip}:8000/get_document_by_name"  # URL del servidor Flask
+    ip=_get_servers().get_random_server_ip()
+    file_url = f"http://{ip}:{HTTP_PORT}/get_document_by_name"  # URL del servidor Flask
     
     return _download_file(url=file_url,file=title) if not save_file else _download_file_and_download(url=file_url,file=title)
 

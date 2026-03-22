@@ -17,7 +17,8 @@ import datetime
 import pickle
 import traceback
 # Crear el motor de base de datos
-engine = create_engine("sqlite:///app/database/database.db")
+from config import DB_PATH
+engine = create_engine(DB_PATH)
 
 # Crear una sesión
 Session = sessionmaker(bind=engine)
