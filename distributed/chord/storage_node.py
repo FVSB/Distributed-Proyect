@@ -2,7 +2,7 @@ from chord.chord_leader import *
 from flask import Flask, request, jsonify, Response, abort, redirect, url_for
 import socket
 import jsonpickle
-from helper.docs_class import *
+from helper.docs import *
 from helper.utils import *
 from helper.document_gestor import DataReplicatedGestor
 import helper.db as db

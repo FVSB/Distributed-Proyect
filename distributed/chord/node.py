@@ -8,7 +8,7 @@ import logging
 from helper.protocol_codes import *
 from shared.logger import log_message
 from helper.utils import getShaRepr
-from helper.chord_node_reference import ChordNodeReference
+from chord.reference import ChordNodeReference
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 import zmq
 import pickle

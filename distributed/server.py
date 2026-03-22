@@ -1,6 +1,6 @@
 
 
-from distributed_searcher import *
+from searcher import *
 import Pyro5.api
 import subprocess
 

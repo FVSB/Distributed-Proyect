@@ -1,4 +1,4 @@
-from chord.chord import *
+from chord.node import *
 
 
 

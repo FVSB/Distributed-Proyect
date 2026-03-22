@@ -1,4 +1,4 @@
-from utils import SearchServers
+from discovery import SearchServers
 from config import CHORD_PORT, HTTP_PORT
 import socket
 import requests

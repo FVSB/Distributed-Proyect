@@ -1,5 +1,5 @@
 from helper.utils import *
-from helper.docs_class import *
+from helper.docs import *
 from shared.logger import log_message
 import heapq
 import threading

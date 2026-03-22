@@ -4,7 +4,7 @@ import logging
 from helper.protocol_codes import *
 from shared.logger import log_message
 from helper.utils import getShaRepr
-from helper.query_handle import QueryHandle
+from helper.query import QueryHandle
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 import zmq
 import pickle

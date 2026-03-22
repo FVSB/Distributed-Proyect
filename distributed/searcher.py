@@ -2,9 +2,9 @@
 
 from chord.distributed_data_base import *
 from helper.utils import CrudCode
-from helper.docs_class import EmbeddingDocument
-from helper.embedding_generator import create_embedding,cosine_similarity
-from helper.query_handle import DocsClassification, QueryHandle,QueryGestor
+from helper.docs import EmbeddingDocument
+from helper.embeddings import create_embedding,cosine_similarity
+from helper.query import DocsClassification, QueryHandle,QueryGestor
 from helper.document_gestor import DocumentProgressTracker
 from typing import Callable
 
