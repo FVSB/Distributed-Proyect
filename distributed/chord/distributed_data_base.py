@@ -1,4 +1,4 @@
-from chord.sync_storange_node import *
+from chord.sync_storage_node import *
 
 
 class DistributedDataBase(SyncStoreNode):
