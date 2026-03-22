@@ -6,7 +6,7 @@ import hashlib
 import traceback
 import logging
 from helper.protocol_codes import *
-from helper.logguer import log_message
+from shared.logger import log_message
 from helper.utils import getShaRepr
 from helper.chord_node_reference import ChordNodeReference
 from concurrent.futures import ThreadPoolExecutor, TimeoutError

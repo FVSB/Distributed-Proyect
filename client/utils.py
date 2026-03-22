@@ -7,7 +7,7 @@ import time
 import threading
 import Pyro5.api
 import random
-from logguer import log_message
+from shared.logger import log_message
 class ThreadingList:
     def __init__(self) -> None:
         self.lock_:threading.RLock=threading.RLock()

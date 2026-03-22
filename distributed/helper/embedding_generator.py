@@ -1,5 +1,5 @@
 from openai import OpenAI
-from helper.logguer import log_message
+from shared.logger import log_message
 import tiktoken
 import numpy as np
 from typing import Callable

@@ -1,6 +1,6 @@
 import heapq
 import threading
-from helper.logguer import log_message
+from shared.logger import log_message
 from helper.docs_class import EmbeddingDocument
 from typing import Callable
 from helper.utils import get_guid,ThreadingSet

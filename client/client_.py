@@ -5,7 +5,7 @@ import time
 import pickle
 import os
 import traceback
-from logguer import log_message
+from shared.logger import log_message
 
 ip = socket.gethostbyname(socket.gethostname())
 servers=SearchServers(ip=ip,port=8001)

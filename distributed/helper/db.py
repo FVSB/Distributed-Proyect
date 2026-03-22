@@ -12,7 +12,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from helper.docs_class import Document
-from helper.logguer import log_message
+from shared.logger import log_message
 import datetime
 import pickle
 import traceback

@@ -1,6 +1,6 @@
 import streamlit as st
 from client_ import *
-from logguer import log_message
+from shared.logger import log_message
 # Simulación de documentos con score
 log_message(f"Iniciado")
 
